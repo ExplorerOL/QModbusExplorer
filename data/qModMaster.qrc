@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>close16.png</file>
+        <file>info16.png</file>
+        <file>add-16.png</file>
+        <file>refresh-16.png</file>
+        <file>view-16.png</file>
+        <file>pause-16.png</file>
+        <file>network-16.png</file>
+        <file>options-16.png</file>
+        <file>edit-16.png</file>
+        <file>connect-16.png</file>
+        <file>save-16.png</file>
+    </qresource>
+</RCC>
