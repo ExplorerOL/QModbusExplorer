@@ -17,7 +17,7 @@
    <string>Bus Monitor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../data/qModbusMonitor.qrc">
+   <iconset resource="../data/qModMaster.qrc">
     <normaloff>:/img/view-16.png</normaloff>:/img/view-16.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -40,8 +40,8 @@
   </widget>
   <action name="actionClear">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
-     <normaloff>:/img/pause-16.png</normaloff>:/img/pause-16.png</iconset>
+    <iconset resource="../data/qModMaster.qrc">
+     <normaloff>:/img/remove-16.png</normaloff>:/img/remove-16.png</iconset>
    </property>
    <property name="text">
     <string>Clear</string>
@@ -55,7 +55,7 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/close16.png</normaloff>:/img/close16.png</iconset>
    </property>
    <property name="text">
@@ -67,7 +67,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/save-16.png</normaloff>:/img/save-16.png</iconset>
    </property>
    <property name="text">
@@ -77,9 +77,25 @@
     <string>Save</string>
    </property>
   </action>
+  <action name="actionStart_Stop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../data/qModMaster.qrc">
+     <normaloff>:/img/run-16.png</normaloff>
+     <normalon>:/img/stop-16.png</normalon>:/img/run-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Start-Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Start-Stop Monitor</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../data/qModbusMonitor.qrc"/>
+  <include location="../data/qModMaster.qrc"/>
  </resources>
  <connections/>
 </ui>

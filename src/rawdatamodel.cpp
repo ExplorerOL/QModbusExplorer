@@ -5,10 +5,13 @@ RawDataModel::RawDataModel(QObject *parent) :
     QObject(parent)
 {
     model = new  QStringListModel(this);
+    m_addLinesEnabled = false;
 }
 
 void RawDataModel::addLine(QString line)
 {
+
+    if (!m_addLinesEnabled) return;
 
     qWarning()<<  "RawDataModel : addLine - " << line << " , Lines = " << m_rawData.length();
 
@@ -32,4 +35,9 @@ void RawDataModel::clear()
 void RawDataModel::setMaxNoOfLines(int noOfLines)
 {
     m_maxNoOfLines = noOfLines;
+}
+
+void RawDataModel::enableAddLines(bool en)
+{
+    m_addLinesEnabled = en;
 }

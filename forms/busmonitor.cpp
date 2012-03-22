@@ -1,8 +1,10 @@
-#include "busmonitor.h"
-#include "ui_busmonitor.h"
 #include <QtDebug>
 #include <QFile>
 #include <QFileDialog>
+#include <QCloseEvent>
+#include "busmonitor.h"
+#include "ui_busmonitor.h"
+#include "./src/rawdatadelegate.h"
 
 BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
     QMainWindow(parent),
@@ -11,14 +13,16 @@ BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
 {
     ui->setupUi(this);
     ui->lstRawData->setModel(m_rawDataModel->model);
-
+    ui->lstRawData->setItemDelegate(new RawDataDelegate());
     //Setup Toolbar
+    ui->toolBar->addAction(ui->actionStart_Stop);
     ui->toolBar->addAction(ui->actionSave);
     ui->toolBar->addAction(ui->actionClear);
     ui->toolBar->addAction(ui->actionExit);
     connect(ui->actionSave,SIGNAL(triggered()),this,SLOT(save()));
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clear()));
     connect(ui->actionExit,SIGNAL(triggered()),this,SLOT(exit()));
+    connect(ui->actionStart_Stop,SIGNAL(toggled(bool)),this,SLOT(startStop(bool)));
 
 }
 
@@ -71,6 +75,22 @@ void BusMonitor::exit()
 
     qWarning()<<  "BusMonitor : exit" ;
 
+    ui->actionStart_Stop->setChecked(false);
     this->close();
+
+}
+
+void BusMonitor::closeEvent( QCloseEvent * event )
+{
+
+    ui->actionStart_Stop->setChecked(false);
+    event->accept();
+
+}
+
+void BusMonitor::startStop(bool en)
+{
+
+    m_rawDataModel->enableAddLines(en);
 
 }

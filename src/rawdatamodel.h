@@ -12,9 +12,10 @@ public:
 
     QStringListModel *model;
     void addLine(QString line);
+    void enableAddLines(bool en);
     void clear();
     void setMaxNoOfLines(int noOfLines);
-    int maxNoOfLines() { return m_maxNoOfLines; };
+    int maxNoOfLines() { return m_maxNoOfLines; }
 
 signals:
 
@@ -23,6 +24,7 @@ public slots:
 private:
     QStringList m_rawData;
     int m_maxNoOfLines;
+    bool m_addLinesEnabled;
 
 };
 

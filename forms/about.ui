@@ -14,7 +14,7 @@
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../data/qModbusMonitor.qrc">
+   <iconset resource="../data/qModMaster.qrc">
     <normaloff>:/img/info16.png</normaloff>:/img/info16.png</iconset>
   </property>
   <property name="modal">
@@ -25,13 +25,13 @@
     <widget class="QLabel" name="lblVersion">
      <property name="font">
       <font>
-       <pointsize>24</pointsize>
+       <pointsize>18</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string>QModMaster v0.3a</string>
+      <string>QModMaster</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -41,7 +41,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../data/qModbusMonitor.qrc"/>
+  <include location="../data/qModMaster.qrc"/>
  </resources>
  <connections/>
 </ui>

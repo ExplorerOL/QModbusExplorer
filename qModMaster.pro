@@ -24,7 +24,8 @@ SOURCES += src/main.cpp \
     forms/busmonitor.cpp \
     3rdparty/libmodbus/modbus-data.c \
     3rdparty/libmodbus/modbus-tcp.c \
-    3rdparty/libmodbus/modbus-rtu.c
+    3rdparty/libmodbus/modbus-rtu.c \
+    src/rawdatadelegate.cpp
 
 HEADERS  += src/mainwindow.h \
     3rdparty/libmodbus/modbus.h \
@@ -36,7 +37,8 @@ HEADERS  += src/mainwindow.h \
     src/registersmodel.h \
     src/rawdatamodel.h \
     forms/settings.h \
-    forms/busmonitor.h
+    forms/busmonitor.h \
+    src/rawdatadelegate.h
 
 INCLUDEPATH += 3rdparty/libmodbus
 

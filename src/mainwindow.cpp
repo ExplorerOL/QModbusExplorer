@@ -70,12 +70,28 @@ MainWindow::MainWindow(QWidget *parent) :
     //Init Code
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     m_modbus->regModel->setBase(EUtils::Dec);
+    //init settings
     //init MaxNoOfLines to 50 if is not defined yet
     m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt() == 0 ? 50 : m_modbusCommSettings->value("MaxNoOfLines").toInt());
-    //init TCP port to 502 if is not defined yet
-    m_modbusCommSettings->setValue("TCPPort",(m_modbusCommSettings->value("TCPPort").toInt() == 0 ? 502 : m_modbusCommSettings->value("TCPPort").toInt()));
+    //init TCP settings if not defined yet
+    m_modbusCommSettings->setValue("TCPPort",(m_modbusCommSettings->value("TCPPort").isNull() ? "502" : m_modbusCommSettings->value("TCPPort").toString()));
+    m_modbusCommSettings->setValue("SlaveIPByte1",(m_modbusCommSettings->value("SlaveIPByte1").toInt() == 0 ? "127" : m_modbusCommSettings->value("SlaveIPByte1").toString()));
+    m_modbusCommSettings->setValue("SlaveIPByte2",(m_modbusCommSettings->value("SlaveIPByte2").toInt() == 0 ? "0" : m_modbusCommSettings->value("SlaveIPByte2").toString()));
+    m_modbusCommSettings->setValue("SlaveIPByte3",(m_modbusCommSettings->value("SlaveIPByte3").toInt() == 0 ? "0" : m_modbusCommSettings->value("SlaveIPByte3").toString()));
+    m_modbusCommSettings->setValue("SlaveIPByte4",(m_modbusCommSettings->value("SlaveIPByte4").toInt() == 0 ? "1" : m_modbusCommSettings->value("SlaveIPByte4").toString()));
+    m_modbusCommSettings->setValue("SlaveIP",(m_modbusCommSettings->value("SlaveIPByte1").toString() + "." + m_modbusCommSettings->value("SlaveIPByte2").toString() + "." +
+                                    m_modbusCommSettings->value("SlaveIPByte3").toString() + "." + m_modbusCommSettings->value("SlaveIPByte4").toString()));
+    //init RTU settings if not defined yet
+    m_modbusCommSettings->setValue("SerialPort",(m_modbusCommSettings->value("SerialPort").isNull() ? "COM1" : m_modbusCommSettings->value("SerialPort").toString()));
+    m_modbusCommSettings->setValue("SerialPortOS",(m_modbusCommSettings->value("SerialPortOS").isNull() ? "COM1" : m_modbusCommSettings->value("SerialPortOS").toString()));
+    m_modbusCommSettings->setValue("Baud",(m_modbusCommSettings->value("Baud").isNull() ? "9600" : m_modbusCommSettings->value("Baud").toString()));
+    m_modbusCommSettings->setValue("DataBits",(m_modbusCommSettings->value("DataBits").isNull() ? "8" : m_modbusCommSettings->value("DataBits").toString()));
+    m_modbusCommSettings->setValue("StopBits",(m_modbusCommSettings->value("StopBits").isNull() ? "1" : m_modbusCommSettings->value("StopBits").toString()));
+    m_modbusCommSettings->setValue("Parity",(m_modbusCommSettings->value("Parity").isNull() ? "None" : m_modbusCommSettings->value("Parity").toString()));
+
     //Poll Timer
     m_pollTimer=new QTimer(this);
+    connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(pollRequestForData()));
 
     qWarning()<<  "MainWindow : Init Completed ";
 
@@ -207,6 +223,9 @@ void MainWindow::changedBase(int currIndex)
                 break;
      }
 
+    //Request again if base is changed
+    if (m_modbus->regModel->model->rowCount()>0)
+        request();
 
 }
 
@@ -321,6 +340,7 @@ void MainWindow::clearItems()
 void MainWindow::pollRequestForData()
 {
 
+    qWarning()<<  "MainWindow : pollRequestForData";
     request();
 
 }
@@ -384,6 +404,8 @@ void MainWindow::request()
     }
     else { //Disconnect
         m_modbus->modbusDisConnect();
+        ui->chkReqCycle->setChecked(false);
+        m_pollTimer->stop();
         //Add line to raw data model
         line = EUtils::SysTimeStamp() + " : Disconnected";
         m_modbus->rawModel->addLine(line);
@@ -393,12 +415,9 @@ void MainWindow::request()
 
     //Update buttons
     ui->btConnect->setChecked(m_modbus->isConnected());
+    ui->btRequest->setCheckable(false);
     ui->btRequest->setEnabled(m_modbus->isConnected());
+    ui->btRequest->repaint();
     ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
-    //start/stop polling
-    if (m_modbus->isConnected())
-        m_modbus->startPolling();
-    else
-        m_modbus->stopPolling();
 
  }

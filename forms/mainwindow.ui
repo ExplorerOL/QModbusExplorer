@@ -199,7 +199,7 @@
          <string>Connect</string>
         </property>
         <property name="icon">
-         <iconset resource="../data/qModbusMonitor.qrc">
+         <iconset resource="../data/qModMaster.qrc">
           <normaloff>:/img/connect-16.png</normaloff>:/img/connect-16.png</iconset>
         </property>
         <property name="iconSize">
@@ -222,7 +222,7 @@
          <string>Request</string>
         </property>
         <property name="icon">
-         <iconset resource="../data/qModbusMonitor.qrc">
+         <iconset resource="../data/qModMaster.qrc">
           <normaloff>:/img/refresh-16.png</normaloff>:/img/refresh-16.png</iconset>
         </property>
         <property name="iconSize">
@@ -257,7 +257,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../data/qModbusMonitor.qrc">
+         <iconset resource="../data/qModMaster.qrc">
           <normaloff>:/img/add-16.png</normaloff>:/img/add-16.png</iconset>
         </property>
         <property name="iconSize">
@@ -277,8 +277,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../data/qModbusMonitor.qrc">
-          <normaloff>:/img/pause-16.png</normaloff>:/img/pause-16.png</iconset>
+         <iconset resource="../data/qModMaster.qrc">
+          <normaloff>:/img/remove-16.png</normaloff>:/img/remove-16.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -304,7 +304,20 @@
      </widget>
     </item>
     <item>
-     <widget class="QTableView" name="tblRegisters"/>
+     <widget class="QTableView" name="tblRegisters">
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -360,7 +373,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/close16.png</normaloff>:/img/close16.png</iconset>
    </property>
    <property name="text">
@@ -372,7 +385,7 @@
   </action>
   <action name="actionSerial_RTU">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/edit-16.png</normaloff>:/img/edit-16.png</iconset>
    </property>
    <property name="text">
@@ -384,7 +397,7 @@
   </action>
   <action name="actionTCP">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/network-16.png</normaloff>:/img/network-16.png</iconset>
    </property>
    <property name="text">
@@ -396,7 +409,7 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/info16.png</normaloff>:/img/info16.png</iconset>
    </property>
    <property name="text">
@@ -408,7 +421,7 @@
   </action>
   <action name="actionBus_Monitor">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/view-16.png</normaloff>:/img/view-16.png</iconset>
    </property>
    <property name="text">
@@ -420,7 +433,7 @@
   </action>
   <action name="actionSettings">
    <property name="icon">
-    <iconset resource="../data/qModbusMonitor.qrc">
+    <iconset resource="../data/qModMaster.qrc">
      <normaloff>:/img/options-16.png</normaloff>:/img/options-16.png</iconset>
    </property>
    <property name="text">
@@ -438,7 +451,7 @@
   <tabstop>tblRegisters</tabstop>
  </tabstops>
  <resources>
-  <include location="../data/qModbusMonitor.qrc"/>
+  <include location="../data/qModMaster.qrc"/>
  </resources>
  <connections>
   <connection>

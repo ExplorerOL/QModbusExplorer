@@ -21,10 +21,14 @@ private:
     Ui::BusMonitor *ui;
     RawDataModel *m_rawDataModel;
 
+protected:
+    void closeEvent(QCloseEvent * event );
+
 private slots:
     void clear();
     void exit();
     void save();
+    void startStop(bool en);
 
 };
 
