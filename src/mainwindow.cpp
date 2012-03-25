@@ -61,12 +61,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addAction(ui->actionAbout);
     ui->mainToolBar->addAction(ui->actionExit);
 
-    //Update UI
-    ui->sbNoOfCoils->setEnabled(true);
-    ui->spInterval->setEnabled(false);
-    ui->btRequest->setEnabled(false);
-    updateStatusBar();
-
     //Init Code
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     m_modbus->regModel->setBase(EUtils::Dec);
@@ -92,6 +86,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //Poll Timer
     m_pollTimer=new QTimer(this);
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(pollRequestForData()));
+
+    //Update UI
+    ui->sbNoOfCoils->setEnabled(true);
+    ui->spInterval->setEnabled(false);
+    ui->btRequest->setEnabled(false);
+    updateStatusBar();
 
     qWarning()<<  "MainWindow : Init Completed ";
 

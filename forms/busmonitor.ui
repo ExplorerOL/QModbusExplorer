@@ -13,6 +13,12 @@
     <height>335</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>707</width>
+    <height>335</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Bus Monitor</string>
   </property>
