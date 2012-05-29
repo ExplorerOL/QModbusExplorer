@@ -412,9 +412,6 @@ static int receive_msg(modbus_t *ctx, uint8_t *msg, msg_type_t msg_type)
                 printf("<%.2X>", msg[msg_length + i]);
         }
 
-        //***Not part of libmodbus - added for qt***//
-        busMonitorRawResponseData( msg, rc );
-
         /* Sums bytes received */
         msg_length += rc;
         /* Computes remaining bytes */
@@ -458,6 +455,9 @@ static int receive_msg(modbus_t *ctx, uint8_t *msg, msg_type_t msg_type)
 
     if (ctx->debug)
         printf("\n");
+
+    //***Not part of libmodbus - added for qt***//
+    busMonitorRawResponseData(msg, msg_length);
 
     return ctx->backend->check_integrity(ctx, msg, msg_length);
 }

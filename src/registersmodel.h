@@ -15,7 +15,7 @@ public:
     explicit RegistersModel(QObject *parent = 0);
 
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
-    void setValue(int row, int value);
+    void setValue(int row, int value, bool is16Bit);
     void setBase(int base);
     int value(int row);
     QStandardItemModel *model;

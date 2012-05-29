@@ -184,7 +184,7 @@ void MainWindow::changedFunctionCode(int currIndex)
 
     const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
 
-    switch(funcionCode)
+    switch(funcionCode)//Number of coils = 1
     {
         case _FC_WRITE_SINGLE_REGISTER:
         case _FC_WRITE_SINGLE_COIL:
@@ -193,6 +193,39 @@ void MainWindow::changedFunctionCode(int currIndex)
                 break;
         default:
                 ui->sbNoOfCoils->setEnabled(true);
+                break;
+     }
+
+    switch(funcionCode)//Base = Binary
+    {
+        case _FC_READ_COILS:
+        case _FC_READ_DISCRETE_INPUTS:
+        case _FC_WRITE_SINGLE_COIL:
+        case _FC_WRITE_MULTIPLE_COILS:
+                ui->cmbBase->setCurrentIndex(0);
+                ui->cmbBase->setEnabled(false);
+                break;
+        default:
+                ui->cmbBase->setEnabled(true);
+                break;
+     }
+
+    switch(funcionCode)//Label = Read Request, Write Request
+    {
+        case _FC_READ_COILS:
+        case _FC_READ_DISCRETE_INPUTS:
+        case _FC_READ_HOLDING_REGISTERS:
+        case _FC_READ_INPUT_REGISTERS:
+                ui->btRequest->setText("Read Request");
+                break;
+        case _FC_WRITE_SINGLE_COIL:
+        case _FC_WRITE_MULTIPLE_COILS:
+        case _FC_WRITE_SINGLE_REGISTER:
+        case _FC_WRITE_MULTIPLE_REGISTERS:
+                ui->btRequest->setText("Write Request");
+                break;
+        default:
+                ui->btRequest->setText("Read Request");
                 break;
      }
 

@@ -5,22 +5,31 @@
 void RawDataDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const
 {
-     if (qVariantCanConvert<QString>(index.data())) {
+
+    //TODO
+    /*painter->save();
+    if (qVariantCanConvert<QString>(index.data())) {
          QString val = qVariantValue<QString>(index.data());
-         //qWarning()<<  "RawDataDelegate data : " << val;
-         if (val.indexOf("Sys")==0)
-             painter->setPen(Qt::darkBlue);
-         else if (val.indexOf("Tx")==0)
-             painter->setPen(Qt::darkGreen);
-         else if (val.indexOf("Rx")==0)
-             painter->setPen(Qt::darkMagenta);
+         if (val.indexOf("Sys") > -1)
+            painter->setPen(Qt::darkBlue);
+         else if (val.indexOf("Tx") > -1)
+            painter->setPen(Qt::darkGreen);
+         else if (val.indexOf("Rx") > -1)
+            painter->setPen(Qt::darkMagenta);
          else
-             painter->setPen(Qt::black);
-         painter->drawText(QRect(option.rect.left(),option.rect.top(),option.rect.width(),option.rect.height())
-                           ,val,option.displayAlignment);
-     }
-     else {
-         painter->setPen(Qt::black);
-         QStyledItemDelegate::paint(painter, option, index);
-     }
- }
+            painter->setPen(Qt::black);
+
+         painter->drawText(QRect(option.rect.left(),option.rect.top(),option.rect.width()
+                                     ,option.rect.height()),val,option.displayAlignment);
+         painter->setBackgroundMode(Qt::OpaqueMode);
+         painter->setBackground(QBrush(Qt::red,Qt::Dense1Pattern));
+    }
+    else {
+        painter->setPen(Qt::black);
+        QStyledItemDelegate::paint(painter, option, index);
+    }
+    painter->restore();*/
+
+    QStyledItemDelegate::paint(painter, option, index);
+
+}

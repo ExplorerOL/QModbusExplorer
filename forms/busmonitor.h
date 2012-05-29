@@ -20,15 +20,21 @@ public:
 private:
     Ui::BusMonitor *ui;
     RawDataModel *m_rawDataModel;
+    void parseTxMsg(QString msg);
+    void parseTxPDU(QStringList pdu);
+    void parseRxMsg(QString msg);
+    void parseRxPDU(QStringList pdu);
+    void parseSysMsg(QString msg);
 
 protected:
-    void closeEvent(QCloseEvent * event );
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void clear();
     void exit();
     void save();
     void startStop(bool en);
+    void selectedRow(const QModelIndex & selected);
 
 };
 

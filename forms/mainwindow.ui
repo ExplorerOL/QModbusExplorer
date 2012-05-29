@@ -219,7 +219,7 @@
          <string>Tx/Rx Data</string>
         </property>
         <property name="text">
-         <string>Request</string>
+         <string>Read Request</string>
         </property>
         <property name="icon">
          <iconset resource="../data/qModMaster.qrc">

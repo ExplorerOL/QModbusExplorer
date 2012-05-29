@@ -46,11 +46,36 @@ void RegistersModel::setNoValidValues()
 
 }
 
-void RegistersModel::setValue(int row, int value)
+void RegistersModel::setValue(int row, int value, bool is16Bit)
 {
     QString convertedValue;
 
-    convertedValue = QString("%1").arg(value,0,m_base).toUpper();
+    qWarning()<<  "RegistersModel : value - " << value << " is 16 Bit - " << is16Bit;
+
+    switch(m_base){
+
+        case 2://Binary
+        if (is16Bit)
+            convertedValue = QString("%1").arg(value,16,m_base,QLatin1Char('0')).toUpper();
+        else
+            convertedValue = QString("%1").arg(value,0,m_base).toUpper();
+        break;
+
+        case 10://Decimal
+        convertedValue = QString("%1").arg(value,0,m_base).toUpper();
+        break;
+
+        case 16://Hex
+        if (is16Bit)
+            convertedValue = QString("%1").arg(value,4,m_base,QLatin1Char('0')).toUpper();
+        else
+            convertedValue = QString("%1").arg(value,0,m_base).toUpper();
+        break;
+
+        default://Default
+        convertedValue = QString("%1").arg(value,0,m_base).toUpper();
+
+    }
 
     qWarning()<<  "RegistersModel : setValue - row " << row <<" ,value " << convertedValue;
 

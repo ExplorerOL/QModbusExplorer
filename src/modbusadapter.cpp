@@ -11,13 +11,10 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_modbus(NULL)
 {
     m_instance=this;
-    m_pollTimer=new QTimer(this);
-    //Do we need polling ?
-    //m_pollTime=100;
-    //connect(m_pollTimer, SIGNAL(timeout()), this, SLOT(pollForDataOnBus()));
     regModel=new RegistersModel(this);
     rawModel=new RawDataModel(this);
     m_connected = false;
+    m_ModBusMode = EUtils::None;
 }
 
 void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits)
@@ -39,7 +36,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
     else
         m_connected = true;
 
-    m_RTUSelected = m_connected;
+    m_ModBusMode = EUtils::RTU;
 
 }
 
@@ -62,7 +59,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port)
     else
         m_connected = true;
 
-    m_RTUSelected = false;
+    m_ModBusMode = EUtils::TCP;
 
 }
 
@@ -81,7 +78,7 @@ void ModbusAdapter::modbusDisConnect()
 
     m_connected = false;
 
-    m_RTUSelected = false;
+    m_ModBusMode = EUtils::None;
 
 }
 
@@ -179,7 +176,7 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
                 for(int i = 0; i < noOfItems; ++i)
                 {
                     int data = is16Bit ? dest16[i] : dest[i];
-                    regModel->setValue(i,data);
+                    regModel->setValue(i,data,is16Bit);
                 }
             }
     }
@@ -190,63 +187,17 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
 
         QString line;
         if(ret < 0) {
-                line = QString("Slave threw exception %1 or function not implemented. [").arg(ret) +  modbus_strerror(errno) + "]";
+                line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 qWarning()<<  "ModbusAdapter : modbusRequestData - " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                //QMessageBox::critical(NULL,"Protocol error",QString("Slave threw exception %1 or function not implemented.").arg(ret));
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 qWarning()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                //QMessageBox::critical(NULL,"Protocol error","Number of registers returned does not match number of registers requested!");
         }
      }
 
-
-}
-
-int ModbusAdapter::pollTime()
-{
-    //Poll time for bus monitoring
-
-    return m_pollTime;
-}
-
-void ModbusAdapter::setPollTime(int pollTime)
-{
- //Poll time for bus monitoring
-
-    m_pollTime=pollTime;
-}
-
-void ModbusAdapter::startPolling()
-{
-    //start polling for bus monitoring
-
-    m_pollTimer->start(m_pollTime);
-}
-
-void ModbusAdapter::stopPolling()
-{
-    //stop polling for bus monitoring
-
-    m_pollTimer->stop();
-}
-
-bool ModbusAdapter::pollingIsActive()
-{
-    //polling for bus monitoring is active
-
-    return m_pollTimer->isActive();
-}
-
-void ModbusAdapter::pollForDataOnBus()
-{
-    //polling for bus monitoring every PollTime msec
-
-    //if(m_modbus)
-    //    modbus_poll(m_modbus);
 }
 
 void ModbusAdapter::busMonitorRequestData(uint8_t * data, uint8_t dataLen)
@@ -257,12 +208,10 @@ void ModbusAdapter::busMonitorRequestData(uint8_t * data, uint8_t dataLen)
     QString line;
 
     for(int i = 0; i < dataLen; ++i ) {
-        //if we are using modbus TCP discharge TCP Header
-        //if (i > 5 || m_RTUSelected) line += QString().sprintf( "%.2x  ", data[i] );
         line += QString().sprintf( "%.2x  ", data[i] );
     }
 
-    line = EUtils::TxTimeStamp() + " : " + line;
+    line = EUtils::TxTimeStamp(m_ModBusMode) + " : " + line;
 
     rawModel->addLine(line);
 
@@ -275,12 +224,10 @@ void ModbusAdapter::busMonitorResponseData(uint8_t * data, uint8_t dataLen)
     QString line;
 
     for(int i = 0; i < dataLen; ++i ) {
-        //if we are using modbus TCP discharge TCP Header
-        //if (i > 5 || m_RTUSelected) line += QString().sprintf( "%.2x  ", data[i] );
         line += QString().sprintf( "%.2x  ", data[i] );
     }
 
-    line = EUtils::RxTimeStamp() + " : " + line;
+    line = EUtils::RxTimeStamp(m_ModBusMode) + " : " + line;
 
     rawModel->addLine(line);
 

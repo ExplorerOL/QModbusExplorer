@@ -9,7 +9,6 @@ QT       += core gui
 TARGET = qModMaster
 TEMPLATE = app
 
-
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     3rdparty/libmodbus/modbus.c \

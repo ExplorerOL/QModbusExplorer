@@ -12,6 +12,8 @@ static const QString ModbusFunctionNames[]={"Read Coils (0x01)","Read Discrete I
 
 static const int ModbusFunctionCodes[]={0x1,0x2,0x3,0x4,0x5,0x6,0xf,0x10};
 
+static const QString ModbusModeStamp[]={"[RTU]>","[TCP]>",""};
+
 
 class EUtils
 {
@@ -74,19 +76,19 @@ public:
             return ModbusFunctionCodes[index];
     }
 
-    static QString TxTimeStamp()
+    static QString TxTimeStamp(int md)
     {
-        return ("Tx >" + QTime::currentTime().toString("HH:mm:ss:zzz"));
+        return (ModbusModeStamp[md] + "Tx > " + QTime::currentTime().toString("HH:mm:ss:zzz"));
     }
 
-    static QString RxTimeStamp()
+    static QString RxTimeStamp(int md)
     {
-        return ("Rx >" + QTime::currentTime().toString("HH:mm:ss:zzz"));
+        return (ModbusModeStamp[md] + "Rx > " + QTime::currentTime().toString("HH:mm:ss:zzz"));
     }
 
     static QString SysTimeStamp()
     {
-        return ("Sys>" + QTime::currentTime().toString("HH:mm:ss:zzz"));
+        return ("Sys > " + QTime::currentTime().toString("HH:mm:ss:zzz"));
     }
 
     static QChar parity(QString p)
@@ -95,7 +97,7 @@ public:
         return p.at(0);
     }
 
-    static enum {RTU = 0, TCP = 1} ModbusMode;
+    static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;
 
     static enum {Bin = 2, Dec = 10, Hex = 16} Base;
 
