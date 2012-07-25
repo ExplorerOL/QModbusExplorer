@@ -13,7 +13,7 @@ void RawDataModel::addLine(QString line)
 
     if (!m_addLinesEnabled) return;
 
-    qWarning()<<  "RawDataModel : addLine - " << line << " , Lines = " << m_rawData.length();
+    qDebug()<<  "RawDataModel : addLine - " << line << " , Lines = " << m_rawData.length();
 
     if (m_rawData.length() == m_maxNoOfLines)
         m_rawData.removeFirst();
@@ -25,7 +25,7 @@ void RawDataModel::addLine(QString line)
 void RawDataModel::clear()
 {
 
-    qWarning()<<  "RawDataModel : clear" ;
+    qDebug()<<  "RawDataModel : clear" ;
 
     m_rawData.clear();
     model->setStringList(m_rawData);

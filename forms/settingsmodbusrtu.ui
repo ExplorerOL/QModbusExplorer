@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>220</width>
-    <height>180</height>
+    <height>220</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>220</width>
-    <height>180</height>
+    <height>220</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -205,6 +205,16 @@
         </property>
        </item>
       </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="lblRTS">
+       <property name="text">
+        <string>RTS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="cmbRTS"/>
      </item>
     </layout>
    </item>

@@ -15,4 +15,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 QModMaster is a free Qt-based implementation of a ModBus master application. A graphical user interface allows easy communication with ModBus RTU and TCP slaves. QModMaster also includes a bus monitor for examining all traffic on the bus.
 
 2.Software
-QModMaster is based on QModBus <http://sourceforge.net/projects/qmodbus/> and libmodbus 3.0.1 <http://www.libmodbus.org/>.Supports both Windows and Linux.
+QModMaster is based on QModBus <http://sourceforge.net/projects/qmodbus/> and libmodbus 3.1.0-1 <http://www.libmodbus.org/>.Supports both Windows and Linux.

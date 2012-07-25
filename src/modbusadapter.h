@@ -17,7 +17,7 @@ public:
      void busMonitorRequestData(uint8_t * data,uint8_t dataLen);
      void busMonitorResponseData(uint8_t * data,uint8_t dataLen);
 
-     void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits);
+     void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS);
      void modbusConnectTCP(QString ip, int port);
      void modbusDisConnect();
      void modbusRequestData(int slave, int functionCode, int startAddress, int noOfItems);

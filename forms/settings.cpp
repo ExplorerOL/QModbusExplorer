@@ -20,7 +20,7 @@ Settings::~Settings()
 
 void Settings::showEvent(QShowEvent * event)
 {
-    qWarning()<<  "Settings : form show" ;
+    qDebug()<<  "Settings : form show" ;
 
     //Load Settings
     if (m_settings != NULL) {
@@ -34,7 +34,7 @@ void Settings::showEvent(QShowEvent * event)
 
 void Settings::changesAccepted()
 {
-    qWarning()<<  "Settings : changes accepted" ;
+    qDebug()<<  "Settings : changes accepted" ;
 
     //Save Settings
     if (m_settings != NULL) {

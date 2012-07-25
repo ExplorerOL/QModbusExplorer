@@ -82,6 +82,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_modbusCommSettings->setValue("DataBits",(m_modbusCommSettings->value("DataBits").isNull() ? "8" : m_modbusCommSettings->value("DataBits").toString()));
     m_modbusCommSettings->setValue("StopBits",(m_modbusCommSettings->value("StopBits").isNull() ? "1" : m_modbusCommSettings->value("StopBits").toString()));
     m_modbusCommSettings->setValue("Parity",(m_modbusCommSettings->value("Parity").isNull() ? "None" : m_modbusCommSettings->value("Parity").toString()));
+#ifdef Q_OS_WIN32
+    m_modbusCommSettings->setValue("RTS",(m_modbusCommSettings->value("RTS").isNull() ? "Disable" : m_modbusCommSettings->value("RTS").toString()));
+#else
+    m_modbusCommSettings->setValue("RTS",(m_modbusCommSettings->value("RTS").isNull() ? "None" : m_modbusCommSettings->value("RTS").toString()));
+#endif
 
     //Poll Timer
     m_pollTimer=new QTimer(this);
@@ -93,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btRequest->setEnabled(false);
     updateStatusBar();
 
-    qWarning()<<  "MainWindow : Init Completed ";
+    qDebug()<<  "MainWindow : Init Completed ";
 
 }
 
@@ -101,7 +106,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    qWarning()<<  "MainWindow : Closing" ;
+    qDebug()<<  "MainWindow : Closing" ;
 }
 
 void MainWindow::showSettingsModbusRTU()
@@ -110,11 +115,11 @@ void MainWindow::showSettingsModbusRTU()
     //Show RTU Settings Dialog
 
     if (m_dlgModbusRTU->exec()==QDialog::Accepted) {
-        qWarning()<<  "MainWindow : RTU changes accepted ";
+        qDebug()<<  "MainWindow : RTU changes accepted ";
         updateStatusBar();
     }
     else
-        qWarning()<<  "MainWindow : RTU changes rejected ";
+        qDebug()<<  "MainWindow : RTU changes rejected ";
 
 }
 
@@ -124,11 +129,11 @@ void MainWindow::showSettingsModbusTCP()
     //Show TCP Settings Dialog
 
     if (m_dlgModbusTCP->exec()==QDialog::Accepted) {
-        qWarning()<<  "MainWindow : TCP changes accepted ";
+        qDebug()<<  "MainWindow : TCP changes accepted ";
         updateStatusBar();
     }
     else
-        qWarning()<<  "MainWindow : TCP changes rejected ";
+        qDebug()<<  "MainWindow : TCP changes rejected ";
 
 }
 
@@ -138,11 +143,11 @@ void MainWindow::showSettings()
     //Show General Settings Dialog
 
     if (m_dlgSettings->exec()==QDialog::Accepted) {
-        qWarning()<<  "MainWindow : changes accepted ";
+        qDebug()<<  "MainWindow : changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt());
     }
     else
-        qWarning()<<  "MainWindow : changes rejected ";
+        qDebug()<<  "MainWindow : changes rejected ";
 
 }
 
@@ -151,7 +156,7 @@ void MainWindow::showBusMonitor()
 
     //Show Bus Monitor
 
-    qWarning()<<  "MainWindow : showBusMonitor ";
+    qDebug()<<  "MainWindow : showBusMonitor ";
 
     m_busMonitor->show();
 
@@ -162,7 +167,7 @@ void MainWindow::changedModbusMode(int currIndex)
 
     //Show-Hide Slave IP
 
-    qWarning()<<  "MainWindow : changedModbusMode index = " << currIndex;
+    qDebug()<<  "MainWindow : changedModbusMode index = " << currIndex;
 
     if (currIndex == 0) { //RTU
 
@@ -180,7 +185,7 @@ void MainWindow::changedFunctionCode(int currIndex)
 
     //Enable-Disable number of coils
 
-    qWarning()<<  "MainWindow : changedFunctionCode index = " << currIndex;
+    qDebug()<<  "MainWindow : changedFunctionCode index = " << currIndex;
 
     const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
 
@@ -238,7 +243,7 @@ void MainWindow::changedBase(int currIndex)
 
     //Change Base
 
-    qWarning()<<  "MainWindow : changedBase index = " << currIndex;
+    qDebug()<<  "MainWindow : changedBase index = " << currIndex;
 
     switch(currIndex)
     {
@@ -267,7 +272,7 @@ void MainWindow::changedReqCycle(bool value)
 
     //Enable-Disable Time Interval - Set-Reset btRequest As Toggle button
 
-    qWarning()<<  "MainWindow : changedReqCycle value = " << value;
+    qDebug()<<  "MainWindow : changedReqCycle value = " << value;
 
     ui->spInterval->setEnabled(value);
     ui->btRequest->setCheckable(value);
@@ -283,7 +288,7 @@ void MainWindow::changedConnect(bool value)
 
     //Connect - Disconnect
 
-    qWarning()<<  "MainWindow : changedConnect value = " << value;
+    qDebug()<<  "MainWindow : changedConnect value = " << value;
 
     if (value) { //Connected
         ui->btConnect->setText("Disconnect");
@@ -312,8 +317,6 @@ void MainWindow::updateStatusBar()
 
     QString msg;
 
-    qWarning()<<  "MainWindow : updateStatusBar" ;
-
     if(ui->cmbModbusMode->currentIndex() == 0) { //RTU
         msg = "RTU : ";
         msg += m_modbusCommSettings->value("SerialPort").toString() + " | ";
@@ -334,11 +337,11 @@ void MainWindow::updateStatusBar()
     //Connection is valid
     if (m_modbus->isConnected()) {
         m_statusInd->setStyleSheet("background-color: green");
-        qWarning()<<  "MainWindow : updateStatusBar - ind color = green" ;
+        qDebug()<<  "MainWindow : updateStatusBar - ind color = green" ;
     }
     else {
         m_statusInd->setStyleSheet("background-color: red");
-        qWarning()<<  "MainWindow : updateStatusBar - ind color = red" ;
+        qDebug()<<  "MainWindow : updateStatusBar - ind color = red" ;
     }
 
 }
@@ -348,8 +351,7 @@ void MainWindow::addItems()
 
     //Add items to registers model and to modbus adapter
 
-    qWarning()<<  "MainWindow : addItems" ;
-    qWarning()<<  "MainWindow : addItems - functionCode " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
+    qDebug()<<  "MainWindow : addItems - functionCode " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
     const QString dataType = EUtils::ModbusDataTypeName(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
     ui->lblRegisters->setText("Registers > " + dataType);
     bool valueIsEditable = EUtils::ModbusIsWriteFunction(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
@@ -363,7 +365,7 @@ void MainWindow::clearItems()
 
     //Clear items from registers model
 
-    qWarning()<<  "MainWindow : clearItems" ;
+    qDebug()<<  "MainWindow : clearItems" ;
 
     m_modbus->regModel->clear();
     ui->lblRegisters->setText("Registers > ");
@@ -373,7 +375,7 @@ void MainWindow::clearItems()
 void MainWindow::pollRequestForData()
 {
 
-    qWarning()<<  "MainWindow : pollRequestForData";
+    qDebug()<<  "MainWindow : pollRequestForData";
     request();
 
 }
@@ -389,7 +391,7 @@ void MainWindow::request()
         return;
     }
 
-    qWarning()<<  "MainWindow : requested registers = " <<  rowCount;
+    qDebug()<<  "MainWindow : requested registers = " <<  rowCount;
 
 
     const int slave = ui->sbSlaveID->value();
@@ -413,7 +415,7 @@ void MainWindow::request()
 
     //Modbus connect - RTU/TCP
     QString line ;
-    qWarning()<<  "MainWindow : modbusConnect - " << connect;
+    qDebug()<<  "MainWindow : modbusConnect - " << connect;
 
     if (connect) {
         if (ui->cmbModbusMode->currentIndex() == EUtils::RTU) { //RTU
@@ -422,7 +424,8 @@ void MainWindow::request()
                                         m_modbusCommSettings->value("Baud").toInt(),
                                         EUtils::parity(m_modbusCommSettings->value("Parity").toString()),
                                         m_modbusCommSettings->value("DataBits").toInt(),
-                                        m_modbusCommSettings->value("StopBits").toInt()
+                                        m_modbusCommSettings->value("StopBits").toInt(),
+                                        m_modbusCommSettings->value("RTS").toInt()
                                         );
             line += (m_modbus->isConnected() ? "OK" : "Failed");
         }

@@ -13,7 +13,7 @@ RegistersModel::RegistersModel(QObject *parent) :
 void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEditable)
 {
 
-    qWarning()<<  "RegistersModel : address " << startAddress << " ,noOfItems " << noOfItems;
+    qDebug()<<  "RegistersModel : address " << startAddress << " ,noOfItems " << noOfItems;
 
     //m_dataType = dataType;
     m_startAddress = startAddress;
@@ -37,7 +37,7 @@ void RegistersModel::setNoValidValues()
 {
 
     //if we have no valid values we set  as value = 'N/A'
-    qWarning()<<  "RegistersModel : setNoValidValues";
+    qDebug()<<  "RegistersModel : setNoValidValues";
 
     for (int i = 0; i < m_noOfItems; i++){
         QModelIndex index = model->index(i, ValueColumn, QModelIndex());
@@ -50,7 +50,7 @@ void RegistersModel::setValue(int row, int value, bool is16Bit)
 {
     QString convertedValue;
 
-    qWarning()<<  "RegistersModel : value - " << value << " is 16 Bit - " << is16Bit;
+    qDebug()<<  "RegistersModel : value - " << value << " is 16 Bit - " << is16Bit;
 
     switch(m_base){
 
@@ -77,7 +77,7 @@ void RegistersModel::setValue(int row, int value, bool is16Bit)
 
     }
 
-    qWarning()<<  "RegistersModel : setValue - row " << row <<" ,value " << convertedValue;
+    qDebug()<<  "RegistersModel : setValue - row " << row <<" ,value " << convertedValue;
 
     //set model data
     QModelIndex index = model->index(row, ValueColumn, QModelIndex());
@@ -89,7 +89,7 @@ int RegistersModel::value(int row)
 {
     //TODO Conversion not working
 
-    qWarning()<<  "RegistersModel : value - row " << row;
+    qDebug()<<  "RegistersModel : value - row " << row;
 
     //get model data
     QModelIndex index = model->index(row, ValueColumn, QModelIndex());
@@ -108,7 +108,7 @@ void RegistersModel::formatModel()
     int val;
     QString convertedVal;
 
-    qWarning()<<  "RegistersModel : formatModel" ;
+    qDebug()<<  "RegistersModel : formatModel" ;
 
     //change base
     for (int row = 0; row < m_noOfItems ; row++) {
@@ -127,7 +127,7 @@ void RegistersModel::formatModel()
 void RegistersModel::clear()
 {
 
-    qWarning()<<  "RegistersModel : clear" ;
+    qDebug()<<  "RegistersModel : clear" ;
 
     //Clear model
     model->clear();
@@ -139,7 +139,7 @@ void RegistersModel::clear()
 void RegistersModel::setBase(int base)
 {
 
-    qWarning()<<  "RegistersModel : setBase " << base ;
+    qDebug()<<  "RegistersModel : setBase " << base ;
     m_base = base;
 
 }

@@ -19,7 +19,7 @@ SettingsModbusTCP::~SettingsModbusTCP()
 
 void SettingsModbusTCP::showEvent(QShowEvent * event)
 {
-    qWarning()<<  "SettingsModbusTCP : form show" ;
+    qDebug()<<  "SettingsModbusTCP : form show" ;
 
     //Load Settings
     if (m_settings != NULL) {
@@ -34,7 +34,7 @@ void SettingsModbusTCP::showEvent(QShowEvent * event)
 
 void SettingsModbusTCP::changesAccepted()
 {
-    qWarning()<<  "SettingsModbusTCP : changes accepted" ;
+    qDebug()<<  "SettingsModbusTCP : changes accepted" ;
 
     //Save Settings
     if (m_settings != NULL) {

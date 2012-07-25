@@ -38,7 +38,7 @@ BusMonitor::~BusMonitor()
 void BusMonitor::save()
 {
 
-    qWarning()<<  "BusMonitor : save" ;
+    qDebug()<<  "BusMonitor : save" ;
 
     //Select file
     QString fileName = QFileDialog::getSaveFileName(NULL,"Save File As...",
@@ -68,7 +68,7 @@ void BusMonitor::save()
 void BusMonitor::clear()
 {
 
-    qWarning()<<  "BusMonitor : clear" ;
+    qDebug()<<  "BusMonitor : clear" ;
 
     m_rawDataModel->clear();
     ui->txtPDU->clear();
@@ -78,7 +78,7 @@ void BusMonitor::clear()
 void BusMonitor::exit()
 {
 
-    qWarning()<<  "BusMonitor : exit" ;
+    qDebug()<<  "BusMonitor : exit" ;
 
     ui->actionStart_Stop->setChecked(false);
     this->close();
@@ -104,7 +104,7 @@ void BusMonitor::selectedRow(const QModelIndex & selected)
 {
     if (qVariantCanConvert<QString>(selected.data())) {
             QString val = qVariantValue<QString>(selected.data());
-            qWarning()<<  "BusMonitor : selectedRow - " << val;
+            qDebug()<<  "BusMonitor : selectedRow - " << val;
             if (val.indexOf("Sys") > -1)
                 parseSysMsg(val);
             else if (val.indexOf("Tx") > -1)

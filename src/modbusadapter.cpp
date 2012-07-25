@@ -4,7 +4,12 @@
 #include <errno.h>
 
 ModbusAdapter *m_instance;
-static const int DBG = false; //Debug messages from libmodbus
+
+#ifdef QT_NO_DEBUG_OUTPUT
+    #define DBG 0
+#else
+    #define DBG 1
+#endif
 
 ModbusAdapter::ModbusAdapter(QObject *parent) :
     QObject(parent),
@@ -17,14 +22,14 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_ModBusMode = EUtils::None;
 }
 
-void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits)
+void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS)
 {
     //Modbus RTU connect
 
-    qWarning()<<  "ModbusAdapter : modbusConnect RTU";
-
     modbusDisConnect();
-    m_modbus = modbus_new_rtu(port.toAscii().constData(),baud,parity.toAscii(),dataBits,stopBits);
+
+    m_modbus = modbus_new_rtu(port.toAscii().constData(),baud,parity.toAscii(),dataBits,stopBits,RTS);
+
 
     //Debug messages from libmodbus
     modbus_set_debug(m_modbus, DBG);
@@ -44,9 +49,10 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port)
 {
     //Modbus RTU connect
 
-    qWarning()<<  "ModbusAdapter : modbusConnect TCP";
-
     modbusDisConnect();
+
+    qDebug()<<  "ModbusAdapter : modbusConnect TCP";
+
     m_modbus = modbus_new_tcp(ip.toAscii().constData(), port);
 
     //Debug messages from libmodbus
@@ -68,7 +74,7 @@ void ModbusAdapter::modbusDisConnect()
 {
     //Modbus disconnect
 
-    qWarning()<<  "ModbusAdapter : modbusDisConnect ";
+    qDebug()<<  "ModbusAdapter : modbusDisConnect ";
 
     if(m_modbus) {
         modbus_close(m_modbus);
@@ -93,7 +99,7 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
 {
     //Modbus request data
 
-    qWarning()<<  "ModbusAdapter : modbusRequestData ";
+    qDebug()<<  "ModbusAdapter : modbusRequestData ";
 
     if(m_modbus == NULL) return;
 
@@ -162,7 +168,7 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
                     break;
     }
 
-    qWarning()<<  "ModbusAdapter : modbusRequestData ret = " << ret;
+    qDebug()<<  "ModbusAdapter : modbusRequestData ret = " << ret;
 
     //update data model
     if(ret == noOfItems)
@@ -188,12 +194,12 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
         QString line;
         if(ret < 0) {
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
-                qWarning()<<  "ModbusAdapter : modbusRequestData - " << line;
+                qDebug()<<  "ModbusAdapter : modbusRequestData - " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
-                qWarning()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
+                qDebug()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
         }
      }
