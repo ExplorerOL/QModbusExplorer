@@ -20,12 +20,14 @@ public:
      void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS);
      void modbusConnectTCP(QString ip, int port);
      void modbusDisConnect();
-     void modbusRequestData(int slave, int functionCode, int startAddress, int noOfItems);
+     void modbusTransaction(int slave, int functionCode, int startAddress, int noOfItems);
      RegistersModel *regModel;
      RawDataModel *rawModel;
      bool isConnected();
 
 private:
+     void modbusReadData(int slave, int functionCode, int startAddress, int noOfItems);
+     void modbusWriteData(int slave, int functionCode, int startAddress, int noOfItems);
      modbus_t * m_modbus;
      bool m_connected;
      int m_ModBusMode;

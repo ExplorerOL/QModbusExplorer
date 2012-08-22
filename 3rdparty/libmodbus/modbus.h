@@ -34,8 +34,8 @@
 
 #include "modbus-version.h"
 
-/* Not part of libmodbus - changed for qt
-#if defined(_WIN32)
+/* Not part of libmodbus - changed for QModMaster*/
+/*#if defined(_WIN32)
 # if defined(DLLBUILD)
 // define DLLBUILD when building the DLL
 #  define EXPORT __declspec(dllexport)
@@ -46,7 +46,6 @@
 # define EXPORT
 #endif
 */
-
 #define EXPORT
 
 #ifdef  __cplusplus

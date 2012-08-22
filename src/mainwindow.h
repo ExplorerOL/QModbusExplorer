@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QLabel>
 #include <QTimer>
+
 #include "modbus.h"
 #include "forms/about.h"
 #include "forms/settingsmodbusrtu.h"
@@ -12,6 +13,7 @@
 #include "forms/settings.h"
 #include "forms/busmonitor.h"
 #include "modbusadapter.h"
+#include "registersdatadelegate.h"
 
 namespace Ui {
     class MainWindow;
@@ -41,6 +43,7 @@ private:
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
     QTimer *m_pollTimer;
+    RegistersDataDelegate *m_regDataDelegate;
 
 private slots:
     void showSettingsModbusRTU();

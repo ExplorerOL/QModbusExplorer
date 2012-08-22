@@ -1,8 +1,9 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include <QTextCodec>
 #include <QtDebug>
 #include <QMessageBox>
+
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "eutils.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_modbusCommSettings = new QSettings("qModMaster.ini",QSettings::IniFormat);
     //Modbus Adapter
     m_modbus=new ModbusAdapter(this);
+    m_modbus->regModel->setBase(EUtils::Bin);
+    //Registers Table Delegate
+    ui->tblRegisters->setItemDelegate(new RegistersDataDelegate(this));
+    m_regDataDelegate = static_cast<RegistersDataDelegate*>(ui->tblRegisters->itemDelegate());
+    //m_regDataDelegate->setBase(EUtils::Bin);
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -63,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Init Code
     ui->tblRegisters->setModel(m_modbus->regModel->model);
-    m_modbus->regModel->setBase(EUtils::Dec);
+    m_modbus->regModel->setBase(EUtils::Bin);
     //init settings
     //init MaxNoOfLines to 50 if is not defined yet
     m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt() == 0 ? 50 : m_modbusCommSettings->value("MaxNoOfLines").toInt());
@@ -92,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_pollTimer=new QTimer(this);
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(pollRequestForData()));
 
-    //Update UI
+     //Update UI
     ui->sbNoOfCoils->setEnabled(true);
     ui->spInterval->setEnabled(false);
     ui->btRequest->setEnabled(false);
@@ -234,6 +240,21 @@ void MainWindow::changedFunctionCode(int currIndex)
                 break;
      }
 
+    switch(funcionCode)//Set is16Bit
+    {
+        case _FC_READ_HOLDING_REGISTERS:
+        case _FC_READ_INPUT_REGISTERS:
+        case _FC_WRITE_SINGLE_REGISTER:
+        case _FC_WRITE_MULTIPLE_REGISTERS:
+                m_regDataDelegate->setIs16Bit(true);
+                m_modbus->regModel->setIs16Bit(true);
+                break;
+        default:
+                m_regDataDelegate->setIs16Bit(false);
+                m_modbus->regModel->setIs16Bit(false);
+                break;
+     }
+
     clearItems();
 
 }
@@ -249,21 +270,21 @@ void MainWindow::changedBase(int currIndex)
     {
         case 0:
                 m_modbus->regModel->setBase(EUtils::Bin);
+                m_regDataDelegate->setBase(EUtils::Bin);
                 break;
         case 1:
                 m_modbus->regModel->setBase(EUtils::Dec);
+                m_regDataDelegate->setBase(EUtils::Dec);
                 break;
         case 2:
                 m_modbus->regModel->setBase(EUtils::Hex);
+                m_regDataDelegate->setBase(EUtils::Hex);
                 break;
         default:
-                m_modbus->regModel->setBase(EUtils::Hex);
+                m_modbus->regModel->setBase(EUtils::Dec);
+                m_regDataDelegate->setBase(EUtils::Dec);
                 break;
      }
-
-    //Request again if base is changed
-    if (m_modbus->regModel->model->rowCount()>0)
-        request();
 
 }
 
@@ -399,8 +420,8 @@ void MainWindow::request()
     const int addr = ui->sbStartAddress->value();
     const int num = ui->sbNoOfCoils->value();
 
-    //Request modbus data
-    m_modbus->modbusRequestData(slave,functionCode,addr,num);
+    //Modbus data
+    m_modbus->modbusTransaction(slave,functionCode,addr,num);
 
     //Start-Stop poll timer
     if (ui->btRequest->isChecked() && ui->chkReqCycle->isChecked())

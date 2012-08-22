@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Modbus Master</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../data/qModMaster.qrc">
+    <normaloff>:/img/connect-16.png</normaloff>:/img/connect-16.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>

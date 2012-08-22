@@ -95,11 +95,37 @@ bool ModbusAdapter::isConnected()
     return m_connected;
 }
 
-void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddress, int noOfItems)
+void ModbusAdapter::modbusTransaction(int slave, int functionCode, int startAddress, int noOfItems)
 {
     //Modbus request data
 
-    qDebug()<<  "ModbusAdapter : modbusRequestData ";
+    qDebug()<<  "ModbusAdapter : modbusTransaction ";
+
+    switch(functionCode)
+    {
+            case _FC_READ_COILS:
+            case _FC_READ_DISCRETE_INPUTS:
+            case _FC_READ_HOLDING_REGISTERS:
+            case _FC_READ_INPUT_REGISTERS:
+                    modbusReadData(slave,functionCode,startAddress,noOfItems);
+                    break;
+
+            case _FC_WRITE_SINGLE_COIL:
+            case _FC_WRITE_SINGLE_REGISTER:
+            case _FC_WRITE_MULTIPLE_COILS:
+            case _FC_WRITE_MULTIPLE_REGISTERS:
+                    modbusWriteData(slave,functionCode,startAddress,noOfItems);
+                    break;
+            default:
+                    break;
+    }
+
+}
+
+void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress, int noOfItems)
+{
+
+    qDebug()<<  "ModbusAdapter : modbusReadData ";
 
     if(m_modbus == NULL) return;
 
@@ -108,7 +134,6 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
     memset(dest, 0, 1024);
     int ret = -1; //return value from read functions
     bool is16Bit = false;
-    bool writeAccess = false;
 
     modbus_set_slave(m_modbus, slave);
     //request data from modbus
@@ -117,25 +142,79 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
             case _FC_READ_COILS:
                     ret = modbus_read_bits(m_modbus, startAddress, noOfItems, dest);
                     break;
+
             case _FC_READ_DISCRETE_INPUTS:
                     ret = modbus_read_input_bits(m_modbus, startAddress, noOfItems, dest);
                     break;
+
             case _FC_READ_HOLDING_REGISTERS:
                     ret = modbus_read_registers(m_modbus, startAddress, noOfItems, dest16);
                     is16Bit = true;
                     break;
+
             case _FC_READ_INPUT_REGISTERS:
                     ret = modbus_read_input_registers(m_modbus, startAddress, noOfItems, dest16);
                     is16Bit = true;
                     break;
+
+            default:
+                    break;
+    }
+
+    qDebug()<<  "ModbusAdapter : modbusReadData ret = " << ret;
+
+    //update data model
+    if(ret == noOfItems)
+    {
+            for(int i = 0; i < noOfItems; ++i)
+            {
+                int data = is16Bit ? dest16[i] : dest[i];
+                regModel->setValue(i,data);
+            }
+    }
+    else
+    {
+
+        regModel->setNoValidValues();
+
+        QString line;
+        if(ret < 0) {
+                line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
+                qDebug()<<  "ModbusAdapter : modbusRequestData - " << line;
+                rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
+        }
+        else {
+                line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
+                qDebug()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
+                rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
+        }
+     }
+
+}
+
+void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddress, int noOfItems)
+{
+
+    qDebug()<<  "ModbusAdapter : modbusWriteData ";
+
+    if(m_modbus == NULL) return;
+
+    //uint8_t dest[1024]; //setup memory for data
+    //uint16_t * dest16 = (uint16_t *) dest;
+    //memset(dest, 0, 1024);
+    int ret = -1; //return value from functions
+
+    modbus_set_slave(m_modbus, slave);
+    //request data from modbus
+    switch(functionCode)
+    {
             case _FC_WRITE_SINGLE_COIL:
                     ret = modbus_write_bit(m_modbus, startAddress,regModel->value(0));
-                    writeAccess = true;
                     noOfItems = 1;
                     break;
+
             case _FC_WRITE_SINGLE_REGISTER:
                     ret = modbus_write_register( m_modbus, startAddress,regModel->value(0));
-                    writeAccess = true;
                     noOfItems = 1;
                     break;
 
@@ -148,7 +227,6 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
                     }
                     ret = modbus_write_bits(m_modbus, startAddress, noOfItems, data);
                     delete[] data;
-                    writeAccess = true;
                     break;
             }
             case _FC_WRITE_MULTIPLE_REGISTERS:
@@ -160,7 +238,6 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
                     }
                     ret = modbus_write_registers(m_modbus, startAddress, noOfItems, data);
                     delete[] data;
-                    writeAccess = true;
                     break;
             }
 
@@ -168,23 +245,12 @@ void ModbusAdapter::modbusRequestData(int slave, int functionCode, int startAddr
                     break;
     }
 
-    qDebug()<<  "ModbusAdapter : modbusRequestData ret = " << ret;
+    qDebug()<<  "ModbusAdapter : modbusWriteData ret = " << ret;
 
     //update data model
     if(ret == noOfItems)
     {
-            if(writeAccess)
-            {
-                //TODO - values writen correctly
-            }
-            else
-            {
-                for(int i = 0; i < noOfItems; ++i)
-                {
-                    int data = is16Bit ? dest16[i] : dest[i];
-                    regModel->setValue(i,data,is16Bit);
-                }
-            }
+        //TODO - values writen correctly
     }
     else
     {
