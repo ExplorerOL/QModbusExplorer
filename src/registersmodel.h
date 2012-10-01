@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QStandardItemModel>
 
-static const QString RegModelHeaderLabels[]={"Address","Value"};
+static const QString RegModelHeaderLabels[]={"00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
 static const int AddressColumn=0;
 static const int ValueColumn=1;
 
@@ -15,11 +15,11 @@ public:
     explicit RegistersModel(QObject *parent = 0);
 
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
-    void setValue(int row, int value);
+    void setValue(int idx, int value);
     void setBase(int base);
     void setIs16Bit(bool is16Bit);
-    QString strValue(int row);
-    int value(int row);
+    QString strValue(int idx);
+    int value(int idx);
     QStandardItemModel *model;
     void clear();
     void setNoValidValues();

@@ -1,7 +1,7 @@
 #include "about.h"
 #include "ui_about.h"
 
-const QString VER = "QModMaster 0.3.5";
+const QString VER = "QModMaster 0.3.6";
 
 About::About(QWidget *parent) :
     QDialog(parent),

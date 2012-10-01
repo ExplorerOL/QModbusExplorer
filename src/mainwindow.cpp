@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //Registers Table Delegate
     ui->tblRegisters->setItemDelegate(new RegistersDataDelegate(this));
     m_regDataDelegate = static_cast<RegistersDataDelegate*>(ui->tblRegisters->itemDelegate());
-    //m_regDataDelegate->setBase(EUtils::Bin);
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -70,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Init Code
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     m_modbus->regModel->setBase(EUtils::Bin);
+    connect(m_modbus->regModel->model,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshView()));
     //init settings
     //init MaxNoOfLines to 50 if is not defined yet
     m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt() == 0 ? 50 : m_modbusCommSettings->value("MaxNoOfLines").toInt());
@@ -102,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->sbNoOfCoils->setEnabled(true);
     ui->spInterval->setEnabled(false);
     ui->btRequest->setEnabled(false);
+    ui->btAddItems->setEnabled(false);
     updateStatusBar();
 
     qDebug()<<  "MainWindow : Init Completed ";
@@ -370,14 +371,28 @@ void MainWindow::updateStatusBar()
 void MainWindow::addItems()
 {
 
-    //Add items to registers model and to modbus adapter
+    //Add items to registers model and to modbus adapter only if we are connected
+    if (!m_modbus->isConnected())
+        return;
+
+    const int slave = ui->sbSlaveID->value();
+    const int functionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
+    const int addr = ui->sbStartAddress->value();
+    const int num = ui->sbNoOfCoils->value();
+    const QString dataType = EUtils::ModbusDataTypeName(functionCode);
+    bool valueIsEditable = EUtils::ModbusIsWriteFunction(functionCode);
 
     qDebug()<<  "MainWindow : addItems - functionCode " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
-    const QString dataType = EUtils::ModbusDataTypeName(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
+
     ui->lblRegisters->setText("Registers > " + dataType);
-    bool valueIsEditable = EUtils::ModbusIsWriteFunction(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
     m_modbus->regModel->addItems(ui->sbStartAddress->text().toInt(),ui->sbNoOfCoils->text().toInt(),valueIsEditable);
-    ui->tblRegisters->resizeColumnsToContents();
+    //If it is a write function -> read registers
+    if (EUtils::ModbusIsWriteCoilsFunction(functionCode)){
+        m_modbus->modbusTransaction(slave,EUtils::ReadCoils,addr,num);;
+    }
+    else if (EUtils::ModbusIsWriteRegistersFunction(functionCode)){
+        m_modbus->modbusTransaction(slave,EUtils::ReadHoldRegs,addr,num);;
+    }
 
 }
 
@@ -476,5 +491,14 @@ void MainWindow::request()
     ui->btRequest->setEnabled(m_modbus->isConnected());
     ui->btRequest->repaint();
     ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
+    ui->btAddItems->setEnabled(m_modbus->isConnected());
+
+ }
+
+ void MainWindow::refreshView()
+ {
+
+     qDebug()<<  "MainWindow : refrehView";
+     ui->tblRegisters->resizeColumnsToContents();
 
  }

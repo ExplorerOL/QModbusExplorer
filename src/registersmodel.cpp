@@ -5,7 +5,7 @@
 RegistersModel::RegistersModel(QObject *parent) :
     QObject(parent)
 {
-   model = new  QStandardItemModel(0,2,this);
+   model = new  QStandardItemModel(0,0,this);
    m_noOfItems = 0;
    m_is16Bit = false;
    clear();
@@ -13,23 +13,46 @@ RegistersModel::RegistersModel(QObject *parent) :
 
 void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEditable)
 {
+    int row;
+    int col;
 
     qDebug()<<  "RegistersModel : address " << startAddress << " ,noOfItems " << noOfItems;
 
-    //m_dataType = dataType;
+    //Format Header
+    clear();
+    if (noOfItems > 1)
+        model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]<<RegModelHeaderLabels[1]
+                                                    <<RegModelHeaderLabels[2]<<RegModelHeaderLabels[3]
+                                                    <<RegModelHeaderLabels[4]<<RegModelHeaderLabels[5]
+                                                    <<RegModelHeaderLabels[6]<<RegModelHeaderLabels[7]
+                                                    <<RegModelHeaderLabels[8]<<RegModelHeaderLabels[9]);
+    else
+        model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]);
+
     m_startAddress = startAddress;
     m_noOfItems = noOfItems;
 
-    //clear model
-    clear();
-
     //Add data to model
-    for (int row = 0; row < m_noOfItems ; row++) {
-        //Address
-        QStandardItem *addressItem = new QStandardItem(QString::number(m_startAddress+row));model->setItem(row, AddressColumn, addressItem);
-        addressItem->setEditable(false);
-        QStandardItem *valueItem = new QStandardItem("-");model->setItem(row, ValueColumn, valueItem);
+    if (noOfItems == 1){
+        QStandardItem *valueItem = new QStandardItem("-");model->setItem(0, 0, valueItem);
         valueItem->setEditable(valueIsEditable);
+    }
+    else {
+        for (int i = 0; i < ((noOfItems - 1) / 10 + 1) * 10 ; i++) {
+            row = i / 10;
+            col = i % 10;
+            //Address
+            if (i >= noOfItems){//not used cells
+                QStandardItem *valueItem = new QStandardItem("x");model->setItem(row, col, valueItem);
+                valueItem->setEditable(false);
+                valueItem->setForeground(QBrush(Qt::red));
+                valueItem->setBackground(QBrush(Qt::lightGray));
+            }
+            else {
+                QStandardItem *valueItem = new QStandardItem("-");model->setItem(row, col, valueItem);
+                valueItem->setEditable(valueIsEditable);
+            }
+        }
     }
 
 }
@@ -37,19 +60,25 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
 void RegistersModel::setNoValidValues()
 {
 
+    int row;
+    int col;
     //if we have no valid values we set  as value = 'N/A'
     qDebug()<<  "RegistersModel : setNoValidValues";
 
     for (int i = 0; i < m_noOfItems; i++){
-        QModelIndex index = model->index(i, ValueColumn, QModelIndex());
+        row = i / 10;
+        col = i % 10;
+        QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,QBrush(Qt::red),Qt::ForegroundRole);
         model->setData(index,"N/A",Qt::DisplayRole);
     }
 
 }
 
-void RegistersModel::setValue(int row, int value)
+void RegistersModel::setValue(int idx, int value)
 {
+    int row;
+    int col;
     QString convertedValue;
 
     qDebug()<<  "RegistersModel : value - " << value << " is 16 Bit - " << m_is16Bit;
@@ -57,9 +86,12 @@ void RegistersModel::setValue(int row, int value)
     convertedValue = formatValue(value, m_base, m_is16Bit);
 
     //set model data
-    QModelIndex index = model->index(row, ValueColumn, QModelIndex());
+    row = idx / 10;
+    col = idx % 10;
+    QModelIndex index = model->index(row, col, QModelIndex());
     model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
     model->setData(index,convertedValue,Qt::DisplayRole);
+    model->setData(index,QString("Address : %1").arg(m_startAddress + idx),Qt::ToolTipRole);
 
 }
 
@@ -99,16 +131,16 @@ QString RegistersModel::formatValue(int value,int base, bool is16Bit)
 
 }
 
-int RegistersModel::value(int row)
+int RegistersModel::value(int idx)
 {
     QString stringVal;
     int intVal;
     bool ok;
 
-    qDebug()<<  "RegistersModel : value - row " << row;
+    qDebug()<<  "RegistersModel : value - row " << idx;
 
     //Get Value
-    stringVal = strValue(row);
+    stringVal = strValue(idx);
     intVal = stringVal.toInt(&ok,m_base);
     if (ok)
         return intVal;
@@ -117,13 +149,16 @@ int RegistersModel::value(int row)
 
 }
 
-QString RegistersModel::strValue(int row)
+QString RegistersModel::strValue(int idx)
 {
-
-    qDebug()<<  "RegistersModel : strValue - row " << row;
+    int row;
+    int col;
+    qDebug()<<  "RegistersModel : strValue - row " << idx;
 
     //get model data
-    QModelIndex index = model->index(row, ValueColumn, QModelIndex());
+    row = idx / 10;
+    col = idx % 10;
+    QModelIndex index = model->index(row, col, QModelIndex());
     QVariant value = model->data(index,Qt::DisplayRole);
     if (value.canConvert<QString>())
         return value.toString();
@@ -137,15 +172,17 @@ void RegistersModel::changeBase(int base)
 
     QString stringVal;
     int intVal;
+    int row;
+    int col;
     bool ok;
     QString convertedVal;
 
     qDebug()<<  "RegistersModel : changeBase from " << m_base << " to " << base ;
 
     //change base
-    for (int row = 0; row < m_noOfItems ; row++) {
+    for (int idx = 0; idx < m_noOfItems ; idx++) {
         //Get Value
-        stringVal = strValue(row);
+        stringVal = strValue(idx);
         intVal = stringVal.toInt(&ok,m_base);
         qDebug()<<  "RegistersModel : changeBase - stringVal = " << stringVal << " - intVal = " << intVal;
         //Format Value
@@ -154,7 +191,9 @@ void RegistersModel::changeBase(int base)
         else
             convertedVal = "N/A";
         //Update
-        QModelIndex index = model->index(row, ValueColumn, QModelIndex());
+        row = idx / 10;
+        col = idx % 10;
+        QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,convertedVal,Qt::DisplayRole);
     }
 
@@ -167,8 +206,6 @@ void RegistersModel::clear()
 
     //Clear model
     model->clear();
-    //Format
-    model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]<<RegModelHeaderLabels[1]);
 
 }
 

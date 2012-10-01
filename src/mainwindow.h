@@ -60,6 +60,7 @@ private slots:
     void clearItems();
     void request();
     void pollRequestForData();
+    void refreshView();
 
 
 };
