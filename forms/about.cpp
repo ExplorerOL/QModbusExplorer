@@ -1,7 +1,8 @@
 #include "about.h"
 #include "ui_about.h"
 
-const QString VER = "QModMaster 0.3.6";
+const QString VER = "QModMaster 0.3.7";
+const QString URL = "<a href = ""http://sourceforge.net/projects/qmodmaster"">Sourceforge Project Home Page</a>";
 
 About::About(QWidget *parent) :
     QDialog(parent),
@@ -9,6 +10,7 @@ About::About(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->lblVersion->setText(VER);
+    ui->lbnURL->setText(URL);
 }
 
 About::~About()

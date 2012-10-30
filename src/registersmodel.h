@@ -25,15 +25,18 @@ public:
     void setNoValidValues();
 
 private:
-
     void changeBase(int base);
     QString formatValue(int value,int base, bool is16Bit);
     int m_startAddress;
     int m_noOfItems;
+    int m_offset;
+    int m_firstRow;
+    int m_lastRow;
     bool m_is16Bit;
     int m_base;
 
 signals:
+    void refreshView();
 
 public slots:
 

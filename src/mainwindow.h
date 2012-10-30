@@ -44,6 +44,7 @@ private:
     void modbusConnect(bool connect);
     QTimer *m_pollTimer;
     RegistersDataDelegate *m_regDataDelegate;
+    int m_timeOut;
 
 private slots:
     void showSettingsModbusRTU();

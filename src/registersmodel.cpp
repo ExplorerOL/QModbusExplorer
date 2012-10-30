@@ -15,22 +15,34 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
 {
     int row;
     int col;
+    m_startAddress = startAddress;
+    m_noOfItems = noOfItems;
+    m_offset = (startAddress % 10);
+    m_firstRow = startAddress / 10;
+    m_lastRow = (startAddress + noOfItems - 1) / 10;
 
-    qDebug()<<  "RegistersModel : address " << startAddress << " ,noOfItems " << noOfItems;
+    qDebug()<<  "RegistersModel : address " << startAddress << " ,noOfItems " << noOfItems
+                << " ,offset " << m_offset << " ,first row " << m_firstRow << " ,last row " << m_lastRow;
 
-    //Format Header
+    //Format Vertical - Horizontal Header
     clear();
-    if (noOfItems > 1)
+    if (noOfItems > 1) {
         model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]<<RegModelHeaderLabels[1]
                                                     <<RegModelHeaderLabels[2]<<RegModelHeaderLabels[3]
                                                     <<RegModelHeaderLabels[4]<<RegModelHeaderLabels[5]
                                                     <<RegModelHeaderLabels[6]<<RegModelHeaderLabels[7]
                                                     <<RegModelHeaderLabels[8]<<RegModelHeaderLabels[9]);
-    else
-        model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]);
 
-    m_startAddress = startAddress;
-    m_noOfItems = noOfItems;
+        QStringList vertHeader;
+        for (int i = m_firstRow; i <= m_lastRow ; i++) {
+            vertHeader<<QString("%1").arg(i * 10, 2, 10, QLatin1Char('0'));
+        }
+        model->setVerticalHeaderLabels(vertHeader);
+    }
+    else {
+        model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]);
+        model->setVerticalHeaderLabels(QStringList()<<QString("%1").arg(startAddress, 2, 10, QLatin1Char('0')));
+    }
 
     //Add data to model
     if (noOfItems == 1){
@@ -38,11 +50,11 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
         valueItem->setEditable(valueIsEditable);
     }
     else {
-        for (int i = 0; i < ((noOfItems - 1) / 10 + 1) * 10 ; i++) {
+        for (int i = 0; i < ((m_offset + noOfItems - 1) / 10 + 1) * 10 ; i++) {
             row = i / 10;
             col = i % 10;
             //Address
-            if (i >= noOfItems){//not used cells
+            if (i >= m_offset + noOfItems || i < m_offset){//not used cells
                 QStandardItem *valueItem = new QStandardItem("x");model->setItem(row, col, valueItem);
                 valueItem->setEditable(false);
                 valueItem->setForeground(QBrush(Qt::red));
@@ -55,6 +67,8 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
         }
     }
 
+    emit(refreshView());
+
 }
 
 void RegistersModel::setNoValidValues()
@@ -62,15 +76,15 @@ void RegistersModel::setNoValidValues()
 
     int row;
     int col;
-    //if we have no valid values we set  as value = 'N/A'
+    //if we have no valid values we set  as value = '-/-'
     qDebug()<<  "RegistersModel : setNoValidValues";
 
-    for (int i = 0; i < m_noOfItems; i++){
+    for (int i = m_offset; i < m_offset + m_noOfItems; i++){
         row = i / 10;
         col = i % 10;
         QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,QBrush(Qt::red),Qt::ForegroundRole);
-        model->setData(index,"N/A",Qt::DisplayRole);
+        model->setData(index,"-/-",Qt::DisplayRole);
     }
 
 }
@@ -86,8 +100,8 @@ void RegistersModel::setValue(int idx, int value)
     convertedValue = formatValue(value, m_base, m_is16Bit);
 
     //set model data
-    row = idx / 10;
-    col = idx % 10;
+    row = (m_offset + idx) / 10;
+    col = (m_offset + idx) % 10;
     QModelIndex index = model->index(row, col, QModelIndex());
     model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
     model->setData(index,convertedValue,Qt::DisplayRole);
@@ -156,14 +170,14 @@ QString RegistersModel::strValue(int idx)
     qDebug()<<  "RegistersModel : strValue - row " << idx;
 
     //get model data
-    row = idx / 10;
-    col = idx % 10;
+    row = (m_offset + idx) / 10;
+    col = (m_offset + idx) % 10;
     QModelIndex index = model->index(row, col, QModelIndex());
     QVariant value = model->data(index,Qt::DisplayRole);
     if (value.canConvert<QString>())
         return value.toString();
     else
-        return "N/A";
+        return "-/-";
 
 }
 
@@ -189,13 +203,15 @@ void RegistersModel::changeBase(int base)
         if (ok)
             convertedVal = formatValue(intVal, base, m_is16Bit);
         else
-            convertedVal = "N/A";
+            convertedVal = "-/-";
         //Update
-        row = idx / 10;
-        col = idx % 10;
+        row = (m_offset + idx) / 10;
+        col = (m_offset + idx) % 10;
         QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,convertedVal,Qt::DisplayRole);
     }
+
+    emit(refreshView());
 
 }
 

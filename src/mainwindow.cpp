@@ -69,10 +69,12 @@ MainWindow::MainWindow(QWidget *parent) :
     //Init Code
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     m_modbus->regModel->setBase(EUtils::Bin);
-    connect(m_modbus->regModel->model,SIGNAL(dataChanged(QModelIndex,QModelIndex)),this,SLOT(refreshView()));
+    connect(m_modbus,SIGNAL(refreshView()),this,SLOT(refreshView()));
+    connect(m_modbus->regModel,SIGNAL(refreshView()),this,SLOT(refreshView()));
     //init settings
     //init MaxNoOfLines to 50 if is not defined yet
     m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt() == 0 ? 50 : m_modbusCommSettings->value("MaxNoOfLines").toInt());
+    m_timeOut = m_modbusCommSettings->value("TimeOut").toInt() == 0 ? 1 : m_modbusCommSettings->value("TimeOut").toInt();
     //init TCP settings if not defined yet
     m_modbusCommSettings->setValue("TCPPort",(m_modbusCommSettings->value("TCPPort").isNull() ? "502" : m_modbusCommSettings->value("TCPPort").toString()));
     m_modbusCommSettings->setValue("SlaveIPByte1",(m_modbusCommSettings->value("SlaveIPByte1").toInt() == 0 ? "127" : m_modbusCommSettings->value("SlaveIPByte1").toString()));
@@ -152,6 +154,7 @@ void MainWindow::showSettings()
     if (m_dlgSettings->exec()==QDialog::Accepted) {
         qDebug()<<  "MainWindow : changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt());
+        m_timeOut = m_modbusCommSettings->value("TimeOut").toInt();
     }
     else
         qDebug()<<  "MainWindow : changes rejected ";
@@ -461,13 +464,16 @@ void MainWindow::request()
                                         EUtils::parity(m_modbusCommSettings->value("Parity").toString()),
                                         m_modbusCommSettings->value("DataBits").toInt(),
                                         m_modbusCommSettings->value("StopBits").toInt(),
-                                        m_modbusCommSettings->value("RTS").toInt()
+                                        m_modbusCommSettings->value("RTS").toInt(),
+                                        m_modbusCommSettings->value("TimeOut").toInt()
                                         );
             line += (m_modbus->isConnected() ? "OK" : "Failed");
         }
         else { //TCP
             line = "Connecting to TCP Port " + m_modbusCommSettings->value("SlaveIP").toString() + ":" + m_modbusCommSettings->value("TCPPort").toString() + "...";
-            m_modbus->modbusConnectTCP(m_modbusCommSettings->value("SlaveIP").toString(),m_modbusCommSettings->value("TCPPort").toInt());
+            m_modbus->modbusConnectTCP(m_modbusCommSettings->value("SlaveIP").toString(),
+                                       m_modbusCommSettings->value("TCPPort").toInt(),
+                                       m_modbusCommSettings->value("TimeOut").toInt());
             line += (m_modbus->isConnected() ? "OK" : "Failed");
         }
         //Add line to raw data model

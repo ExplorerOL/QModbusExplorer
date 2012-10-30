@@ -22,7 +22,7 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_ModBusMode = EUtils::None;
 }
 
-void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS)
+void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut)
 {
     //Modbus RTU connect
 
@@ -33,6 +33,11 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
     //Debug messages from libmodbus
     modbus_set_debug(m_modbus, DBG);
+    //Response timeout
+    struct timeval response_timeout;
+    response_timeout.tv_sec = timeOut;
+    response_timeout.tv_usec = 0;
+    modbus_set_response_timeout(m_modbus, &response_timeout);
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
         QMessageBox::critical(NULL, "Connection failed", "Could not connect to serial port!");
@@ -45,7 +50,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
 }
 
-void ModbusAdapter::modbusConnectTCP(QString ip, int port)
+void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
 {
     //Modbus RTU connect
 
@@ -57,6 +62,11 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port)
 
     //Debug messages from libmodbus
     modbus_set_debug(m_modbus, DBG);
+    //Response timeout
+    struct timeval response_timeout;
+    response_timeout.tv_sec = timeOut;
+    response_timeout.tv_usec = 0;
+    modbus_set_response_timeout(m_modbus, &response_timeout);
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
         QMessageBox::critical(NULL, "Connection failed", "Could not connect to TCP port!");
@@ -119,6 +129,8 @@ void ModbusAdapter::modbusTransaction(int slave, int functionCode, int startAddr
             default:
                     break;
     }
+
+    emit(refreshView());
 
 }
 

@@ -28,6 +28,12 @@ void Settings::showEvent(QShowEvent * event)
             ui->sbMaxNoOfRawDataLines->setValue(m_settings->value("MaxNoOfLines").toInt());
         else
             ui->sbMaxNoOfRawDataLines->setValue(50);
+
+        if (m_settings->contains("TimeOut"))
+            ui->sbResponseTimeout->setValue(m_settings->value("TimeOut").toInt());
+        else
+            ui->sbResponseTimeout->setValue(1);
+
     }
 
 }
@@ -39,6 +45,7 @@ void Settings::changesAccepted()
     //Save Settings
     if (m_settings != NULL) {
         m_settings->setValue("MaxNoOfLines",ui->sbMaxNoOfRawDataLines->value());
+        m_settings->setValue("TimeOut",ui->sbResponseTimeout->value());
     }
 
 }

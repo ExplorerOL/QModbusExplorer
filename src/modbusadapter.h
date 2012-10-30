@@ -17,8 +17,8 @@ public:
      void busMonitorRequestData(uint8_t * data,uint8_t dataLen);
      void busMonitorResponseData(uint8_t * data,uint8_t dataLen);
 
-     void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS);
-     void modbusConnectTCP(QString ip, int port);
+     void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut=1);
+     void modbusConnectTCP(QString ip, int port, int timeOut=1);
      void modbusDisConnect();
      void modbusTransaction(int slave, int functionCode, int startAddress, int noOfItems);
      RegistersModel *regModel;
@@ -33,6 +33,7 @@ private:
      int m_ModBusMode;
 
 signals:
+    void refreshView();
 
 public slots:
 
