@@ -211,9 +211,6 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
 
     if(m_modbus == NULL) return;
 
-    //uint8_t dest[1024]; //setup memory for data
-    //uint16_t * dest16 = (uint16_t *) dest;
-    //memset(dest, 0, 1024);
     int ret = -1; //return value from functions
 
     modbus_set_slave(m_modbus, slave);
@@ -262,7 +259,8 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
     //update data model
     if(ret == noOfItems)
     {
-        //TODO - values writen correctly
+        //values written correctly
+        rawModel->addLine(EUtils::SysTimeStamp() + " : values written correctly.");
     }
     else
     {

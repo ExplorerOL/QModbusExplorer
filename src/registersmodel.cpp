@@ -2,6 +2,8 @@
 #include <QStandardItem>
 #include <QtDebug>
 
+#include "eutils.h"
+
 RegistersModel::RegistersModel(QObject *parent) :
     QObject(parent)
 {
@@ -97,51 +99,23 @@ void RegistersModel::setValue(int idx, int value)
 
     qDebug()<<  "RegistersModel : value - " << value << " is 16 Bit - " << m_is16Bit;
 
-    convertedValue = formatValue(value, m_base, m_is16Bit);
+    convertedValue = EUtils::formatValue(value, m_frmt, m_is16Bit);
+    qDebug()<<  "RegistersModel : converted value  - " << convertedValue << ", " << m_frmt;
 
     //set model data
-    row = (m_offset + idx) / 10;
-    col = (m_offset + idx) % 10;
+    if (m_noOfItems == 1){
+        row = 0;
+        col = 0;
+    }
+    else {
+        row = (m_offset + idx) / 10;
+        col = (m_offset + idx) % 10;
+    }
+    qDebug()<<  "RegistersModel : row, col = " << row << ", " << col;
     QModelIndex index = model->index(row, col, QModelIndex());
     model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
     model->setData(index,convertedValue,Qt::DisplayRole);
     model->setData(index,QString("Address : %1").arg(m_startAddress + idx),Qt::ToolTipRole);
-
-}
-
-QString RegistersModel::formatValue(int value,int base, bool is16Bit)
-{
-    QString convertedValue;
-
-    qDebug()<<  "RegistersModel : formatValue value = " << value << ", base = " << base << ", is16Bit = " << is16Bit;
-
-
-    switch(base){
-
-        case 2://Binary
-        if (is16Bit)
-            convertedValue = QString("%1").arg(value,16,base,QLatin1Char('0')).toUpper();
-        else
-            convertedValue = QString("%1").arg(value,0,base).toUpper();
-        break;
-
-        case 10://Decimal
-            convertedValue = QString("%1").arg(value,0,base).toUpper();
-        break;
-
-        case 16://Hex
-        if (is16Bit)
-            convertedValue = QString("%1").arg(value,4,base,QLatin1Char('0')).toUpper();
-        else
-            convertedValue = QString("%1").arg(value,0,base).toUpper();
-        break;
-
-        default://Default
-        convertedValue = QString("%1").arg(value,0,base).toUpper();
-
-    }
-
-    return convertedValue;
 
 }
 
@@ -170,8 +144,14 @@ QString RegistersModel::strValue(int idx)
     qDebug()<<  "RegistersModel : strValue - row " << idx;
 
     //get model data
-    row = (m_offset + idx) / 10;
-    col = (m_offset + idx) % 10;
+    if (m_noOfItems == 1){
+        row = 0;
+        col = 0;
+    }
+    else {
+        row = (m_offset + idx) / 10;
+        col = (m_offset + idx) % 10;
+    }
     QModelIndex index = model->index(row, col, QModelIndex());
     QVariant value = model->data(index,Qt::DisplayRole);
     if (value.canConvert<QString>())
@@ -181,7 +161,7 @@ QString RegistersModel::strValue(int idx)
 
 }
 
-void RegistersModel::changeBase(int base)
+void RegistersModel::changeBase(int frmt)
 {
 
     QString stringVal;
@@ -191,7 +171,7 @@ void RegistersModel::changeBase(int base)
     bool ok;
     QString convertedVal;
 
-    qDebug()<<  "RegistersModel : changeBase from " << m_base << " to " << base ;
+    qDebug()<<  "RegistersModel : changeBase from " << m_base << " to " << frmt ;
 
     //change base
     for (int idx = 0; idx < m_noOfItems ; idx++) {
@@ -201,12 +181,18 @@ void RegistersModel::changeBase(int base)
         qDebug()<<  "RegistersModel : changeBase - stringVal = " << stringVal << " - intVal = " << intVal;
         //Format Value
         if (ok)
-            convertedVal = formatValue(intVal, base, m_is16Bit);
+            convertedVal = EUtils::formatValue(intVal, frmt, m_is16Bit);
         else
             convertedVal = "-/-";
         //Update
-        row = (m_offset + idx) / 10;
-        col = (m_offset + idx) % 10;
+        if (m_noOfItems == 1){
+            row = 0;
+            col = 0;
+        }
+        else {
+            row = (m_offset + idx) / 10;
+            col = (m_offset + idx) % 10;
+        }
         QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,convertedVal,Qt::DisplayRole);
     }
@@ -225,13 +211,18 @@ void RegistersModel::clear()
 
 }
 
-void RegistersModel::setBase(int base)
+void RegistersModel::setBase(int frmt)
 {
 
-    qDebug()<<  "RegistersModel : setBase " << base ;
-    changeBase(base);
-    m_base = base;
-
+    qDebug()<<  "RegistersModel : setBase " << frmt ;
+    changeBase(frmt);
+    if (frmt == 11) { // Unsigned Integer
+        m_base = 10;
+    }
+    else {
+        m_base = frmt;
+    }
+    m_frmt = frmt;
 }
 
 void RegistersModel::setIs16Bit(bool is16Bit)

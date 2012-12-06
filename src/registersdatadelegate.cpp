@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QMessageBox>
 
+#include "eutils.h"
+
 void RegistersDataDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const
 {
@@ -80,7 +82,7 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
     if (m_base == 2 && !m_is16Bit) {//Bin
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         intVal = (spinBox->text()).toInt(&ok,m_base);
-        value = formatValue(intVal, m_base, m_is16Bit);
+        value = EUtils::formatValue(intVal, m_frmt, m_is16Bit);
     }
     else { //Bin 16 Bit,Dec, Hex
         QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
@@ -89,7 +91,7 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
             QMessageBox::critical(0, "Set value failed","Value is greter than 65535.");
             return;
         }
-        value = formatValue(intVal, m_base, m_is16Bit);
+        value = EUtils::formatValue(intVal, m_frmt, m_is16Bit);
     }
 
     qDebug()<<  "RegistersDataDelegate : setModelData - " << value;
@@ -103,47 +105,15 @@ void RegistersDataDelegate::updateEditorGeometry(QWidget *editor,
     editor->setGeometry(option.rect);
 }
 
-QString RegistersDataDelegate::formatValue(int value,int base, bool is16Bit) const
-{
-    QString convertedValue;
-
-    qDebug()<<  "RegistersDataDelegate : formatValue value = " << value << ", base = " << base << ", is16Bit = " << is16Bit;
-
-
-    switch(base){
-
-        case 2://Binary
-        if (is16Bit)
-            convertedValue = QString("%1").arg(value,16,base,QLatin1Char('0')).toUpper();
-        else
-            convertedValue = QString("%1").arg(value,0,base).toUpper();
-        break;
-
-        case 10://Decimal
-        convertedValue = QString("%1").arg(value,0,base).toUpper();
-        break;
-
-        case 16://Hex
-        if (is16Bit)
-            convertedValue = QString("%1").arg(value,4,base,QLatin1Char('0')).toUpper();
-        else
-            convertedValue = QString("%1").arg(value,0,base).toUpper();
-        break;
-
-        default://Default
-        convertedValue = QString("%1").arg(value,0,base).toUpper();
-
-    }
-
-    return convertedValue;
-
-}
-
-void RegistersDataDelegate::setBase(int base)
+void RegistersDataDelegate::setBase(int frmt)
 {
 
-    qDebug()<<  "RegistersDataDelegate : setBase " << base ;
-    m_base = base;
+    qDebug()<<  "RegistersDataDelegate : setBase " << frmt ;
+    if (m_base == 11) // Unsigned Integer
+        m_base = 10;
+    else
+        m_base = frmt;
+    m_frmt = frmt;
 
 }
 

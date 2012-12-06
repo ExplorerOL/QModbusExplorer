@@ -39,12 +39,18 @@
         <property name="text">
          <string>Format</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="lblModbusMode">
         <property name="text">
          <string>Modbus Mode</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>cmbModbusMode</cstring>
@@ -70,6 +76,9 @@
         <property name="text">
          <string>Slave ID</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="buddy">
          <cstring>sbSlaveID</cstring>
         </property>
@@ -90,6 +99,9 @@
         <property name="text">
          <string>Function Code</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="buddy">
          <cstring>cmbFunctionCode</cstring>
         </property>
@@ -102,6 +114,9 @@
        <widget class="QLabel" name="lblStartAddress">
         <property name="text">
          <string>Start Address</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>sbStartAddress</cstring>
@@ -119,6 +134,9 @@
        <widget class="QLabel" name="lblNoOfCoils">
         <property name="text">
          <string>Number of Coils</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
          <cstring>sbNoOfCoils</cstring>
@@ -138,7 +156,7 @@
       <item row="1" column="5">
        <widget class="QComboBox" name="cmbBase">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <item>
          <property name="text">
@@ -147,7 +165,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Decimal</string>
+          <string>Unsigned Integer</string>
          </property>
         </item>
         <item>

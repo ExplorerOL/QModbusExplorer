@@ -40,6 +40,9 @@
        <property name="text">
         <string>TCP Port</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="buddy">
         <cstring>leTCPPort</cstring>
        </property>
@@ -56,6 +59,9 @@
       <widget class="QLabel" name="lblIP">
        <property name="text">
         <string>Slave IP</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>

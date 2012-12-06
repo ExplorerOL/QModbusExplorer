@@ -46,6 +46,9 @@
        <property name="text">
         <string>Serial port</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="buddy">
         <cstring>cmbPort</cstring>
        </property>
@@ -110,6 +113,9 @@
        <property name="text">
         <string>Baud</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="buddy">
         <cstring>cmbBaud</cstring>
        </property>
@@ -119,6 +125,9 @@
       <widget class="QLabel" name="lblDataBits">
        <property name="text">
         <string>Data Bits</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
         <cstring>cmbDataBits</cstring>
@@ -146,6 +155,9 @@
       <widget class="QLabel" name="lblStopBits">
        <property name="text">
         <string>Stop Bits</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
         <cstring>cmbStopBits</cstring>
@@ -179,6 +191,9 @@
        <property name="text">
         <string>Parity</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <property name="buddy">
         <cstring>cmbParity</cstring>
        </property>
@@ -210,6 +225,9 @@
       <widget class="QLabel" name="lblRTS">
        <property name="text">
         <string>RTS</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>

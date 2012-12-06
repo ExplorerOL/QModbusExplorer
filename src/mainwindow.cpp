@@ -199,12 +199,17 @@ void MainWindow::changedFunctionCode(int currIndex)
 
     const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
 
-    switch(funcionCode)//Number of coils = 1
+    switch(funcionCode)//Number of coils
     {
         case _FC_WRITE_SINGLE_REGISTER:
         case _FC_WRITE_SINGLE_COIL:
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
+                break;
+        case _FC_WRITE_MULTIPLE_COILS:
+        case _FC_WRITE_MULTIPLE_REGISTERS:
+                ui->sbNoOfCoils->setValue(2);
+                ui->sbNoOfCoils->setEnabled(true);
                 break;
         default:
                 ui->sbNoOfCoils->setEnabled(true);
@@ -277,16 +282,22 @@ void MainWindow::changedBase(int currIndex)
                 m_regDataDelegate->setBase(EUtils::Bin);
                 break;
         case 1:
-                m_modbus->regModel->setBase(EUtils::Dec);
-                m_regDataDelegate->setBase(EUtils::Dec);
+                m_modbus->regModel->setBase(EUtils::UInt);
+                m_regDataDelegate->setBase(EUtils::UInt);
                 break;
+        /* --- TODO ---
+        case 2:
+                m_modbus->regModel->setBase(EUtils::SInt);
+                m_regDataDelegate->setBase(EUtils::SInt);
+                break;
+        */
         case 2:
                 m_modbus->regModel->setBase(EUtils::Hex);
                 m_regDataDelegate->setBase(EUtils::Hex);
                 break;
         default:
-                m_modbus->regModel->setBase(EUtils::Dec);
-                m_regDataDelegate->setBase(EUtils::Dec);
+                m_modbus->regModel->setBase(EUtils::UInt);
+                m_regDataDelegate->setBase(EUtils::UInt);
                 break;
      }
 
@@ -390,12 +401,10 @@ void MainWindow::addItems()
     ui->lblRegisters->setText("Registers > " + dataType);
     m_modbus->regModel->addItems(ui->sbStartAddress->text().toInt(),ui->sbNoOfCoils->text().toInt(),valueIsEditable);
     //If it is a write function -> read registers
-    if (EUtils::ModbusIsWriteCoilsFunction(functionCode)){
-        m_modbus->modbusTransaction(slave,EUtils::ReadCoils,addr,num);;
-    }
-    else if (EUtils::ModbusIsWriteRegistersFunction(functionCode)){
-        m_modbus->modbusTransaction(slave,EUtils::ReadHoldRegs,addr,num);;
-    }
+    if (EUtils::ModbusIsWriteCoilsFunction(functionCode))
+        m_modbus->modbusTransaction(slave,EUtils::ReadCoils,addr,num);
+    else if (EUtils::ModbusIsWriteRegistersFunction(functionCode))
+        m_modbus->modbusTransaction(slave,EUtils::ReadHoldRegs,addr,num);
 
 }
 

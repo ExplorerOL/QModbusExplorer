@@ -9,8 +9,8 @@ class RegistersDataDelegate : public QStyledItemDelegate
 
  private:
     int m_base;
+    int m_frmt;
     bool m_is16Bit;
-    QString formatValue(int value,int base, bool is16Bit) const;
 
  public:
      RegistersDataDelegate(QWidget *parent = 0) : QStyledItemDelegate(parent) { }
@@ -28,7 +28,7 @@ class RegistersDataDelegate : public QStyledItemDelegate
      void updateEditorGeometry(QWidget *editor,
          const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
-     void setBase(int base);
+     void setBase(int frmt);
      void setIs16Bit(bool is16Bit);
 
  };

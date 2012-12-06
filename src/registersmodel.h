@@ -16,7 +16,7 @@ public:
 
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
     void setValue(int idx, int value);
-    void setBase(int base);
+    void setBase(int frmt);
     void setIs16Bit(bool is16Bit);
     QString strValue(int idx);
     int value(int idx);
@@ -25,8 +25,7 @@ public:
     void setNoValidValues();
 
 private:
-    void changeBase(int base);
-    QString formatValue(int value,int base, bool is16Bit);
+    void changeBase(int frmt);
     int m_startAddress;
     int m_noOfItems;
     int m_offset;
@@ -34,6 +33,7 @@ private:
     int m_lastRow;
     bool m_is16Bit;
     int m_base;
+    int m_frmt;
 
 signals:
     void refreshView();
