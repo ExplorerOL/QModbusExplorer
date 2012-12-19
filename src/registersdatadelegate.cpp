@@ -88,7 +88,7 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
         QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
         intVal = (lineEdit->text()).toInt(&ok,m_base);
         if (intVal > 65535){
-            QMessageBox::critical(0, "Set value failed","Value is greter than 65535.");
+            QMessageBox::critical(0, "Set value failed","Value is greater than 65535.");
             return;
         }
         value = EUtils::formatValue(intVal, m_frmt, m_is16Bit);
