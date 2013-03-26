@@ -109,10 +109,7 @@ void RegistersDataDelegate::setBase(int frmt)
 {
 
     qDebug()<<  "RegistersDataDelegate : setBase " << frmt ;
-    if (m_base == 11) // Unsigned Integer
-        m_base = 10;
-    else
-        m_base = frmt;
+    m_base = frmt;
     m_frmt = frmt;
 
 }

@@ -12,8 +12,8 @@
 #include "forms/settingsmodbustcp.h"
 #include "forms/settings.h"
 #include "forms/busmonitor.h"
+#include "modbuscommsettings.h"
 #include "modbusadapter.h"
-#include "registersdatadelegate.h"
 
 namespace Ui {
     class MainWindow;
@@ -36,15 +36,12 @@ private:
     Settings *m_dlgSettings;
     BusMonitor *m_busMonitor;
 
-    QSettings *m_modbusCommSettings;
+    ModbusCommSettings *m_modbusCommSettings;
     void updateStatusBar();
     QLabel *m_statusText;
     QWidget *m_statusInd;
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
-    QTimer *m_pollTimer;
-    RegistersDataDelegate *m_regDataDelegate;
-    int m_timeOut;
 
 private slots:
     void showSettingsModbusRTU();
@@ -54,13 +51,15 @@ private slots:
     void changedModbusMode(int currIndex);
     void changedFunctionCode(int currIndex);
     void changedBase(int currIndex);
-    void changedReqCycle(bool value);
+    void changedScanRate(int value);
     void changedConnect(bool value);
+    void changedStartAddress(int value);
+    void changedNoOfRegs(int value);
     void changedSlaveIP();
     void addItems();
     void clearItems();
+    void scan(bool value);
     void request();
-    void pollRequestForData();
     void refreshView();
 
 

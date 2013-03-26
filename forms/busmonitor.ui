@@ -9,13 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>707</width>
+    <width>450</width>
     <height>335</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>707</width>
+    <width>450</width>
     <height>335</height>
    </size>
   </property>
@@ -47,8 +47,8 @@
        <widget class="QListView" name="lstRawData">
         <property name="minimumSize">
          <size>
-          <width>690</width>
-          <height>100</height>
+          <width>0</width>
+          <height>0</height>
          </size>
         </property>
         <property name="font">

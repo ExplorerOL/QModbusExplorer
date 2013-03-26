@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "ui_settings.h"
 
-Settings::Settings(QWidget *parent ,QSettings * settings) :
+Settings::Settings(QWidget *parent ,ModbusCommSettings * settings) :
     QDialog(parent),
     ui(new Ui::Settings),
     m_settings(settings)
@@ -24,16 +24,8 @@ void Settings::showEvent(QShowEvent * event)
 
     //Load Settings
     if (m_settings != NULL) {
-        if (m_settings->contains("MaxNoOfLines"))
-            ui->sbMaxNoOfRawDataLines->setValue(m_settings->value("MaxNoOfLines").toInt());
-        else
-            ui->sbMaxNoOfRawDataLines->setValue(50);
-
-        if (m_settings->contains("TimeOut"))
-            ui->sbResponseTimeout->setValue(m_settings->value("TimeOut").toInt());
-        else
-            ui->sbResponseTimeout->setValue(1);
-
+        ui->sbMaxNoOfRawDataLines->setValue(m_settings->maxNoOfLines().toInt());
+        ui->sbResponseTimeout->setValue(m_settings->timeOut().toInt());
     }
 
 }
@@ -44,8 +36,8 @@ void Settings::changesAccepted()
 
     //Save Settings
     if (m_settings != NULL) {
-        m_settings->setValue("MaxNoOfLines",ui->sbMaxNoOfRawDataLines->value());
-        m_settings->setValue("TimeOut",ui->sbResponseTimeout->value());
+        m_settings->setMaxNoOfLines((QString)ui->sbMaxNoOfRawDataLines->value());
+        m_settings->setTimeOut((QString)ui->sbResponseTimeout->value());
     }
 
 }

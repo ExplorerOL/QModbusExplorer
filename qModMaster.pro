@@ -25,7 +25,8 @@ SOURCES += src/main.cpp \
     3rdparty/libmodbus/modbus-tcp.c \
     3rdparty/libmodbus/modbus-rtu.c \
     src/rawdatadelegate.cpp \
-    src/registersdatadelegate.cpp
+    src/registersdatadelegate.cpp \
+    src/modbuscommsettings.cpp
 
 HEADERS  += src/mainwindow.h \
     3rdparty/libmodbus/modbus.h \
@@ -39,7 +40,8 @@ HEADERS  += src/mainwindow.h \
     forms/settings.h \
     forms/busmonitor.h \
     src/rawdatadelegate.h \
-    src/registersdatadelegate.h
+    src/registersdatadelegate.h \
+    src/modbuscommsettings.h
 
 INCLUDEPATH += 3rdparty/libmodbus
 
@@ -63,6 +65,8 @@ FORMS    += forms/mainwindow.ui \
 
 RESOURCES += \
     data/qModMaster.qrc
+
+
 
 
 

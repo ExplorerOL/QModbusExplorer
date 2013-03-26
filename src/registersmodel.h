@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QStandardItemModel>
+#include "registersdatadelegate.h"
 
 static const QString RegModelHeaderLabels[]={"00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
 static const int AddressColumn=0;
@@ -23,6 +24,7 @@ public:
     QStandardItemModel *model;
     void clear();
     void setNoValidValues();
+    RegistersDataDelegate* itemDelegate();
 
 private:
     void changeBase(int frmt);
@@ -34,6 +36,7 @@ private:
     bool m_is16Bit;
     int m_base;
     int m_frmt;
+    RegistersDataDelegate *m_regDataDelegate;
 
 signals:
     void refreshView();

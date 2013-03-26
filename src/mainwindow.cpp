@@ -16,13 +16,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     //Settings File
-    m_modbusCommSettings = new QSettings("qModMaster.ini",QSettings::IniFormat);
+    m_modbusCommSettings = new ModbusCommSettings("qModMaster.ini");
+
     //Modbus Adapter
     m_modbus=new ModbusAdapter(this);
     m_modbus->regModel->setBase(EUtils::Bin);
-    //Registers Table Delegate
-    ui->tblRegisters->setItemDelegate(new RegistersDataDelegate(this));
-    m_regDataDelegate = static_cast<RegistersDataDelegate*>(ui->tblRegisters->itemDelegate());
+    ui->tblRegisters->setItemDelegate(m_modbus->regModel->itemDelegate());
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -35,17 +34,20 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSettings,SIGNAL(triggered()),this,SLOT(showSettings()));
     m_busMonitor = new BusMonitor(this, m_modbus->rawModel);
     connect(ui->actionBus_Monitor,SIGNAL(triggered()),this,SLOT(showBusMonitor()));
+
     //UI - connections
     connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
     connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
     connect(ui->cmbBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedBase(int)));
-    connect(ui->sbNoOfCoils,SIGNAL(valueChanged(int)),this,SLOT(clearItems()));
-    connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(clearItems()));
-    connect(ui->chkReqCycle,SIGNAL(clicked(bool)),this,SLOT(changedReqCycle(bool)));
+    connect(ui->sbNoOfCoils,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
+    connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
+    connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
     connect(ui->btAddItems,SIGNAL(clicked(bool)),this,SLOT(addItems()));
     connect(ui->btClear,SIGNAL(clicked(bool)),this,SLOT(clearItems()));
-    connect(ui->btRequest,SIGNAL(clicked(bool)),this,SLOT(request()));
-    connect(ui->btConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
+    connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(request()));
+    connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(scan(bool)));
+    connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
+
     //UI - status
     m_statusInd = new QWidget;
     m_statusInd->setFixedSize( 16, 16 );
@@ -53,12 +55,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addWidget(m_statusInd);
     ui->statusBar->addWidget(m_statusText, 10);
     m_statusInd->setStyleSheet("background-color: red");
+
     //Populate function name combo box
     ui->cmbFunctionCode->clear();
     for(int i=0; i<8; i++)
         ui->cmbFunctionCode->addItem(EUtils::ModbusFunctionName(i));
 
     //Setup Toolbar
+    ui->mainToolBar->addAction(ui->actionConnect);
+    ui->mainToolBar->addAction(ui->actionRead_Write);
+    ui->mainToolBar->addAction(ui->actionScan);
     ui->mainToolBar->addAction(ui->actionBus_Monitor);
     ui->mainToolBar->addAction(ui->actionSerial_RTU);
     ui->mainToolBar->addAction(ui->actionTCP);
@@ -68,43 +74,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Init Code
     ui->tblRegisters->setModel(m_modbus->regModel->model);
-    m_modbus->regModel->setBase(EUtils::Bin);
+    m_modbus->regModel->setBase(EUtils::UInt);
     connect(m_modbus,SIGNAL(refreshView()),this,SLOT(refreshView()));
     connect(m_modbus->regModel,SIGNAL(refreshView()),this,SLOT(refreshView()));
-    //init settings
-    //init MaxNoOfLines to 50 if is not defined yet
-    m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt() == 0 ? 50 : m_modbusCommSettings->value("MaxNoOfLines").toInt());
-    m_timeOut = m_modbusCommSettings->value("TimeOut").toInt() == 0 ? 1 : m_modbusCommSettings->value("TimeOut").toInt();
-    //init TCP settings if not defined yet
-    m_modbusCommSettings->setValue("TCPPort",(m_modbusCommSettings->value("TCPPort").isNull() ? "502" : m_modbusCommSettings->value("TCPPort").toString()));
-    m_modbusCommSettings->setValue("SlaveIPByte1",(m_modbusCommSettings->value("SlaveIPByte1").toInt() == 0 ? "127" : m_modbusCommSettings->value("SlaveIPByte1").toString()));
-    m_modbusCommSettings->setValue("SlaveIPByte2",(m_modbusCommSettings->value("SlaveIPByte2").toInt() == 0 ? "0" : m_modbusCommSettings->value("SlaveIPByte2").toString()));
-    m_modbusCommSettings->setValue("SlaveIPByte3",(m_modbusCommSettings->value("SlaveIPByte3").toInt() == 0 ? "0" : m_modbusCommSettings->value("SlaveIPByte3").toString()));
-    m_modbusCommSettings->setValue("SlaveIPByte4",(m_modbusCommSettings->value("SlaveIPByte4").toInt() == 0 ? "1" : m_modbusCommSettings->value("SlaveIPByte4").toString()));
-    m_modbusCommSettings->setValue("SlaveIP",(m_modbusCommSettings->value("SlaveIPByte1").toString() + "." + m_modbusCommSettings->value("SlaveIPByte2").toString() + "." +
-                                    m_modbusCommSettings->value("SlaveIPByte3").toString() + "." + m_modbusCommSettings->value("SlaveIPByte4").toString()));
-    //init RTU settings if not defined yet
-    m_modbusCommSettings->setValue("SerialPort",(m_modbusCommSettings->value("SerialPort").isNull() ? "COM1" : m_modbusCommSettings->value("SerialPort").toString()));
-    m_modbusCommSettings->setValue("SerialPortOS",(m_modbusCommSettings->value("SerialPortOS").isNull() ? "COM1" : m_modbusCommSettings->value("SerialPortOS").toString()));
-    m_modbusCommSettings->setValue("Baud",(m_modbusCommSettings->value("Baud").isNull() ? "9600" : m_modbusCommSettings->value("Baud").toString()));
-    m_modbusCommSettings->setValue("DataBits",(m_modbusCommSettings->value("DataBits").isNull() ? "8" : m_modbusCommSettings->value("DataBits").toString()));
-    m_modbusCommSettings->setValue("StopBits",(m_modbusCommSettings->value("StopBits").isNull() ? "1" : m_modbusCommSettings->value("StopBits").toString()));
-    m_modbusCommSettings->setValue("Parity",(m_modbusCommSettings->value("Parity").isNull() ? "None" : m_modbusCommSettings->value("Parity").toString()));
-#ifdef Q_OS_WIN32
-    m_modbusCommSettings->setValue("RTS",(m_modbusCommSettings->value("RTS").isNull() ? "Disable" : m_modbusCommSettings->value("RTS").toString()));
-#else
-    m_modbusCommSettings->setValue("RTS",(m_modbusCommSettings->value("RTS").isNull() ? "None" : m_modbusCommSettings->value("RTS").toString()));
-#endif
-
-    //Poll Timer
-    m_pollTimer=new QTimer(this);
-    connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(pollRequestForData()));
 
      //Update UI
     ui->sbNoOfCoils->setEnabled(true);
-    ui->spInterval->setEnabled(false);
-    ui->btRequest->setEnabled(false);
-    ui->btAddItems->setEnabled(false);
+    ui->actionRead_Write->setEnabled(false);
+    ui->actionScan->setEnabled(false);
     updateStatusBar();
 
     qDebug()<<  "MainWindow : Init Completed ";
@@ -113,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+
     delete ui;
 
     qDebug()<<  "MainWindow : Closing" ;
@@ -126,6 +104,7 @@ void MainWindow::showSettingsModbusRTU()
     if (m_dlgModbusRTU->exec()==QDialog::Accepted) {
         qDebug()<<  "MainWindow : RTU changes accepted ";
         updateStatusBar();
+        m_modbusCommSettings->saveSettings();
     }
     else
         qDebug()<<  "MainWindow : RTU changes rejected ";
@@ -140,6 +119,7 @@ void MainWindow::showSettingsModbusTCP()
     if (m_dlgModbusTCP->exec()==QDialog::Accepted) {
         qDebug()<<  "MainWindow : TCP changes accepted ";
         updateStatusBar();
+        m_modbusCommSettings->saveSettings();
     }
     else
         qDebug()<<  "MainWindow : TCP changes rejected ";
@@ -153,8 +133,8 @@ void MainWindow::showSettings()
 
     if (m_dlgSettings->exec()==QDialog::Accepted) {
         qDebug()<<  "MainWindow : changes accepted ";
-        m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->value("MaxNoOfLines").toInt());
-        m_timeOut = m_modbusCommSettings->value("TimeOut").toInt();
+        m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
+        m_modbusCommSettings->saveSettings();
     }
     else
         qDebug()<<  "MainWindow : changes rejected ";
@@ -168,6 +148,7 @@ void MainWindow::showBusMonitor()
 
     qDebug()<<  "MainWindow : showBusMonitor ";
 
+    m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
     m_busMonitor->show();
 
 }
@@ -199,72 +180,51 @@ void MainWindow::changedFunctionCode(int currIndex)
 
     const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
 
-    switch(funcionCode)//Number of coils
+    switch(funcionCode)//Label = Read Request, Write Request
     {
-        case _FC_WRITE_SINGLE_REGISTER:
+        case _FC_READ_COILS:
+                m_modbus->regModel->setIs16Bit(false);
+                ui->sbNoOfCoils->setEnabled(true);
+                break;
+        case _FC_READ_DISCRETE_INPUTS:
+                m_modbus->regModel->setIs16Bit(false);
+                ui->sbNoOfCoils->setEnabled(true);
+                break;
+        case _FC_READ_HOLDING_REGISTERS:
+                m_modbus->regModel->setIs16Bit(true);
+                ui->sbNoOfCoils->setEnabled(true);
+                break;
+        case _FC_READ_INPUT_REGISTERS:
+                m_modbus->regModel->setIs16Bit(true);
+                ui->sbNoOfCoils->setEnabled(true);
+                break;
         case _FC_WRITE_SINGLE_COIL:
+                m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
                 break;
         case _FC_WRITE_MULTIPLE_COILS:
+                m_modbus->regModel->setIs16Bit(false);
+                ui->sbNoOfCoils->setValue(2);
+                ui->sbNoOfCoils->setEnabled(true);
+                break;
+        case _FC_WRITE_SINGLE_REGISTER:
+                m_modbus->regModel->setIs16Bit(true);
+                ui->sbNoOfCoils->setValue(1);
+                ui->sbNoOfCoils->setEnabled(false);
+                break;
         case _FC_WRITE_MULTIPLE_REGISTERS:
+                m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
                 break;
         default:
+                m_modbus->regModel->setIs16Bit(false);
+                ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(true);
                 break;
      }
 
-    switch(funcionCode)//Base = Binary
-    {
-        case _FC_READ_COILS:
-        case _FC_READ_DISCRETE_INPUTS:
-        case _FC_WRITE_SINGLE_COIL:
-        case _FC_WRITE_MULTIPLE_COILS:
-                ui->cmbBase->setCurrentIndex(0);
-                ui->cmbBase->setEnabled(false);
-                break;
-        default:
-                ui->cmbBase->setEnabled(true);
-                break;
-     }
-
-    switch(funcionCode)//Label = Read Request, Write Request
-    {
-        case _FC_READ_COILS:
-        case _FC_READ_DISCRETE_INPUTS:
-        case _FC_READ_HOLDING_REGISTERS:
-        case _FC_READ_INPUT_REGISTERS:
-                ui->btRequest->setText("Read Request");
-                break;
-        case _FC_WRITE_SINGLE_COIL:
-        case _FC_WRITE_MULTIPLE_COILS:
-        case _FC_WRITE_SINGLE_REGISTER:
-        case _FC_WRITE_MULTIPLE_REGISTERS:
-                ui->btRequest->setText("Write Request");
-                break;
-        default:
-                ui->btRequest->setText("Read Request");
-                break;
-     }
-
-    switch(funcionCode)//Set is16Bit
-    {
-        case _FC_READ_HOLDING_REGISTERS:
-        case _FC_READ_INPUT_REGISTERS:
-        case _FC_WRITE_SINGLE_REGISTER:
-        case _FC_WRITE_MULTIPLE_REGISTERS:
-                m_regDataDelegate->setIs16Bit(true);
-                m_modbus->regModel->setIs16Bit(true);
-                break;
-        default:
-                m_regDataDelegate->setIs16Bit(false);
-                m_modbus->regModel->setIs16Bit(false);
-                break;
-     }
-
-    clearItems();
 
 }
 
@@ -279,43 +239,28 @@ void MainWindow::changedBase(int currIndex)
     {
         case 0:
                 m_modbus->regModel->setBase(EUtils::Bin);
-                m_regDataDelegate->setBase(EUtils::Bin);
                 break;
         case 1:
                 m_modbus->regModel->setBase(EUtils::UInt);
-                m_regDataDelegate->setBase(EUtils::UInt);
                 break;
-        /* --- TODO ---
-        case 2:
-                m_modbus->regModel->setBase(EUtils::SInt);
-                m_regDataDelegate->setBase(EUtils::SInt);
-                break;
-        */
         case 2:
                 m_modbus->regModel->setBase(EUtils::Hex);
-                m_regDataDelegate->setBase(EUtils::Hex);
                 break;
         default:
                 m_modbus->regModel->setBase(EUtils::UInt);
-                m_regDataDelegate->setBase(EUtils::UInt);
                 break;
      }
 
 }
 
-void MainWindow::changedReqCycle(bool value)
+void MainWindow::changedScanRate(int value)
 {
 
-    //Enable-Disable Time Interval - Set-Reset btRequest As Toggle button
+    //Enable-Disable Time Interval
 
-    qDebug()<<  "MainWindow : changedReqCycle value = " << value;
+    qDebug()<<  "MainWindow : changedScanRate = " << value;
 
-    ui->spInterval->setEnabled(value);
-    ui->btRequest->setCheckable(value);
-    ui->btRequest->repaint();
-
-    //stop poll timer
-    if (!value) m_pollTimer->stop();
+    m_modbus->setScanRate(value);
 
 }
 
@@ -323,18 +268,12 @@ void MainWindow::changedConnect(bool value)
 {
 
     //Connect - Disconnect
-
     qDebug()<<  "MainWindow : changedConnect value = " << value;
 
     if (value) { //Connected
-        ui->btConnect->setText("Disconnect");
-        ui->btConnect->setToolTip("Disconnect");
         modbusConnect(true);
     }
     else { //Disconnected
-        ui->btConnect->setText("Connect");
-        ui->btConnect->setToolTip("Connect");
-        clearItems();
         modbusConnect(false);
     }
 
@@ -343,6 +282,29 @@ void MainWindow::changedConnect(bool value)
 void MainWindow::changedSlaveIP()
 {
 
+    // NOT USED
+
+}
+
+void MainWindow::changedStartAddress(int value)
+{
+
+    //Start Address changed
+    qDebug()<<  "MainWindow : changedStartAddress value = " << value;
+
+    m_modbus->setStartAddr(value);
+    addItems();
+
+}
+
+void MainWindow::changedNoOfRegs(int value)
+{
+
+    //No of regs changed
+    qDebug()<<  "MainWindow : changedNoOfRegs value = " << value;
+
+    m_modbus->setNumOfRegs(value);
+    addItems();
 
 }
 
@@ -355,16 +317,16 @@ void MainWindow::updateStatusBar()
 
     if(ui->cmbModbusMode->currentIndex() == 0) { //RTU
         msg = "RTU : ";
-        msg += m_modbusCommSettings->value("SerialPort").toString() + " | ";
-        msg += m_modbusCommSettings->value("Baud").toString() + ",";
-        msg += m_modbusCommSettings->value("DataBits").toString() + ",";
-        msg += m_modbusCommSettings->value("StopBits").toString() + ",";
-        msg += m_modbusCommSettings->value("Parity").toString();
+        msg += m_modbusCommSettings->serialPort() + " | ";
+        msg += m_modbusCommSettings->baud() + ",";
+        msg += m_modbusCommSettings->dataBits() + ",";
+        msg += m_modbusCommSettings->stopBits() + ",";
+        msg += m_modbusCommSettings->parity();
     }
     else {
         msg = "TCP : ";
-        msg += m_modbusCommSettings->value("SlaveIP").toString() + ":";
-        msg += m_modbusCommSettings->value("TCPPort").toString();
+        msg += m_modbusCommSettings->slaveIP() + ":";
+        msg += m_modbusCommSettings->TCPPort();
     }
 
     m_statusText->clear();
@@ -386,25 +348,17 @@ void MainWindow::addItems()
 {
 
     //Add items to registers model and to modbus adapter only if we are connected
-    if (!m_modbus->isConnected())
-        return;
+    //if (!m_modbus->isConnected())
+        //return;
 
-    const int slave = ui->sbSlaveID->value();
-    const int functionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
-    const int addr = ui->sbStartAddress->value();
-    const int num = ui->sbNoOfCoils->value();
-    const QString dataType = EUtils::ModbusDataTypeName(functionCode);
-    bool valueIsEditable = EUtils::ModbusIsWriteFunction(functionCode);
+    m_modbus->setSlave(ui->sbSlaveID->value());
+    m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
+    m_modbus->setStartAddr(ui->sbStartAddress->value());
+    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
 
     qDebug()<<  "MainWindow : addItems - functionCode " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
 
-    ui->lblRegisters->setText("Registers > " + dataType);
-    m_modbus->regModel->addItems(ui->sbStartAddress->text().toInt(),ui->sbNoOfCoils->text().toInt(),valueIsEditable);
-    //If it is a write function -> read registers
-    if (EUtils::ModbusIsWriteCoilsFunction(functionCode))
-        m_modbus->modbusTransaction(slave,EUtils::ReadCoils,addr,num);
-    else if (EUtils::ModbusIsWriteRegistersFunction(functionCode))
-        m_modbus->modbusTransaction(slave,EUtils::ReadHoldRegs,addr,num);
+    m_modbus->addItems();
 
 }
 
@@ -416,15 +370,6 @@ void MainWindow::clearItems()
     qDebug()<<  "MainWindow : clearItems" ;
 
     m_modbus->regModel->clear();
-    ui->lblRegisters->setText("Registers > ");
-
-}
-
-void MainWindow::pollRequestForData()
-{
-
-    qDebug()<<  "MainWindow : pollRequestForData";
-    request();
 
 }
 
@@ -439,74 +384,93 @@ void MainWindow::request()
         return;
     }
 
-    qDebug()<<  "MainWindow : requested registers = " <<  rowCount;
+    qDebug()<<  "MainWindow : request registers = " <<  rowCount;
 
-
-    const int slave = ui->sbSlaveID->value();
-    const int functionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
-    const int addr = ui->sbStartAddress->value();
-    const int num = ui->sbNoOfCoils->value();
+    m_modbus->setSlave(ui->sbSlaveID->value());
+    m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
+    m_modbus->setStartAddr(ui->sbStartAddress->value());
+    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
 
     //Modbus data
-    m_modbus->modbusTransaction(slave,functionCode,addr,num);
-
-    //Start-Stop poll timer
-    if (ui->btRequest->isChecked() && ui->chkReqCycle->isChecked())
-        m_pollTimer->start(ui->spInterval->value());
-    else
-        m_pollTimer->stop();
+    m_modbus->modbusTransaction();
 
 }
 
- void MainWindow::modbusConnect(bool connect)
+void MainWindow::scan(bool value)
+{
+
+    //Request items from modbus adapter and add raw data to raw data model
+   int rowCount = m_modbus->regModel->model->rowCount();
+
+   if (value && rowCount == 0) {
+       QMessageBox::critical(this, "Request failed","Add items to Registers Table.");
+       ui->actionScan->setChecked(false);
+       return;
+   }
+
+   m_modbus->setSlave(ui->sbSlaveID->value());
+   m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
+   m_modbus->setStartAddr(ui->sbStartAddress->value());
+   m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
+
+    //Start-Stop poll timer
+    qDebug()<<  "MainWindow : scan = " << value;
+    if (value){
+        m_modbus->setScanRate(ui->spInterval->value());
+        m_modbus->startPollTimer();
+    }
+    else
+        m_modbus->stopPollTimer();
+
+    ui->btAddItems->setEnabled(!value);
+    ui->btClear->setEnabled(!value);
+    ui->cmbBase->setEnabled(!value);
+    ui->cmbFunctionCode->setEnabled(!value);
+    ui->sbSlaveID->setEnabled(!value);
+    ui->sbStartAddress->setEnabled(!value);
+    ui->spInterval->setEnabled(!value);
+    if (!value)
+        changedFunctionCode(ui->cmbFunctionCode->currentIndex());
+    else
+        ui->sbNoOfCoils->setEnabled(false);
+
+}
+
+void MainWindow::modbusConnect(bool connect)
  {
 
     //Modbus connect - RTU/TCP
-    QString line ;
     qDebug()<<  "MainWindow : modbusConnect - " << connect;
 
-    if (connect) {
-        if (ui->cmbModbusMode->currentIndex() == EUtils::RTU) { //RTU
-            line = "Connecting to Serial Port [" + m_modbusCommSettings->value("SerialPort").toString() + "]...";
-            m_modbus->modbusConnectRTU(m_modbusCommSettings->value("SerialPortOS").toString(),
-                                        m_modbusCommSettings->value("Baud").toInt(),
-                                        EUtils::parity(m_modbusCommSettings->value("Parity").toString()),
-                                        m_modbusCommSettings->value("DataBits").toInt(),
-                                        m_modbusCommSettings->value("StopBits").toInt(),
-                                        m_modbusCommSettings->value("RTS").toInt(),
-                                        m_modbusCommSettings->value("TimeOut").toInt()
+    if (connect) { //RTU
+        if (ui->cmbModbusMode->currentIndex() == EUtils::RTU) {
+            m_modbus->modbusConnectRTU(m_modbusCommSettings->serialPort(),
+                                        m_modbusCommSettings->baud().toInt(),
+                                        EUtils::parity(m_modbusCommSettings->parity()),
+                                        m_modbusCommSettings->dataBits().toInt(),
+                                        m_modbusCommSettings->stopBits().toInt(),
+                                        m_modbusCommSettings->RTS().toInt(),
+                                        m_modbusCommSettings->timeOut().toInt()
                                         );
-            line += (m_modbus->isConnected() ? "OK" : "Failed");
         }
         else { //TCP
-            line = "Connecting to TCP Port " + m_modbusCommSettings->value("SlaveIP").toString() + ":" + m_modbusCommSettings->value("TCPPort").toString() + "...";
-            m_modbus->modbusConnectTCP(m_modbusCommSettings->value("SlaveIP").toString(),
-                                       m_modbusCommSettings->value("TCPPort").toInt(),
-                                       m_modbusCommSettings->value("TimeOut").toInt());
-            line += (m_modbus->isConnected() ? "OK" : "Failed");
+            m_modbus->modbusConnectTCP(m_modbusCommSettings->slaveIP(),
+                                       m_modbusCommSettings->TCPPort().toInt(),
+                                       m_modbusCommSettings->timeOut().toInt());
         }
-        //Add line to raw data model
-        line = EUtils::SysTimeStamp() + " : " + line;
-        m_modbus->rawModel->addLine(line);
     }
     else { //Disconnect
         m_modbus->modbusDisConnect();
-        ui->chkReqCycle->setChecked(false);
-        m_pollTimer->stop();
-        //Add line to raw data model
-        line = EUtils::SysTimeStamp() + " : Disconnected";
-        m_modbus->rawModel->addLine(line);
+        ui->actionScan->setChecked(false);
     }
 
     updateStatusBar();
 
-    //Update buttons
-    ui->btConnect->setChecked(m_modbus->isConnected());
-    ui->btRequest->setCheckable(false);
-    ui->btRequest->setEnabled(m_modbus->isConnected());
-    ui->btRequest->repaint();
+    //Update UI
+    ui->actionConnect->setChecked(m_modbus->isConnected());
+    ui->actionRead_Write->setEnabled(m_modbus->isConnected());
+    ui->actionScan->setEnabled(m_modbus->isConnected());
     ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
-    ui->btAddItems->setEnabled(m_modbus->isConnected());
 
  }
 

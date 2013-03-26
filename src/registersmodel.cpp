@@ -8,6 +8,7 @@ RegistersModel::RegistersModel(QObject *parent) :
     QObject(parent)
 {
    model = new  QStandardItemModel(0,0,this);
+   m_regDataDelegate = new RegistersDataDelegate(0);
    m_noOfItems = 0;
    m_is16Bit = false;
    clear();
@@ -68,6 +69,7 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
             }
         }
     }
+
 
     emit(refreshView());
 
@@ -215,14 +217,11 @@ void RegistersModel::setBase(int frmt)
 {
 
     qDebug()<<  "RegistersModel : setBase " << frmt ;
+    m_regDataDelegate->setBase(frmt);
     changeBase(frmt);
-    if (frmt == 11) { // Unsigned Integer
-        m_base = 10;
-    }
-    else {
-        m_base = frmt;
-    }
+    m_base = frmt;
     m_frmt = frmt;
+
 }
 
 void RegistersModel::setIs16Bit(bool is16Bit)
@@ -230,5 +229,13 @@ void RegistersModel::setIs16Bit(bool is16Bit)
 
     qDebug()<<  "RegistersModel : setIs16Bit " << is16Bit ;
     m_is16Bit = is16Bit;
+    m_regDataDelegate->setIs16Bit(is16Bit);
+
+}
+
+RegistersDataDelegate* RegistersModel::itemDelegate()
+{
+
+    return m_regDataDelegate;
 
 }

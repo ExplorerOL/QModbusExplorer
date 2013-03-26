@@ -20,10 +20,19 @@ public:
      void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut=1);
      void modbusConnectTCP(QString ip, int port, int timeOut=1);
      void modbusDisConnect();
-     void modbusTransaction(int slave, int functionCode, int startAddress, int noOfItems);
      RegistersModel *regModel;
      RawDataModel *rawModel;
      bool isConnected();
+
+     void setSlave(int slave);
+     void setFunctionCode(int functionCode);
+     void setStartAddr(int addr);
+     void setNumOfRegs(int num);
+     void addItems();
+
+     void setScanRate(int scanRate);
+     void startPollTimer();
+     void stopPollTimer();
 
 private:
      void modbusReadData(int slave, int functionCode, int startAddress, int noOfItems);
@@ -31,12 +40,18 @@ private:
      modbus_t * m_modbus;
      bool m_connected;
      int m_ModBusMode;
+     int m_slave;
+     int m_functionCode;
+     int m_startAddr;
+     int m_numOfRegs;
+     int m_scanRate;
+     QTimer *m_pollTimer;
 
 signals:
     void refreshView();
 
 public slots:
-
+    void modbusTransaction();
 
 };
 

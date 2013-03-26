@@ -1,6 +1,8 @@
 #include "modbusadapter.h"
 #include <QMessageBox>
 #include <QtDebug>
+#include <QMessageBox>
+
 #include <errno.h>
 
 ModbusAdapter *m_instance;
@@ -15,21 +17,25 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     QObject(parent),
     m_modbus(NULL)
 {
-    m_instance=this;
+    m_instance = this;
     regModel=new RegistersModel(this);
     rawModel=new RawDataModel(this);
     m_connected = false;
     m_ModBusMode = EUtils::None;
+    m_pollTimer = new QTimer(this);
+    connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
 }
 
 void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut)
 {
     //Modbus RTU connect
-
+    QString line;
     modbusDisConnect();
 
-    m_modbus = modbus_new_rtu(port.toAscii().constData(),baud,parity.toAscii(),dataBits,stopBits,RTS);
+    qDebug()<<  "ModbusAdapter : modbusConnect RTU";
 
+    m_modbus = modbus_new_rtu(port.toAscii().constData(),baud,parity.toAscii(),dataBits,stopBits,RTS);
+    line = "Connecting to Serial Port [" + port + "]...";
 
     //Debug messages from libmodbus
     modbus_set_debug(m_modbus, DBG);
@@ -42,11 +48,18 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
     if(m_modbus && modbus_connect(m_modbus) == -1) {
         QMessageBox::critical(NULL, "Connection failed", "Could not connect to serial port!");
         m_connected = false;
+        line += "Failed";
     }
-    else
+    else {
         m_connected = true;
+        line += "OK";
+    }
 
     m_ModBusMode = EUtils::RTU;
+
+    //Add line to raw data model
+    line = EUtils::SysTimeStamp() + " : " + line;
+    rawModel->addLine(line);
 
 }
 
@@ -105,26 +118,26 @@ bool ModbusAdapter::isConnected()
     return m_connected;
 }
 
-void ModbusAdapter::modbusTransaction(int slave, int functionCode, int startAddress, int noOfItems)
+void ModbusAdapter::modbusTransaction()
 {
     //Modbus request data
 
     qDebug()<<  "ModbusAdapter : modbusTransaction ";
 
-    switch(functionCode)
+    switch(m_functionCode)
     {
             case _FC_READ_COILS:
             case _FC_READ_DISCRETE_INPUTS:
             case _FC_READ_HOLDING_REGISTERS:
             case _FC_READ_INPUT_REGISTERS:
-                    modbusReadData(slave,functionCode,startAddress,noOfItems);
+                    modbusReadData(m_slave,m_functionCode,m_startAddr,m_numOfRegs);
                     break;
 
             case _FC_WRITE_SINGLE_COIL:
             case _FC_WRITE_SINGLE_REGISTER:
             case _FC_WRITE_MULTIPLE_COILS:
             case _FC_WRITE_MULTIPLE_REGISTERS:
-                    modbusWriteData(slave,functionCode,startAddress,noOfItems);
+                    modbusWriteData(m_slave,m_functionCode,m_startAddr,m_numOfRegs);
                     break;
             default:
                     break;
@@ -194,11 +207,13 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 qDebug()<<  "ModbusAdapter : modbusRequestData - " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
+                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 qDebug()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
+                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
         }
      }
 
@@ -272,11 +287,13 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 qDebug()<<  "ModbusAdapter : modbusRequestData - " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
+                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 qDebug()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
+                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
         }
      }
 
@@ -313,6 +330,58 @@ void ModbusAdapter::busMonitorResponseData(uint8_t * data, uint8_t dataLen)
 
     rawModel->addLine(line);
 
+}
+
+void ModbusAdapter::setSlave(int slave)
+{
+    m_slave = slave;
+}
+
+void ModbusAdapter::setFunctionCode(int functionCode)
+{
+    m_functionCode = functionCode;
+}
+
+void ModbusAdapter::setStartAddr(int addr)
+{
+    m_startAddr = addr;
+}
+
+void ModbusAdapter::setNumOfRegs(int num)
+{
+    m_numOfRegs = num;
+}
+
+void ModbusAdapter::addItems()
+{
+    regModel->addItems(m_startAddr, m_numOfRegs, EUtils::ModbusIsWriteFunction(m_functionCode));
+    //If it is a write function -> read registers
+    if (!m_connected)
+        return;
+    else if (EUtils::ModbusIsWriteCoilsFunction(m_functionCode)){
+        modbusReadData(m_slave,EUtils::ReadCoils,m_startAddr,m_numOfRegs);
+        emit(refreshView());
+    }
+    else if (EUtils::ModbusIsWriteRegistersFunction(m_functionCode)){
+        modbusReadData(m_slave,EUtils::ReadHoldRegs,m_startAddr,m_numOfRegs);
+        emit(refreshView());
+    }
+
+}
+
+void ModbusAdapter::setScanRate(int scanRate)
+{
+    m_scanRate = scanRate;
+}
+
+void ModbusAdapter::startPollTimer()
+{
+    m_pollTimer->start(m_scanRate);
+}
+
+void ModbusAdapter::stopPollTimer()
+{
+    m_pollTimer->stop();
 }
 
 extern "C" {

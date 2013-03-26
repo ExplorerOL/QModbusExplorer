@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>707</width>
-    <height>454</height>
+    <width>500</width>
+    <height>360</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>360</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Modbus Master</string>
@@ -20,327 +26,322 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="lblSettings">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
+     <widget class="QFrame" name="frame_1">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
       </property>
-      <property name="text">
-       <string>Settings</string>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
       </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget_1">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>689</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayoutSettings">
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblModbusMode">
+          <property name="text">
+           <string>Modbus Mode</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>cmbModbusMode</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="cmbModbusMode">
+          <item>
+           <property name="text">
+            <string>RTU</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>TCP</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="lblSlaveID">
+          <property name="text">
+           <string>Slave ID</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>sbSlaveID</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QSpinBox" name="sbSlaveID">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>255</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <widget class="QSpinBox" name="spInterval">
+          <property name="minimum">
+           <number>1000</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+          <property name="singleStep">
+           <number>500</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QLabel" name="lblScan">
+          <property name="text">
+           <string>Scan Rate (ms)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="6">
+         <spacer name="horizontalSpacer_1">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>
-     <layout class="QGridLayout" name="gridLayoutSettings">
-      <item row="1" column="4">
-       <widget class="QLabel" name="lblFormat">
-        <property name="text">
-         <string>Format</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblModbusMode">
-        <property name="text">
-         <string>Modbus Mode</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>cmbModbusMode</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cmbModbusMode">
-        <item>
-         <property name="text">
-          <string>RTU</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>TCP</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="lblSlaveID">
-        <property name="text">
-         <string>Slave ID</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>sbSlaveID</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QSpinBox" name="sbSlaveID">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>255</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QLabel" name="lblFunctionCode">
-        <property name="text">
-         <string>Function Code</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>cmbFunctionCode</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QComboBox" name="cmbFunctionCode"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lblStartAddress">
-        <property name="text">
-         <string>Start Address</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>sbStartAddress</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="sbStartAddress">
-        <property name="maximum">
-         <number>65535</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="lblNoOfCoils">
-        <property name="text">
-         <string>Number of Coils</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>sbNoOfCoils</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QSpinBox" name="sbNoOfCoils">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>65535</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QComboBox" name="cmbBase">
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>Binary</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Unsigned Integer</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Hex</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblCmds">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
+     <widget class="QFrame" name="frame_2">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>65</height>
+       </size>
       </property>
-      <property name="text">
-       <string>Commands</string>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
       </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QGridLayout" name="gridLayoutCmds">
-      <item row="0" column="2">
-       <widget class="QCheckBox" name="chkReqCycle">
-        <property name="text">
-         <string>Request Cyclicaly (msec)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QSpinBox" name="spInterval">
-        <property name="minimum">
-         <number>500</number>
-        </property>
-        <property name="maximum">
-         <number>10000</number>
-        </property>
-        <property name="singleStep">
-         <number>500</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="btConnect">
-        <property name="toolTip">
-         <string>Connect</string>
-        </property>
-        <property name="text">
-         <string>Connect</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../data/qModMaster.qrc">
-          <normaloff>:/img/connect-16.png</normaloff>:/img/connect-16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btRequest">
-        <property name="toolTip">
-         <string>Tx/Rx Data</string>
-        </property>
-        <property name="text">
-         <string>Read Request</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../data/qModMaster.qrc">
-          <normaloff>:/img/refresh-16.png</normaloff>:/img/refresh-16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="btAddItems">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>Add Items</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../data/qModMaster.qrc">
-          <normaloff>:/img/add-16.png</normaloff>:/img/add-16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QPushButton" name="btClear">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>24</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Clear Items</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../data/qModMaster.qrc">
-          <normaloff>:/img/remove-16.png</normaloff>:/img/remove-16.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblRegisters">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
       </property>
-      <property name="text">
-       <string>Registers &gt;</string>
-      </property>
+      <widget class="QWidget" name="layoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>689</width>
+         <height>60</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayoutCmds">
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <item row="2" column="1">
+         <widget class="QLabel" name="lblFunctionCode">
+          <property name="text">
+           <string>Function Code</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>cmbFunctionCode</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QComboBox" name="cmbFunctionCode"/>
+        </item>
+        <item row="2" column="3">
+         <widget class="QLabel" name="lblFormat">
+          <property name="text">
+           <string>Format</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <widget class="QComboBox" name="cmbBase">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Binary</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Decimal</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Hex</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="lblStartAddress">
+          <property name="text">
+           <string>Start Address</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>sbStartAddress</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QSpinBox" name="sbStartAddress">
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3">
+         <widget class="QLabel" name="lblNoOfCoils">
+          <property name="text">
+           <string>Number of Coils</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>sbNoOfCoils</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="4">
+         <widget class="QSpinBox" name="sbNoOfCoils">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>65535</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5">
+         <widget class="QPushButton" name="btAddItems">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Add Items</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../data/qModMaster.qrc">
+            <normaloff>:/img/add-16.png</normaloff>:/img/add-16.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="5">
+         <widget class="QPushButton" name="btClear">
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Clear Items</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../data/qModMaster.qrc">
+            <normaloff>:/img/remove-16.png</normaloff>:/img/remove-16.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="6">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>
      <widget class="QTableView" name="tblRegisters">
       <attribute name="horizontalHeaderVisible">
-       <bool>true</bool>
+       <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderHighlightSections">
        <bool>true</bool>
       </attribute>
       <attribute name="verticalHeaderVisible">
-       <bool>true</bool>
+       <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderHighlightSections">
        <bool>true</bool>
@@ -354,7 +355,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>707</width>
+     <width>500</width>
      <height>21</height>
     </rect>
    </property>
@@ -385,9 +386,18 @@
     </property>
     <addaction name="actionBus_Monitor"/>
    </widget>
+   <widget class="QMenu" name="menuCommands">
+    <property name="title">
+     <string>Commands</string>
+    </property>
+    <addaction name="actionConnect"/>
+    <addaction name="actionRead_Write"/>
+    <addaction name="actionScan"/>
+   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuView"/>
    <addaction name="menuOptions"/>
+   <addaction name="menuCommands"/>
+   <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -398,7 +408,11 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+  </widget>
   <action name="actionExit">
    <property name="icon">
     <iconset resource="../data/qModMaster.qrc">
@@ -471,11 +485,43 @@
     <bool>true</bool>
    </property>
   </action>
+  <action name="actionRead_Write">
+   <property name="icon">
+    <iconset resource="../data/qModMaster.qrc">
+     <normaloff>:/img/refresh-16.png</normaloff>:/img/refresh-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Read / Write</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../data/qModMaster.qrc">
+     <normaloff>:/img/connect-16.png</normaloff>:/img/connect-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="actionScan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../data/qModMaster.qrc">
+     <normaloff>:/img/run-16.png</normaloff>
+     <normalon>:/img/pause-16.png</normalon>:/img/run-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Scan</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>chkReqCycle</tabstop>
-  <tabstop>spInterval</tabstop>
   <tabstop>tblRegisters</tabstop>
  </tabstops>
  <resources>

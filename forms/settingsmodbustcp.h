@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QSettings>
 
+#include "src/modbuscommsettings.h"
+
 namespace Ui {
     class SettingsModbusTCP;
 }
@@ -13,12 +15,12 @@ class SettingsModbusTCP : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsModbusTCP(QWidget *parent = 0 ,QSettings * settings = 0);
+    explicit SettingsModbusTCP(QWidget *parent = 0 ,ModbusCommSettings * settings = 0);
     ~SettingsModbusTCP();
 
 private:
     Ui::SettingsModbusTCP *ui;
-    QSettings * m_settings;
+    ModbusCommSettings * m_settings;
 
 private slots:
     void changesAccepted();

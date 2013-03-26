@@ -1,7 +1,7 @@
 #include "about.h"
 #include "ui_about.h"
 
-const QString VER = "QModMaster 0.3.8";
+const QString VER = "QModMaster 0.3.9";
 const QString URL = "<a href = ""http://sourceforge.net/projects/qmodmaster"">Sourceforge Project Home Page</a>";
 
 About::About(QWidget *parent) :

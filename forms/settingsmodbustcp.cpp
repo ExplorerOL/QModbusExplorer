@@ -2,7 +2,7 @@
 #include "settingsmodbustcp.h"
 #include "ui_settingsmodbustcp.h"
 
-SettingsModbusTCP::SettingsModbusTCP(QWidget *parent, QSettings * settings) :
+SettingsModbusTCP::SettingsModbusTCP(QWidget *parent, ModbusCommSettings * settings) :
     QDialog(parent),
     ui(new Ui::SettingsModbusTCP),
     m_settings(settings)
@@ -23,11 +23,11 @@ void SettingsModbusTCP::showEvent(QShowEvent * event)
 
     //Load Settings
     if (m_settings != NULL) {
-        ui->leTCPPort->setText(m_settings->value("TCPPort").toString());
-        ui->leIP1->setText(m_settings->value("SlaveIPByte1").toString());
-        ui->leIP2->setText(m_settings->value("SlaveIPByte2").toString());
-        ui->leIP3->setText(m_settings->value("SlaveIPByte3").toString());
-        ui->leIP4->setText(m_settings->value("SlaveIPByte4").toString());
+        ui->leTCPPort->setText(m_settings->TCPPort());
+        ui->leIP1->setText(m_settings->slaveIPByte1());
+        ui->leIP2->setText(m_settings->slaveIPByte2());
+        ui->leIP3->setText(m_settings->slaveIPByte3());
+        ui->leIP4->setText(m_settings->slaveIPByte4());
     }
 
 }
@@ -38,13 +38,11 @@ void SettingsModbusTCP::changesAccepted()
 
     //Save Settings
     if (m_settings != NULL) {
-        m_settings->setValue("TCPPort",ui->leTCPPort->text());
-        m_settings->setValue("SlaveIPByte1",ui->leIP1->text());
-        m_settings->setValue("SlaveIPByte2",ui->leIP2->text());
-        m_settings->setValue("SlaveIPByte3",ui->leIP3->text());
-        m_settings->setValue("SlaveIPByte4",ui->leIP4->text());
-        m_settings->setValue("SlaveIP",(ui->leIP1->text() + "." + ui->leIP2->text() + "." +
-                                        ui->leIP3->text() + "." + ui->leIP4->text()));
+        m_settings->setTCPPort(ui->leTCPPort->text());
+        m_settings->setSlaveIPByte1(ui->leIP1->text());
+        m_settings->setSlaveIPByte2(ui->leIP2->text());
+        m_settings->setSlaveIPByte3(ui->leIP3->text());
+        m_settings->setSlaveIPByte4(ui->leIP4->text());
     }
 
 }
