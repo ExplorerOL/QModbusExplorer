@@ -225,6 +225,8 @@ void MainWindow::changedFunctionCode(int currIndex)
                 break;
      }
 
+    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
+    addItems();
 
 }
 

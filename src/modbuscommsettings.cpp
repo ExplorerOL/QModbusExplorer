@@ -13,22 +13,10 @@ void  ModbusCommSettings::loadSettings()
         m_TCPPort = "502";
     else
         m_TCPPort = this->value("TCPPort").toString();
-    if (this->value("SlaveIPByte1").toInt() == 0)
-        m_slaveIPByte1 = "127";
+    if (this->value("SlaveIP").isNull())
+        m_slaveIP = "127.000.000.001";
     else
-        m_slaveIPByte1 = this->value("SlaveIPByte1").toString();
-    if (this->value("SlaveIPByte2").toInt() == 0)
-        m_slaveIPByte2 = "0";
-    else
-        m_slaveIPByte2 = this->value("SlaveIPByte2").toString();
-    if (this->value("SlaveIPByte3").toInt() == 0)
-        m_slaveIPByte3 = "0";
-    else
-        m_slaveIPByte3 = this->value("SlaveIPByte3").toString();
-    if (this->value("SlaveIPByte4").toInt() == 0)
-        m_slaveIPByte4 = "1";
-    else
-        m_slaveIPByte4 = this->value("SlaveIPByte4").toString();
+        m_slaveIP = this->value("SlaveIP").toString();
     if (this->value("SerialPort").isNull())
         m_serialPort = "COM1";
     else
@@ -72,10 +60,7 @@ void  ModbusCommSettings::saveSettings()
 {
 
     this->setValue("TCPPort",m_TCPPort);
-    this->setValue("SlaveIPByte1",m_slaveIPByte1);
-    this->setValue("SlaveIPByte2",m_slaveIPByte2);
-    this->setValue("SlaveIPByte3",m_slaveIPByte3);
-    this->setValue("SlaveIPByte4",m_slaveIPByte4);
+    this->setValue("SlaveIP",m_slaveIP);
     this->setValue("SerialPort",m_serialPort);
     this->setValue("Baud",m_baud);
     this->setValue("DataBits",m_dataBits);
@@ -97,49 +82,14 @@ void ModbusCommSettings::setTCPPort(QString tcpPort)
     m_TCPPort = tcpPort;
 }
 
-QString  ModbusCommSettings::slaveIPByte1()
+void ModbusCommSettings::setSlaveIP(QString IP)
 {
-    return m_slaveIPByte1;
-}
-
-void ModbusCommSettings::setSlaveIPByte1(QString IPByte)
-{
-    m_slaveIPByte1 = IPByte;
-}
-
-QString  ModbusCommSettings::slaveIPByte2()
-{
-    return m_slaveIPByte2;
-}
-
-void ModbusCommSettings::setSlaveIPByte2(QString IPByte)
-{
-    m_slaveIPByte2 = IPByte;
-}
-
-QString  ModbusCommSettings::slaveIPByte3()
-{
-    return m_slaveIPByte3;
-}
-
-void ModbusCommSettings::setSlaveIPByte3(QString IPByte)
-{
-    m_slaveIPByte3 = IPByte;
-}
-
-QString  ModbusCommSettings::slaveIPByte4()
-{
-    return m_slaveIPByte4;
-}
-
-void ModbusCommSettings::setSlaveIPByte4(QString IPByte)
-{
-    m_slaveIPByte4 = IPByte;
+    m_slaveIP = IP;
 }
 
 QString  ModbusCommSettings::slaveIP()
 {
-    return m_slaveIPByte1 + "." + m_slaveIPByte2 + "."  + m_slaveIPByte3 + "." + m_slaveIPByte4;
+    return m_slaveIP;
 }
 
 QString  ModbusCommSettings::serialPort()

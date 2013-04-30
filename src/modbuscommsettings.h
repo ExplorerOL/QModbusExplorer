@@ -12,14 +12,7 @@ public:
     //TCP
     QString TCPPort();
     void setTCPPort(QString tcpPort);
-    QString slaveIPByte1();
-    void setSlaveIPByte1(QString IPByte);
-    QString slaveIPByte2();
-    void setSlaveIPByte2(QString IPByte);
-    QString slaveIPByte3();
-    void setSlaveIPByte3(QString IPByte);
-    QString slaveIPByte4();
-    void setSlaveIPByte4(QString IPByte);
+    void setSlaveIP(QString IP);
     QString slaveIP();
     //Serial
     QString serialPort();
@@ -45,10 +38,7 @@ public:
 private:
     //TCP
     QString m_TCPPort;
-    QString m_slaveIPByte1;
-    QString m_slaveIPByte2;
-    QString m_slaveIPByte3;
-    QString m_slaveIPByte4;
+    QString m_slaveIP;
     //Serial
     QString m_serialPort;
     QString m_baud;

@@ -24,10 +24,7 @@ void SettingsModbusTCP::showEvent(QShowEvent * event)
     //Load Settings
     if (m_settings != NULL) {
         ui->leTCPPort->setText(m_settings->TCPPort());
-        ui->leIP1->setText(m_settings->slaveIPByte1());
-        ui->leIP2->setText(m_settings->slaveIPByte2());
-        ui->leIP3->setText(m_settings->slaveIPByte3());
-        ui->leIP4->setText(m_settings->slaveIPByte4());
+        ui->leSlaveIP->setText(m_settings->slaveIP());
     }
 
 }
@@ -39,10 +36,7 @@ void SettingsModbusTCP::changesAccepted()
     //Save Settings
     if (m_settings != NULL) {
         m_settings->setTCPPort(ui->leTCPPort->text());
-        m_settings->setSlaveIPByte1(ui->leIP1->text());
-        m_settings->setSlaveIPByte2(ui->leIP2->text());
-        m_settings->setSlaveIPByte3(ui->leIP3->text());
-        m_settings->setSlaveIPByte4(ui->leIP4->text());
+        m_settings->setSlaveIP(ui->leSlaveIP->text());
     }
 
 }
