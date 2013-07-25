@@ -16,6 +16,12 @@
     <height>360</height>
    </size>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>720</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Modbus Master</string>
   </property>
@@ -393,6 +399,7 @@
     <addaction name="actionConnect"/>
     <addaction name="actionRead_Write"/>
     <addaction name="actionScan"/>
+    <addaction name="actionReset_Counters"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -517,6 +524,15 @@
    </property>
    <property name="text">
     <string>Scan</string>
+   </property>
+  </action>
+  <action name="actionReset_Counters">
+   <property name="icon">
+    <iconset resource="../data/qModMaster.qrc">
+     <normaloff>:/img/Trash-16.png</normaloff>:/img/Trash-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reset Counters</string>
    </property>
   </action>
  </widget>

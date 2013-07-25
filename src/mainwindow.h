@@ -39,7 +39,9 @@ private:
     ModbusCommSettings *m_modbusCommSettings;
     void updateStatusBar();
     QLabel *m_statusText;
-    QWidget *m_statusInd;
+    QLabel *m_statusInd;
+    QLabel *m_statusPackets;
+    QLabel *m_statusErrors;
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
 

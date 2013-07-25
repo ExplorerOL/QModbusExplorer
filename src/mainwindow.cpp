@@ -6,6 +6,9 @@
 #include "ui_mainwindow.h"
 #include "eutils.h"
 
+const QString PACKETS="Packets : ";
+const QString ERRORS="Errors : ";
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -49,12 +52,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
 
     //UI - status
-    m_statusInd = new QWidget;
+    m_statusInd = new QLabel;
     m_statusInd->setFixedSize( 16, 16 );
     m_statusText = new QLabel;
+    m_statusPackets = new QLabel(PACKETS + "0");
+    m_statusPackets->setStyleSheet("QLabel {color:blue;}");
+    m_statusErrors = new QLabel(ERRORS + "0");
+    m_statusErrors->setStyleSheet("QLabel {color:red;}");
     ui->statusBar->addWidget(m_statusInd);
     ui->statusBar->addWidget(m_statusText, 10);
-    m_statusInd->setStyleSheet("background-color: red");
+    ui->statusBar->addWidget(m_statusPackets, 10);
+    ui->statusBar->addWidget(m_statusErrors, 10);
+    m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
 
     //Populate function name combo box
     ui->cmbFunctionCode->clear();
@@ -65,10 +74,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addAction(ui->actionConnect);
     ui->mainToolBar->addAction(ui->actionRead_Write);
     ui->mainToolBar->addAction(ui->actionScan);
+    ui->mainToolBar->addAction(ui->actionReset_Counters);
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionBus_Monitor);
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionSerial_RTU);
     ui->mainToolBar->addAction(ui->actionTCP);
     ui->mainToolBar->addAction(ui->actionSettings);
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionAbout);
     ui->mainToolBar->addAction(ui->actionExit);
 
@@ -77,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_modbus->regModel->setBase(EUtils::UInt);
     connect(m_modbus,SIGNAL(refreshView()),this,SLOT(refreshView()));
     connect(m_modbus->regModel,SIGNAL(refreshView()),this,SLOT(refreshView()));
+    connect(ui->actionReset_Counters,SIGNAL(triggered()),m_modbus,SLOT(resetCounters()));
 
      //Update UI
     ui->sbNoOfCoils->setEnabled(true);
@@ -279,6 +293,9 @@ void MainWindow::changedConnect(bool value)
         modbusConnect(false);
     }
 
+    m_modbus->resetCounters();
+    refreshView();
+
 }
 
 void MainWindow::changedSlaveIP()
@@ -336,11 +353,11 @@ void MainWindow::updateStatusBar()
 
     //Connection is valid
     if (m_modbus->isConnected()) {
-        m_statusInd->setStyleSheet("background-color: green");
+        m_statusInd->setPixmap(QPixmap(":/img/ballgreen-16.png"));
         qDebug()<<  "MainWindow : updateStatusBar - ind color = green" ;
     }
     else {
-        m_statusInd->setStyleSheet("background-color: red");
+        m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
         qDebug()<<  "MainWindow : updateStatusBar - ind color = red" ;
     }
 
@@ -479,7 +496,10 @@ void MainWindow::modbusConnect(bool connect)
  void MainWindow::refreshView()
  {
 
-     qDebug()<<  "MainWindow : refrehView";
+     qDebug()<<  "MainWindow : refrehView -> packets : " << m_modbus->packets() << ", errors : " << m_modbus->errors();
      ui->tblRegisters->resizeColumnsToContents();
+
+     m_statusPackets->setText(PACKETS + QString("%1").arg(m_modbus->packets()));
+     m_statusErrors->setText(ERRORS + QString("%1").arg(m_modbus->errors()));
 
  }

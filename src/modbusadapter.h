@@ -33,6 +33,8 @@ public:
      void setScanRate(int scanRate);
      void startPollTimer();
      void stopPollTimer();
+     int packets();
+     int errors();
 
 private:
      void modbusReadData(int slave, int functionCode, int startAddress, int noOfItems);
@@ -46,12 +48,15 @@ private:
      int m_numOfRegs;
      int m_scanRate;
      QTimer *m_pollTimer;
+     int m_packets;
+     int m_errors;
 
 signals:
     void refreshView();
 
 public slots:
     void modbusTransaction();
+    void resetCounters();
 
 };
 

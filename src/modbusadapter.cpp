@@ -23,6 +23,8 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_connected = false;
     m_ModBusMode = EUtils::None;
     m_pollTimer = new QTimer(this);
+    m_packets = 0;
+    m_errors = 0;
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
 }
 
@@ -123,6 +125,7 @@ void ModbusAdapter::modbusTransaction()
     //Modbus request data
 
     qDebug()<<  "ModbusAdapter : modbusTransaction ";
+    m_packets += 1;
 
     switch(m_functionCode)
     {
@@ -201,6 +204,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
     {
 
         regModel->setNoValidValues();
+        m_errors += 1;
 
         QString line;
         if(ret < 0) {
@@ -281,6 +285,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
     {
 
         regModel->setNoValidValues();
+        m_errors += 1;
 
         QString line;
         if(ret < 0) {
@@ -310,7 +315,7 @@ void ModbusAdapter::busMonitorRequestData(uint8_t * data, uint8_t dataLen)
         line += QString().sprintf( "%.2x  ", data[i] );
     }
 
-    line = EUtils::TxTimeStamp(m_ModBusMode) + " : " + line;
+    line = EUtils::TxTimeStamp(m_ModBusMode) + " : " + line.toUpper();
 
     rawModel->addLine(line);
 
@@ -326,7 +331,7 @@ void ModbusAdapter::busMonitorResponseData(uint8_t * data, uint8_t dataLen)
         line += QString().sprintf( "%.2x  ", data[i] );
     }
 
-    line = EUtils::RxTimeStamp(m_ModBusMode) + " : " + line;
+    line = EUtils::RxTimeStamp(m_ModBusMode) + " : " + line.toUpper();
 
     rawModel->addLine(line);
 
@@ -372,6 +377,23 @@ void ModbusAdapter::addItems()
 void ModbusAdapter::setScanRate(int scanRate)
 {
     m_scanRate = scanRate;
+}
+
+void ModbusAdapter::resetCounters()
+{
+    m_packets = 0;
+    m_errors = 0;
+    emit(refreshView());
+}
+
+int ModbusAdapter::packets()
+{
+    return m_packets;
+}
+
+int ModbusAdapter::errors()
+{
+    return m_errors;
 }
 
 void ModbusAdapter::startPollTimer()

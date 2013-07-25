@@ -14,5 +14,8 @@
         <file>run-16.png</file>
         <file>stop-16.png</file>
         <file>remove-16.png</file>
+        <file>ballgreen-16.png</file>
+        <file>ballorange-16.png</file>
+        <file>Trash-16.png</file>
     </qresource>
 </RCC>
