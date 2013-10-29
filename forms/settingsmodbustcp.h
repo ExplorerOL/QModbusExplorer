@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QAbstractButton>
 
 #include "src/modbuscommsettings.h"
 
@@ -21,6 +22,7 @@ public:
 private:
     Ui::SettingsModbusTCP *ui;
     ModbusCommSettings * m_settings;
+    int validateInputs();
 
 private slots:
     void changesAccepted();

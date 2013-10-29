@@ -67,13 +67,18 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
 void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
 {
-    //Modbus RTU connect
-
+    //Modbus TCP connect
+    QString strippedIP = "";
     modbusDisConnect();
 
     qDebug()<<  "ModbusAdapter : modbusConnect TCP";
-
-    m_modbus = modbus_new_tcp(ip.toAscii().constData(), port);
+    strippedIP = stripIP(ip);
+    if (strippedIP == ""){
+        QMessageBox::critical(NULL, "Connection failed","Wrong IP Address.");
+        return;
+    }
+    else
+        m_modbus = modbus_new_tcp(strippedIP.toAscii().constData(), port);
 
     //Debug messages from libmodbus
     modbus_set_debug(m_modbus, DBG);
@@ -404,6 +409,28 @@ void ModbusAdapter::startPollTimer()
 void ModbusAdapter::stopPollTimer()
 {
     m_pollTimer->stop();
+}
+
+QString ModbusAdapter::stripIP(QString ip)
+{
+    //Strip zero's from IP
+    QStringList ipBytes;
+    QString res = "";
+    int i;
+
+    ipBytes = ip.split(".");
+    if (ipBytes.size() == 4){
+        res = ipBytes[0];
+        i = 1;
+        while (i <  ipBytes.size()){
+            res = res + "." + QString("").setNum(ipBytes[i].toInt());
+            i++;
+        }
+        return res;
+    }
+    else
+        return "";
+
 }
 
 extern "C" {

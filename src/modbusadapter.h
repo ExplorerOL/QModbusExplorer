@@ -39,6 +39,7 @@ public:
 private:
      void modbusReadData(int slave, int functionCode, int startAddress, int noOfItems);
      void modbusWriteData(int slave, int functionCode, int startAddress, int noOfItems);
+     QString stripIP(QString ip);
      modbus_t * m_modbus;
      bool m_connected;
      int m_ModBusMode;
