@@ -18,8 +18,8 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>240</width>
-    <height>110</height>
+    <width>300</width>
+    <height>160</height>
    </size>
   </property>
   <property name="windowTitle">
