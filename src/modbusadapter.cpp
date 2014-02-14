@@ -224,6 +224,8 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
         }
+
+        modbus_flush(m_modbus); //flush data
      }
 
 }
@@ -305,6 +307,8 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
         }
+
+        modbus_flush(m_modbus); //flush data
      }
 
 }
