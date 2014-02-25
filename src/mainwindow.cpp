@@ -188,7 +188,7 @@ void MainWindow::changedModbusMode(int currIndex)
 void MainWindow::changedFunctionCode(int currIndex)
 {
 
-    //Enable-Disable number of coils
+    //Enable-Disable number of coils or registers
 
     qDebug()<<  "MainWindow : changedFunctionCode index = " << currIndex;
 
@@ -199,43 +199,52 @@ void MainWindow::changedFunctionCode(int currIndex)
         case _FC_READ_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Coils");
                 break;
         case _FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Coils");
                 break;
         case _FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Registers");
                 break;
         case _FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Registers");
                 break;
         case _FC_WRITE_SINGLE_COIL:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
+                ui->lblNoOfCoils->setText("Number of Coils");
                 break;
         case _FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Coils");
                 break;
         case _FC_WRITE_SINGLE_REGISTER:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
+                ui->lblNoOfCoils->setText("Number of Registers");
                 break;
         case _FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Registers");
                 break;
         default:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(true);
+                ui->lblNoOfCoils->setText("Number of Coils");
                 break;
      }
 
