@@ -26,7 +26,11 @@ SOURCES += src/main.cpp \
     3rdparty/libmodbus/modbus-rtu.c \
     src/rawdatadelegate.cpp \
     src/registersdatadelegate.cpp \
-    src/modbuscommsettings.cpp
+    src/modbuscommsettings.cpp \
+    3rdparty/QsLog/QsLogDest.cpp \
+    3rdparty/QsLog/QsLog.cpp \
+    3rdparty/QsLog/QsLogDestConsole.cpp \
+    3rdparty/QsLog/QsLogDestFile.cpp
 
 HEADERS  += src/mainwindow.h \
     3rdparty/libmodbus/modbus.h \
@@ -41,9 +45,16 @@ HEADERS  += src/mainwindow.h \
     forms/busmonitor.h \
     src/rawdatadelegate.h \
     src/registersdatadelegate.h \
-    src/modbuscommsettings.h
+    src/modbuscommsettings.h \
+    3rdparty/QsLog/QsLog.h \
+    3rdparty/QsLog/QsLogDest.h \
+    3rdparty/QsLog/QsLogDestConsole.h \
+    3rdparty/QsLog/QsLogLevel.h \
+    3rdparty/QsLog/QsLogDisableForThisFile.h \
+    3rdparty/QsLog/QsLogDestFile.h
 
-INCLUDEPATH += 3rdparty/libmodbus
+INCLUDEPATH += 3rdparty/libmodbus \
+    3rdparty/QsLog
 
 unix:SOURCES +=
 
@@ -55,6 +66,10 @@ win32:DEFINES += _TTY_WIN_  WINVER=0x0501
 
 win32:LIBS += -lsetupapi -lwsock32 -lws2_32
 
+DEFINES += QS_LOG_LINE_NUMBERS     # automatically writes the file and line for each log message
+#DEFINES += QS_LOG_DISABLE         # logging code is replaced with a no-op
+#DEFINES += QS_LOG_SEPARATE_THREAD # messages are queued and written from a separate thread
+#DEFINES += LIB_MODBUS_DEBUG_OUTPUT # enable debug output from libmodbus
 
 FORMS    += forms/mainwindow.ui \
     forms/about.ui \
@@ -65,6 +80,16 @@ FORMS    += forms/mainwindow.ui \
 
 RESOURCES += \
     data/qModMaster.qrc
+
+
+
+
+
+
+
+
+
+
 
 
 

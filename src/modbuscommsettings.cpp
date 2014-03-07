@@ -45,12 +45,13 @@ void  ModbusCommSettings::loadSettings()
         #endif
     else
         m_RTS = this->value("RTS").toString();
-    if (this->value("MaxNoOfLines").toInt() == 0)
+    if (this->value("MaxNoOfLines").toInt() == 0 ||
+            this->value("MaxNoOfLines").isNull())
         m_maxNoOfLines = "50";
     else
         m_maxNoOfLines = this->value("MaxNoOfLines").toString();
-    if (this->value("TimeOut").toInt() == 0)
-        m_timeOut = "1";
+    if (this->value("TimeOut").isNull())
+        m_timeOut = "0";
     else
         m_timeOut = this->value("TimeOut").toString();
 

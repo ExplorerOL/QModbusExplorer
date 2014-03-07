@@ -1,4 +1,5 @@
 #include "rawdatamodel.h"
+#include "QsLog.h"
 #include <QtDebug>
 
 RawDataModel::RawDataModel(QObject *parent) :
@@ -13,7 +14,7 @@ void RawDataModel::addLine(QString line)
 
     if (!m_addLinesEnabled) return;
 
-    qDebug()<<  "RawDataModel : addLine - " << line << " , Lines = " << m_rawData.length();
+    QLOG_INFO() <<  "Raw Data Model Line = " << line << " , No of lines = " << m_rawData.length();
 
     if (m_rawData.length() == m_maxNoOfLines)
         m_rawData.removeFirst();
@@ -25,7 +26,7 @@ void RawDataModel::addLine(QString line)
 void RawDataModel::clear()
 {
 
-    qDebug()<<  "RawDataModel : clear" ;
+    QLOG_INFO() <<  "Raw Data Model cleared" ;
 
     m_rawData.clear();
     model->setStringList(m_rawData);

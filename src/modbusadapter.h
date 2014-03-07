@@ -31,6 +31,7 @@ public:
      void addItems();
 
      void setScanRate(int scanRate);
+     void setTimeOut(int timeOut);
      void startPollTimer();
      void stopPollTimer();
      int packets();
@@ -49,8 +50,11 @@ private:
      int m_numOfRegs;
      int m_scanRate;
      QTimer *m_pollTimer;
+     QTimer *m_timeOutTimer;
      int m_packets;
      int m_errors;
+     int m_timeOut;
+     bool m_transactionIsPending;
 
 signals:
     void refreshView();
@@ -58,6 +62,7 @@ signals:
 public slots:
     void modbusTransaction();
     void resetCounters();
+    void timeOut();
 
 };
 

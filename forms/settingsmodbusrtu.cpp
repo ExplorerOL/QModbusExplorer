@@ -20,7 +20,6 @@ SettingsModbusRTU::~SettingsModbusRTU()
 
 void SettingsModbusRTU::showEvent(QShowEvent * event)
 {
-    qDebug()<<  "SettingsModbusRTU : form show" ;
 
     //Load Settings
     if (m_settings != NULL) {
@@ -66,7 +65,6 @@ void SettingsModbusRTU::showEvent(QShowEvent * event)
 
 void SettingsModbusRTU::changesAccepted()
 {
-    qDebug()<<  "SettingsModbusRTU : changes accepted" ;
 
     //Save Settings
     if (m_settings != NULL) {

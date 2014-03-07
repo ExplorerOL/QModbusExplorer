@@ -113,7 +113,7 @@
      <item row="1" column="2">
       <widget class="QSpinBox" name="sbResponseTimeout">
        <property name="minimum">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="maximum">
         <number>20</number>

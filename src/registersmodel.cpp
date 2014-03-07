@@ -1,4 +1,5 @@
 #include "registersmodel.h"
+#include "QsLog.h"
 #include <QStandardItem>
 #include <QtDebug>
 
@@ -24,8 +25,8 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     m_firstRow = startAddress / 10;
     m_lastRow = (startAddress + noOfItems - 1) / 10;
 
-    qDebug()<<  "RegistersModel : address " << startAddress << " ,noOfItems " << noOfItems
-                << " ,offset " << m_offset << " ,first row " << m_firstRow << " ,last row " << m_lastRow;
+    QLOG_INFO() <<  "Registers Model Address = " << startAddress << " , noOfItems = " << noOfItems
+                << " , offset = " << m_offset << " , first row = " << m_firstRow << " , last row = " << m_lastRow;
 
     //Format Vertical - Horizontal Header
     clear();
@@ -81,7 +82,6 @@ void RegistersModel::setNoValidValues()
     int row;
     int col;
     //if we have no valid values we set  as value = '-/-'
-    qDebug()<<  "RegistersModel : setNoValidValues";
 
     for (int i = m_offset; i < m_offset + m_noOfItems; i++){
         row = i / 10;
@@ -99,10 +99,7 @@ void RegistersModel::setValue(int idx, int value)
     int col;
     QString convertedValue;
 
-    qDebug()<<  "RegistersModel : value - " << value << " is 16 Bit - " << m_is16Bit;
-
     convertedValue = EUtils::formatValue(value, m_frmt, m_is16Bit);
-    qDebug()<<  "RegistersModel : converted value  - " << convertedValue << ", " << m_frmt;
 
     //set model data
     if (m_noOfItems == 1){
@@ -113,7 +110,7 @@ void RegistersModel::setValue(int idx, int value)
         row = (m_offset + idx) / 10;
         col = (m_offset + idx) % 10;
     }
-    qDebug()<<  "RegistersModel : row, col = " << row << ", " << col;
+
     QModelIndex index = model->index(row, col, QModelIndex());
     model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
     model->setData(index,convertedValue,Qt::DisplayRole);
@@ -126,8 +123,6 @@ int RegistersModel::value(int idx)
     QString stringVal;
     int intVal;
     bool ok;
-
-    qDebug()<<  "RegistersModel : value - row " << idx;
 
     //Get Value
     stringVal = strValue(idx);
@@ -143,7 +138,6 @@ QString RegistersModel::strValue(int idx)
 {
     int row;
     int col;
-    qDebug()<<  "RegistersModel : strValue - row " << idx;
 
     //get model data
     if (m_noOfItems == 1){
@@ -173,14 +167,13 @@ void RegistersModel::changeBase(int frmt)
     bool ok;
     QString convertedVal;
 
-    qDebug()<<  "RegistersModel : changeBase from " << m_base << " to " << frmt ;
+    QLOG_INFO()<<  "Registers Model changed base from " << m_base << " to " << frmt ;
 
     //change base
     for (int idx = 0; idx < m_noOfItems ; idx++) {
         //Get Value
         stringVal = strValue(idx);
         intVal = stringVal.toInt(&ok,m_base);
-        qDebug()<<  "RegistersModel : changeBase - stringVal = " << stringVal << " - intVal = " << intVal;
         //Format Value
         if (ok)
             convertedVal = EUtils::formatValue(intVal, frmt, m_is16Bit);
@@ -206,7 +199,7 @@ void RegistersModel::changeBase(int frmt)
 void RegistersModel::clear()
 {
 
-    qDebug()<<  "RegistersModel : clear" ;
+    QLOG_INFO()<<  "Registers Model Cleared" ;
 
     //Clear model
     model->clear();
@@ -216,7 +209,8 @@ void RegistersModel::clear()
 void RegistersModel::setBase(int frmt)
 {
 
-    qDebug()<<  "RegistersModel : setBase " << frmt ;
+    QLOG_INFO()<<  "Registers Model set base = " << frmt ;
+
     m_regDataDelegate->setBase(frmt);
     changeBase(frmt);
     m_base = frmt;
@@ -227,7 +221,7 @@ void RegistersModel::setBase(int frmt)
 void RegistersModel::setIs16Bit(bool is16Bit)
 {
 
-    qDebug()<<  "RegistersModel : setIs16Bit " << is16Bit ;
+    QLOG_INFO()<<  "Registers Model Is16Bit = " << is16Bit ;
     m_is16Bit = is16Bit;
     m_regDataDelegate->setIs16Bit(is16Bit);
 

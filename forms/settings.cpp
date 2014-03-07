@@ -20,7 +20,6 @@ Settings::~Settings()
 
 void Settings::showEvent(QShowEvent * event)
 {
-    qDebug()<<  "Settings : form show" ;
 
     //Load Settings
     if (m_settings != NULL) {
@@ -32,12 +31,11 @@ void Settings::showEvent(QShowEvent * event)
 
 void Settings::changesAccepted()
 {
-    qDebug()<<  "Settings : changes accepted" ;
 
     //Save Settings
     if (m_settings != NULL) {
-        m_settings->setMaxNoOfLines((QString)ui->sbMaxNoOfRawDataLines->value());
-        m_settings->setTimeOut((QString)ui->sbResponseTimeout->value());
+        m_settings->setMaxNoOfLines(ui->sbMaxNoOfRawDataLines->cleanText());
+        m_settings->setTimeOut(ui->sbResponseTimeout->cleanText());
     }
 
 }

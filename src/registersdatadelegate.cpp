@@ -1,4 +1,5 @@
 #include "registersdatadelegate.h"
+#include "QsLog.h"
 #include <QtDebug>
 #include <QPainter>
 #include <QSpinBox>
@@ -19,8 +20,6 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     const QStyleOptionViewItem &/* option */,
     const QModelIndex &/* index */) const
 {
-
-    qDebug()<<  "RegistersDataDelegate : createEditor";
 
     if (m_base == 2) {//Bin
             if (m_is16Bit) {
@@ -59,8 +58,6 @@ void RegistersDataDelegate::setEditorData(QWidget *editor,
 
     QString value = index.model()->data(index, Qt::EditRole).toString();
 
-    qDebug()<<  "RegistersDataDelegate : setEditorData - " << value;
-
     if (m_base == 2 && !m_is16Bit) {//Bin
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         spinBox->setValue(value.toInt());
@@ -89,12 +86,13 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
         intVal = (lineEdit->text()).toInt(&ok,m_base);
         if (intVal > 65535){
             QMessageBox::critical(0, "Set value failed","Value is greater than 65535.");
+            QLOG_WARN() <<  "Set value failed. Value is greater than 65535";
             return;
         }
         value = EUtils::formatValue(intVal, m_frmt, m_is16Bit);
     }
 
-    qDebug()<<  "RegistersDataDelegate : setModelData - " << value;
+    QLOG_INFO() <<  "Set model data value = " << value;
 
     model->setData(index, value, Qt::EditRole);
 }
@@ -108,7 +106,6 @@ void RegistersDataDelegate::updateEditorGeometry(QWidget *editor,
 void RegistersDataDelegate::setBase(int frmt)
 {
 
-    qDebug()<<  "RegistersDataDelegate : setBase " << frmt ;
     m_base = frmt;
     m_frmt = frmt;
 
@@ -117,7 +114,6 @@ void RegistersDataDelegate::setBase(int frmt)
 void RegistersDataDelegate::setIs16Bit(bool is16Bit)
 {
 
-    qDebug()<<  "RegistersDataDelegate : setIs16Bit " << is16Bit ;
     m_is16Bit = is16Bit;
 
 }

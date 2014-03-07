@@ -20,7 +20,6 @@ SettingsModbusTCP::~SettingsModbusTCP()
 
 void SettingsModbusTCP::showEvent(QShowEvent * event)
 {
-    qDebug()<<  "SettingsModbusTCP : form show" ;
 
     //Load Settings
     if (m_settings != NULL) {
@@ -34,7 +33,6 @@ void SettingsModbusTCP::changesAccepted()
 {
     int validation;
 
-    qDebug()<<  "SettingsModbusTCP : changes accepted" ;
     validation = validateInputs();
     switch(validation){
         case 0 : // ok

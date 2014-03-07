@@ -3,15 +3,10 @@
 #include <QtDebug>
 #include <QMessageBox>
 
+#include "QsLog.h"
 #include <errno.h>
 
 ModbusAdapter *m_instance;
-
-#ifdef QT_NO_DEBUG_OUTPUT
-    #define DBG 0
-#else
-    #define DBG 1
-#endif
 
 ModbusAdapter::ModbusAdapter(QObject *parent) :
     QObject(parent),
@@ -23,9 +18,14 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_connected = false;
     m_ModBusMode = EUtils::None;
     m_pollTimer = new QTimer(this);
+    m_timeOutTimer = new QTimer(this);
+    m_timeOut = 0;
+    m_transactionIsPending = false;
     m_packets = 0;
     m_errors = 0;
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
+    connect(m_timeOutTimer,SIGNAL(timeout()),this,SLOT(timeOut()));
+    connect(regModel,SIGNAL(refreshView()),this,SIGNAL(refreshView()));
 }
 
 void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut)
@@ -34,27 +34,29 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
     QString line;
     modbusDisConnect();
 
-    qDebug()<<  "ModbusAdapter : modbusConnect RTU";
+    QLOG_INFO()<<  "Modbus Connect RTU";
 
     m_modbus = modbus_new_rtu(port.toAscii().constData(),baud,parity.toAscii(),dataBits,stopBits,RTS);
     line = "Connecting to Serial Port [" + port + "]...";
+    QLOG_INFO() <<  line;
 
     //Debug messages from libmodbus
-    modbus_set_debug(m_modbus, DBG);
-    //Response timeout
-    struct timeval response_timeout;
-    response_timeout.tv_sec = timeOut;
-    response_timeout.tv_usec = 0;
-    modbus_set_response_timeout(m_modbus, &response_timeout);
+    #ifdef LIB_MODBUS_DEBUG_OUTPUT
+        modbus_set_debug(m_modbus, 1);
+    #endif
+
+    m_timeOut = timeOut;
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
         QMessageBox::critical(NULL, "Connection failed", "Could not connect to serial port!");
+        QLOG_ERROR()<<  "Connection failed. Could not connect to serial port";
         m_connected = false;
         line += "Failed";
     }
     else {
         m_connected = true;
         line += "OK";
+        QLOG_INFO() <<  line;
     }
 
     m_ModBusMode = EUtils::RTU;
@@ -71,29 +73,34 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     QString strippedIP = "";
     modbusDisConnect();
 
-    qDebug()<<  "ModbusAdapter : modbusConnect TCP";
+    QLOG_INFO()<<  "Modbus Connect TCP";
     strippedIP = stripIP(ip);
     if (strippedIP == ""){
         QMessageBox::critical(NULL, "Connection failed","Wrong IP Address.");
+        QLOG_ERROR()<<  "Connection failed. Blank IP Address";
         return;
     }
-    else
+    else {
         m_modbus = modbus_new_tcp(strippedIP.toAscii().constData(), port);
+        QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port;
+    }
 
     //Debug messages from libmodbus
-    modbus_set_debug(m_modbus, DBG);
-    //Response timeout
-    struct timeval response_timeout;
-    response_timeout.tv_sec = timeOut;
-    response_timeout.tv_usec = 0;
-    modbus_set_response_timeout(m_modbus, &response_timeout);
+    #ifdef LIB_MODBUS_DEBUG_OUTPUT
+        modbus_set_debug(m_modbus, 1);
+    #endif
+
+    m_timeOut = timeOut;
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
         QMessageBox::critical(NULL, "Connection failed", "Could not connect to TCP port!");
+        QLOG_ERROR()<<  "Connection to IP : " << ip << ":" << port << "...failed. Could not connect to TCP port";
         m_connected = false;
     }
-    else
+    else {
         m_connected = true;
+        QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port << "...OK";
+    }
 
     m_ModBusMode = EUtils::TCP;
 
@@ -104,7 +111,7 @@ void ModbusAdapter::modbusDisConnect()
 {
     //Modbus disconnect
 
-    qDebug()<<  "ModbusAdapter : modbusDisConnect ";
+    QLOG_INFO()<<  "Modbus disconnected";
 
     if(m_modbus) {
         modbus_close(m_modbus);
@@ -129,8 +136,11 @@ void ModbusAdapter::modbusTransaction()
 {
     //Modbus request data
 
-    qDebug()<<  "ModbusAdapter : modbusTransaction ";
+    QLOG_INFO() <<  "Modbus Transaction. Function Code = " << m_functionCode;
     m_packets += 1;
+
+    if (m_timeOut > 0)
+        m_timeOutTimer->start(m_timeOut * 1000);
 
     switch(m_functionCode)
     {
@@ -158,7 +168,7 @@ void ModbusAdapter::modbusTransaction()
 void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress, int noOfItems)
 {
 
-    qDebug()<<  "ModbusAdapter : modbusReadData ";
+    QLOG_INFO() <<  "Modbus Read Data ";
 
     if(m_modbus == NULL) return;
 
@@ -194,7 +204,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                     break;
     }
 
-    qDebug()<<  "ModbusAdapter : modbusReadData ret = " << ret;
+    QLOG_INFO() <<  "Modbus Read Data return value = " << ret;
 
     //update data model
     if(ret == noOfItems)
@@ -214,13 +224,13 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
         QString line;
         if(ret < 0) {
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
-                qDebug()<<  "ModbusAdapter : modbusRequestData - " << line;
+                QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
-                qDebug()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
+                QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
         }
@@ -233,7 +243,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
 void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddress, int noOfItems)
 {
 
-    qDebug()<<  "ModbusAdapter : modbusWriteData ";
+    QLOG_INFO() <<  "Modbus Write Data ";
 
     if(m_modbus == NULL) return;
 
@@ -280,7 +290,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     break;
     }
 
-    qDebug()<<  "ModbusAdapter : modbusWriteData ret = " << ret;
+    QLOG_INFO() <<  "Modbus Write Data return value = " << ret;
 
     //update data model
     if(ret == noOfItems)
@@ -297,13 +307,13 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
         QString line;
         if(ret < 0) {
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
-                qDebug()<<  "ModbusAdapter : modbusRequestData - " << line;
+                QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
-                qDebug()<<  "ModbusAdapter : modbusRequestData - " << "Number of registers returned does not match number of registers requested!";
+                QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
         }
@@ -324,9 +334,12 @@ void ModbusAdapter::busMonitorRequestData(uint8_t * data, uint8_t dataLen)
         line += QString().sprintf( "%.2x  ", data[i] );
     }
 
+    QLOG_INFO() << "Tx Data : " << line;
     line = EUtils::TxTimeStamp(m_ModBusMode) + " : " + line.toUpper();
 
     rawModel->addLine(line);
+
+    m_transactionIsPending = true;
 
 }
 void ModbusAdapter::busMonitorResponseData(uint8_t * data, uint8_t dataLen)
@@ -340,9 +353,12 @@ void ModbusAdapter::busMonitorResponseData(uint8_t * data, uint8_t dataLen)
         line += QString().sprintf( "%.2x  ", data[i] );
     }
 
+    QLOG_INFO() << "Rx Data : " << line;
     line = EUtils::RxTimeStamp(m_ModBusMode) + " : " + line.toUpper();
 
     rawModel->addLine(line);
+
+    m_transactionIsPending = false;
 
 }
 
@@ -413,6 +429,28 @@ void ModbusAdapter::startPollTimer()
 void ModbusAdapter::stopPollTimer()
 {
     m_pollTimer->stop();
+}
+
+void ModbusAdapter::setTimeOut(int timeOut)
+{
+
+    m_timeOut = timeOut;
+
+}
+
+void ModbusAdapter::timeOut()
+{
+
+    QLOG_INFO()<<  "Timeout";
+
+    if (m_transactionIsPending){
+        m_transactionIsPending = false;
+        rawModel->addLine(EUtils::SysTimeStamp() + " : Timeout");
+        QLOG_ERROR() << "Timeout";
+    }
+
+    m_timeOutTimer->stop();
+
 }
 
 QString ModbusAdapter::stripIP(QString ip)

@@ -68,6 +68,21 @@
        </property>
        <item>
         <property name="text">
+         <string>110</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>300</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>600</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>1200</string>
         </property>
        </item>
@@ -89,6 +104,11 @@
        <item>
         <property name="text">
          <string>19200</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>28800</string>
         </property>
        </item>
        <item>

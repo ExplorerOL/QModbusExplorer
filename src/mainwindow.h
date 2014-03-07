@@ -4,9 +4,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QLabel>
-#include <QTimer>
 
-#include "modbus.h"
 #include "forms/about.h"
 #include "forms/settingsmodbusrtu.h"
 #include "forms/settingsmodbustcp.h"
@@ -24,7 +22,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0, ModbusAdapter *adapter = 0, ModbusCommSettings *settings = 0);
     ~MainWindow();
 
 private:
@@ -64,6 +62,8 @@ private slots:
     void request();
     void refreshView();
 
+signals:
+    void resetCounters();
 
 };
 
