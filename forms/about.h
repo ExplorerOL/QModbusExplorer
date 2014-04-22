@@ -1,7 +1,7 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 namespace Ui {
     class About;
