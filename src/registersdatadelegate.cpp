@@ -36,7 +36,9 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     }
     else if (m_base == 10) {//Dec
             QLineEdit *editor = new QLineEdit(parent);
-            editor->setInputMask("00000");
+            QRegExp rx("-{0,1}[0-9]{1,5}");
+            QValidator *validator = new QRegExpValidator(rx);
+            editor->setValidator(validator);
             return editor;
     }
     else if (m_base == 16) {//Hex
@@ -46,7 +48,9 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     }
     else {//Default = Dec
             QLineEdit *editor = new QLineEdit(parent);
-            editor->setInputMask("00000");
+            QRegExp rx("-{0,1}[0-9]{1,5}");
+            QValidator *validator = new QRegExpValidator(rx);
+            editor->setValidator(validator);
             return editor;
     }
 
@@ -87,6 +91,11 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
         if (intVal > 65535){
             QMessageBox::critical(0, "Set value failed","Value is greater than 65535.");
             QLOG_WARN() <<  "Set value failed. Value is greater than 65535";
+            return;
+        }
+        else if (intVal < -32768){
+            QMessageBox::critical(0, "Set value failed","Value is smaller than -32768.");
+            QLOG_WARN() <<  "Set value failed. Value is smaller than -32768";
             return;
         }
         value = EUtils::formatValue(intVal, m_frmt, m_is16Bit);
