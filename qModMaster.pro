@@ -31,7 +31,8 @@ SOURCES += src/main.cpp \
     3rdparty/QsLog/QsLogDest.cpp \
     3rdparty/QsLog/QsLog.cpp \
     3rdparty/QsLog/QsLogDestConsole.cpp \
-    3rdparty/QsLog/QsLogDestFile.cpp
+    3rdparty/QsLog/QsLogDestFile.cpp \
+    src/MyInfoBar.cpp
 
 HEADERS  += src/mainwindow.h \
     3rdparty/libmodbus/modbus.h \
@@ -52,7 +53,8 @@ HEADERS  += src/mainwindow.h \
     3rdparty/QsLog/QsLogDestConsole.h \
     3rdparty/QsLog/QsLogLevel.h \
     3rdparty/QsLog/QsLogDisableForThisFile.h \
-    3rdparty/QsLog/QsLogDestFile.h
+    3rdparty/QsLog/QsLogDestFile.h \
+    src/MyInfoBar.h
 
 INCLUDEPATH += 3rdparty/libmodbus \
     3rdparty/QsLog
@@ -66,6 +68,8 @@ win32:SOURCES +=
 win32:DEFINES += _TTY_WIN_  WINVER=0x0501
 
 win32:LIBS += -lsetupapi -lwsock32 -lws2_32
+
+QMAKE_CXXFLAGS += -std=gnu++11
 
 DEFINES += QS_LOG_LINE_NUMBERS     # automatically writes the file and line for each log message
 #DEFINES += QS_LOG_DISABLE         # logging code is replaced with a no-op

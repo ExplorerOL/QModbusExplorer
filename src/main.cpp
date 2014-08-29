@@ -29,11 +29,11 @@ int main(int argc, char *argv[])
     ModbusCommSettings settings("qModMaster.ini");
 
     //show main window
-    MainWindow mainWin(NULL, &modbus_adapt, &settings);
+    mainWin = new MainWindow(NULL, &modbus_adapt, &settings);
     //connect signals - slots
-    QObject::connect(&modbus_adapt, SIGNAL(refreshView()), &mainWin, SLOT(refreshView()));
-    QObject::connect(&mainWin, SIGNAL(resetCounters()), &modbus_adapt, SLOT(resetCounters()));
-    mainWin.show();
+    QObject::connect(&modbus_adapt, SIGNAL(refreshView()), mainWin, SLOT(refreshView()));
+    QObject::connect(mainWin, SIGNAL(resetCounters()), &modbus_adapt, SLOT(resetCounters()));
+    mainWin->show();
 
     return a.exec();
 

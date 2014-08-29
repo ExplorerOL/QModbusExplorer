@@ -32,6 +32,10 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="MyInfoBar" name="infobar">
+     </widget>
+    </item>
+    <item>
      <widget class="QFrame" name="frame_1">
       <property name="minimumSize">
        <size>
@@ -361,8 +365,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>500</width>
-     <height>21</height>
+     <width>560</width>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -537,6 +541,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyInfoBar</class>
+   <extends>QFrame</extends>
+   <header>src/MyInfoBar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tblRegisters</tabstop>
  </tabstops>

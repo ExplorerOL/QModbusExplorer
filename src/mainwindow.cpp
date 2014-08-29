@@ -1,10 +1,11 @@
 #include <QtDebug>
-#include <QtWidgets/QMessageBox>
 
 #include "QsLog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "eutils.h"
+
+MainWindow *mainWin;
 
 const QString PACKETS="Packets : ";
 const QString ERRORS="Errors : ";
@@ -396,10 +397,14 @@ void MainWindow::request()
     QLOG_INFO()<<  "Request transaction. No or registers = " <<  rowCount;
 
     if (rowCount == 0) {
-        QMessageBox::critical(this, "Request failed","Add items to Registers Table.");
+        mainWin->showUpInfoBar("Request failed\nAdd items to Registers Table.", MyInfoBar::Error);
         QLOG_WARN()<<  "Request failed. No items in registers table ";
         return;
     }
+    else {
+        mainWin->hideInfoBar();
+    }
+
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
@@ -418,10 +423,13 @@ void MainWindow::scan(bool value)
    int rowCount = m_modbus->regModel->model->rowCount();
 
    if (value && rowCount == 0) {
-       QMessageBox::critical(this, "Request failed","Add items to Registers Table.");
+       mainWin->showUpInfoBar("Request failed\nAdd items to Registers Table.", MyInfoBar::Error);
        QLOG_WARN()<<  "Request failed. No items in registers table ";
        ui->actionScan->setChecked(false);
        return;
+   }
+   else {
+       mainWin->hideInfoBar();
    }
 
    m_modbus->setSlave(ui->sbSlaveID->value());
@@ -500,3 +508,13 @@ void MainWindow::modbusConnect(bool connect)
      m_statusErrors->setText(ERRORS + QString("%1").arg(m_modbus->errors()));
 
  }
+
+void MainWindow::showUpInfoBar(QString message, enum MyInfoBar::MyInfoBarType type)
+{
+    ui->infobar->showUp(message, type);
+}
+
+void MainWindow::hideInfoBar()
+{
+    ui->infobar->hide();
+}
