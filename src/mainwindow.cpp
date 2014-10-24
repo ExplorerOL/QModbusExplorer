@@ -509,9 +509,9 @@ void MainWindow::modbusConnect(bool connect)
 
  }
 
-void MainWindow::showUpInfoBar(QString message, enum MyInfoBar::MyInfoBarType type)
+void MainWindow::showUpInfoBar(QString message, MyInfoBar::InfoType type)
 {
-    ui->infobar->showUp(message, type);
+    ui->infobar->show(message, type);
 }
 
 void MainWindow::hideInfoBar()

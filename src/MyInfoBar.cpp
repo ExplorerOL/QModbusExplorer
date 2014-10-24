@@ -1,35 +1,7 @@
 #include <QtWidgets>
 #include "MyInfoBar.h"
 
-void MyInfoBar::setType(enum MyInfoBarType type)
-{
-    switch (type) {
-        case Question:
-            this->setStyleSheet("background-color: skyblue");
-            break;
-        case Error:
-            this->setStyleSheet("background-color: orange");
-            break;
-        default:
-        case Warning:
-            this->setStyleSheet("background-color: khaki");
-            break;
-    }
-}
-
-void MyInfoBar::setMessage(QString message)
-{
-    label->setText(message);
-}
-
-void MyInfoBar::showUp(QString message, enum MyInfoBarType type)
-{
-    this->setMessage(message);
-    this->setType(type);
-    this->show();
-}
-
-MyInfoBar::MyInfoBar(QWidget *parent)
+MyInfoBar::MyInfoBar(QWidget *parent) : QFrame(parent)
 {
     label = new QLabel;
 
@@ -52,20 +24,45 @@ MyInfoBar::MyInfoBar(QWidget *parent)
     button->setFocusPolicy(Qt::NoFocus);
     connect(button, SIGNAL(clicked()), this, SLOT(hide()));
 
-    hboxlayout = new QHBoxLayout;
+    QHBoxLayout *hboxlayout = new QHBoxLayout;
     hboxlayout->addWidget(label);
     hboxlayout->addWidget(button);
 
-    if (parent != NULL) {
-        this->setParent(parent);
-    }
-    this->setLayout(hboxlayout);
-    this->setFrameStyle(QFrame::Box);
-    this->hide();
+    setLayout(hboxlayout);
+    setFrameStyle(QFrame::Box);
+    hide();
 }
 
-MyInfoBar::MyInfoBar(QString message, enum MyInfoBarType type, QWidget *parent) : MyInfoBar(parent)
+MyInfoBar::MyInfoBar(QString message, InfoType type, QWidget *parent) : MyInfoBar(parent)
 {
-    this->setType(type);
-    this->setMessage(message);
+    setMessage(message);
+    setInfoType(type);
+}
+
+void MyInfoBar::setInfoType(InfoType type)
+{
+    switch (type) {
+        case Question:
+            setStyleSheet("background-color: skyblue");
+            break;
+        case Error:
+            setStyleSheet("background-color: orange");
+            break;
+        default:
+        case Warning:
+            setStyleSheet("background-color: khaki");
+            break;
+    }
+}
+
+void MyInfoBar::setMessage(QString message)
+{
+    label->setText(message);
+}
+
+void MyInfoBar::show(QString message, InfoType type)
+{
+    setMessage(message);
+    setInfoType(type);
+    QFrame::show();
 }
