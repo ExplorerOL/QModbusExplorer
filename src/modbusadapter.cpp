@@ -216,6 +216,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 int data = is16Bit ? dest16[i] : dest[i];
                 regModel->setValue(i,data);
             }
+            mainWin->hideInfoBar();
     }
     else
     {
@@ -230,7 +231,6 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line.insert(0, "Read data failed.\n");
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
-                else mainWin->hideInfoBar();
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
@@ -238,7 +238,6 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line.insert(0, "Read data failed.\n");
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
-                else mainWin->hideInfoBar();
         }
 
         modbus_flush(m_modbus); //flush data
@@ -303,6 +302,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
     {
         //values written correctly
         rawModel->addLine(EUtils::SysTimeStamp() + " : values written correctly.");
+        mainWin->hideInfoBar();
     }
     else
     {
@@ -317,7 +317,6 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line.insert(0, "Write data failed.\n");
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
-                else mainWin->hideInfoBar();
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
@@ -325,7 +324,6 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line.insert(0, "Write data failed.\n");
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
-                else mainWin->hideInfoBar();
         }
 
         modbus_flush(m_modbus); //flush data
