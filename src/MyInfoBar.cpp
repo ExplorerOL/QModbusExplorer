@@ -1,4 +1,7 @@
-#include <QtWidgets>
+#include <QFrame>
+#include <QLabel>
+#include <QPushButton>
+#include <QHBoxLayout>
 #include "MyInfoBar.h"
 
 MyInfoBar::MyInfoBar(QWidget *parent) : QFrame(parent)

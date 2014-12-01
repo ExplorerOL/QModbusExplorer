@@ -1,7 +1,8 @@
 #ifndef _MyInfoBar_H_
 #define _MyInfoBar_H_
 
-#include <QtWidgets>
+#include <QLabel>
+#include <QFrame>
 
 class MyInfoBar : public QFrame
 {

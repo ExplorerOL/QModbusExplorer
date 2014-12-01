@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/QMainWindow>
+#include <QMainWindow>
 #include <QSettings>
-#include <QtWidgets/QLabel>
+#include <QLabel>
 
 #include "forms/about.h"
 #include "forms/settingsmodbusrtu.h"

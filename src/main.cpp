@@ -1,4 +1,4 @@
-#include <QtWidgets/QApplication>
+#include <QApplication>
 #include <stdio.h>
 #include <stdlib.h>
 #include <QDir>

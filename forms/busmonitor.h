@@ -1,8 +1,8 @@
 #ifndef BUSMONITOR_H
 #define BUSMONITOR_H
 
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QLabel>
+#include <QMainWindow>
+#include <QLabel>
 #include "src/rawdatamodel.h"
 
 namespace Ui {
