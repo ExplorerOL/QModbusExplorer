@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QLabel>
+#include <QString>
 
 #include "forms/about.h"
 #include "forms/settingsmodbusrtu.h"
@@ -46,6 +47,8 @@ private:
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
 
+    void changeEvent(QEvent* event);
+
 private slots:
     void showSettingsModbusRTU();
     void showSettingsModbusTCP();
@@ -64,6 +67,7 @@ private slots:
     void scan(bool value);
     void request();
     void refreshView();
+    void changeLanguage();
 
 signals:
     void resetCounters();

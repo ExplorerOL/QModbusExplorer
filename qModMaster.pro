@@ -59,6 +59,9 @@ HEADERS  += src/mainwindow.h \
 INCLUDEPATH += 3rdparty/libmodbus \
     3rdparty/QsLog
 
+TRANSLATIONS += translations/$$TARGET"_zh_CN.ts"
+TRANSLATIONS += translations/$$TARGET"_zh_TW.ts"
+
 unix:SOURCES +=
 
 unix:DEFINES += _TTY_POSIX_
@@ -84,7 +87,8 @@ FORMS    += forms/mainwindow.ui \
     forms/busmonitor.ui
 
 RESOURCES += \
-    data/qModMaster.qrc
+    icons/icons.qrc \
+    translations/translations.qrc
 
 
 

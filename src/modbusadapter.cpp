@@ -47,7 +47,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
     m_timeOut = timeOut;
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
-        mainWin->showUpInfoBar("Connection failed\nCould not connect to serial port.", MyInfoBar::Error);
+        mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to serial port."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Could not connect to serial port";
         m_connected = false;
         line += "Failed";
@@ -76,7 +76,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     QLOG_INFO()<<  "Modbus Connect TCP";
     strippedIP = stripIP(ip);
     if (strippedIP == ""){
-        mainWin->showUpInfoBar("Connection failed\nWrong IP Address.", MyInfoBar::Error);
+        mainWin->showUpInfoBar(tr("Connection failed\nWrong IP Address."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Blank IP Address";
         return;
     }
@@ -94,7 +94,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     m_timeOut = timeOut;
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
-        mainWin->showUpInfoBar("Connection failed\nCould not connect to TCP port.", MyInfoBar::Error);
+        mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to TCP port."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection to IP : " << ip << ":" << port << "...failed. Could not connect to TCP port";
         m_connected = false;
     }
@@ -229,14 +229,14 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                line.insert(0, "Read data failed.\n");
+                line = QString(tr("Read data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                line.insert(0, "Read data failed.\n");
+                line = QString(tr("Read data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
 
@@ -315,14 +315,14 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                line.insert(0, "Write data failed.\n");
+                line = QString(tr("Write data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                line.insert(0, "Write data failed.\n");
+                line = QString(tr("Write data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
                 if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
 
