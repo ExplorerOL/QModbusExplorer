@@ -1,7 +1,6 @@
 #include "modbusadapter.h"
-#include <QMessageBox>
 #include <QtDebug>
-#include <QMessageBox>
+#include "mainwindow.h"
 
 #include "QsLog.h"
 #include <errno.h>
@@ -48,7 +47,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
     m_timeOut = timeOut;
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
-        QMessageBox::critical(NULL, "Connection failed", "Could not connect to serial port!");
+        mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to serial port."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Could not connect to serial port";
         m_connected = false;
         line += "Failed";
@@ -56,6 +55,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
     else {
         m_connected = true;
         line += "OK";
+        mainWin->hideInfoBar();
         QLOG_INFO() <<  line;
     }
 
@@ -76,12 +76,13 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     QLOG_INFO()<<  "Modbus Connect TCP";
     strippedIP = stripIP(ip);
     if (strippedIP == ""){
-        QMessageBox::critical(NULL, "Connection failed","Wrong IP Address.");
+        mainWin->showUpInfoBar(tr("Connection failed\nWrong IP Address."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Blank IP Address";
         return;
     }
     else {
         m_modbus = modbus_new_tcp(strippedIP.toLatin1().constData(), port);
+        mainWin->hideInfoBar();
         QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port;
     }
 
@@ -93,12 +94,13 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     m_timeOut = timeOut;
 
     if(m_modbus && modbus_connect(m_modbus) == -1) {
-        QMessageBox::critical(NULL, "Connection failed", "Could not connect to TCP port!");
+        mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to TCP port."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection to IP : " << ip << ":" << port << "...failed. Could not connect to TCP port";
         m_connected = false;
     }
     else {
         m_connected = true;
+        mainWin->hideInfoBar();
         QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port << "...OK";
     }
 
@@ -214,6 +216,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 int data = is16Bit ? dest16[i] : dest[i];
                 regModel->setValue(i,data);
             }
+            mainWin->hideInfoBar();
     }
     else
     {
@@ -226,13 +229,15 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
+                line = QString(tr("Read data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
+                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Read data failed",line);
+                line = QString(tr("Read data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
+                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
 
         modbus_flush(m_modbus); //flush data
@@ -297,6 +302,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
     {
         //values written correctly
         rawModel->addLine(EUtils::SysTimeStamp() + " : values written correctly.");
+        mainWin->hideInfoBar();
     }
     else
     {
@@ -309,13 +315,15 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
+                line = QString(tr("Write data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
+                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                if (!m_pollTimer->isActive()) QMessageBox::critical(NULL, "Write data failed",line);
+                line = QString(tr("Write data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
+                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
 
         modbus_flush(m_modbus); //flush data

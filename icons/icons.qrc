@@ -1,5 +1,7 @@
 <RCC>
-    <qresource prefix="/img">
+    <qresource prefix="/icons">
+        <file>close8-black.png</file>
+        <file>close8-red.png</file>
         <file>close16.png</file>
         <file>info16.png</file>
         <file>add-16.png</file>

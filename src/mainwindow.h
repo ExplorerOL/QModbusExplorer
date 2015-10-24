@@ -1,9 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/QMainWindow>
+#include <QMainWindow>
 #include <QSettings>
-#include <QtWidgets/QLabel>
+#include <QLabel>
+#include <QString>
 
 #include "forms/about.h"
 #include "forms/settingsmodbusrtu.h"
@@ -12,6 +13,7 @@
 #include "forms/busmonitor.h"
 #include "modbuscommsettings.h"
 #include "modbusadapter.h"
+#include "MyInfoBar.h"
 
 namespace Ui {
     class MainWindow;
@@ -24,6 +26,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0, ModbusAdapter *adapter = 0, ModbusCommSettings *settings = 0);
     ~MainWindow();
+    void showUpInfoBar(QString message, MyInfoBar::InfoType type);
+    void hideInfoBar();
 
 private:
     Ui::MainWindow *ui;
@@ -43,6 +47,8 @@ private:
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
 
+    void changeEvent(QEvent* event);
+
 private slots:
     void showSettingsModbusRTU();
     void showSettingsModbusTCP();
@@ -61,10 +67,13 @@ private slots:
     void scan(bool value);
     void request();
     void refreshView();
+    void changeLanguage();
 
 signals:
     void resetCounters();
 
 };
+
+extern MainWindow *mainWin;
 
 #endif // MAINWINDOW_H

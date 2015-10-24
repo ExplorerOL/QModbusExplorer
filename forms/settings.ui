@@ -32,8 +32,8 @@
    <string>Settings</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../data/qModMaster.qrc">
-    <normaloff>:/img/options-16.png</normaloff>:/img/options-16.png</iconset>
+   <iconset resource="../icons/icons.qrc">
+    <normaloff>:/icons/options-16.png</normaloff>:/icons/options-16.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -135,7 +135,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../data/qModMaster.qrc"/>
+  <include location="../icons/icons.qrc"/>
  </resources>
  <connections>
   <connection>

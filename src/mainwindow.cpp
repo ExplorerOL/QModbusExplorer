@@ -1,13 +1,13 @@
 #include <QtDebug>
-#include <QtWidgets/QMessageBox>
+#include <QcoreApplication>
+#include <QTranslator>
 
 #include "QsLog.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "eutils.h"
 
-const QString PACKETS="Packets : ";
-const QString ERRORS="Errors : ";
+MainWindow *mainWin;
 
 MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettings *settings) :
     QMainWindow(parent), m_modbus(adapter), m_modbusCommSettings(settings),
@@ -40,14 +40,17 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(scan(bool)));
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
+    connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
+    connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
+    connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
 
     //UI - status
     m_statusInd = new QLabel;
     m_statusInd->setFixedSize( 16, 16 );
     m_statusText = new QLabel;
-    m_statusPackets = new QLabel(PACKETS + "0");
+    m_statusPackets = new QLabel(tr("Packets : ") + "0");
     m_statusPackets->setStyleSheet("QLabel {color:blue;}");
-    m_statusErrors = new QLabel(ERRORS + "0");
+    m_statusErrors = new QLabel(tr("Errors : ") + "0");
     m_statusErrors->setStyleSheet("QLabel {color:red;}");
     ui->statusBar->addWidget(m_statusInd);
     ui->statusBar->addWidget(m_statusText, 10);
@@ -182,57 +185,59 @@ void MainWindow::changedFunctionCode(int currIndex)
 
     const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
 
+    QString String_number_of_coils(tr("Number of Coils"));
+    QString String_number_of_registers(tr("Number of Registers"));
     switch(funcionCode)//Label = Read Request, Write Request
     {
         case _FC_READ_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Coils");
+                ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case _FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Coils");
+                ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case _FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Registers");
+                ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case _FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Registers");
+                ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case _FC_WRITE_SINGLE_COIL:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
-                ui->lblNoOfCoils->setText("Number of Coils");
+                ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case _FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Coils");
+                ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case _FC_WRITE_SINGLE_REGISTER:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
-                ui->lblNoOfCoils->setText("Number of Registers");
+                ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case _FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Registers");
+                ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         default:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText("Number of Coils");
+                ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
      }
 
@@ -396,10 +401,14 @@ void MainWindow::request()
     QLOG_INFO()<<  "Request transaction. No or registers = " <<  rowCount;
 
     if (rowCount == 0) {
-        QMessageBox::critical(this, "Request failed","Add items to Registers Table.");
+        mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), MyInfoBar::Error);
         QLOG_WARN()<<  "Request failed. No items in registers table ";
         return;
     }
+    else {
+        mainWin->hideInfoBar();
+    }
+
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
@@ -418,10 +427,13 @@ void MainWindow::scan(bool value)
    int rowCount = m_modbus->regModel->model->rowCount();
 
    if (value && rowCount == 0) {
-       QMessageBox::critical(this, "Request failed","Add items to Registers Table.");
+       mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), MyInfoBar::Error);
        QLOG_WARN()<<  "Request failed. No items in registers table ";
        ui->actionScan->setChecked(false);
        return;
+   }
+   else {
+       mainWin->hideInfoBar();
    }
 
    m_modbus->setSlave(ui->sbSlaveID->value());
@@ -496,7 +508,34 @@ void MainWindow::modbusConnect(bool connect)
      QLOG_INFO()<<  "Packets sent / received = " << m_modbus->packets() << ", errors = " << m_modbus->errors();
      ui->tblRegisters->resizeColumnsToContents();
 
-     m_statusPackets->setText(PACKETS + QString("%1").arg(m_modbus->packets()));
-     m_statusErrors->setText(ERRORS + QString("%1").arg(m_modbus->errors()));
+     m_statusPackets->setText(tr("Packets : ") + QString("%1").arg(m_modbus->packets()));
+     m_statusErrors->setText(tr("Errors : ") + QString("%1").arg(m_modbus->errors()));
 
  }
+
+void MainWindow::showUpInfoBar(QString message, MyInfoBar::InfoType type)
+{
+    ui->infobar->show(message, type);
+}
+
+void MainWindow::hideInfoBar()
+{
+    ui->infobar->hide();
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+    }
+    QMainWindow::changeEvent(event);
+}
+
+void MainWindow::changeLanguage()
+{
+    extern QTranslator *Translator;
+    QCoreApplication::removeTranslator(Translator);
+    Translator->load(":/translations/" + QCoreApplication::applicationName() + sender()->objectName().right(6));
+    QCoreApplication::installTranslator(Translator);
+}
