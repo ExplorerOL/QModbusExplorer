@@ -102,8 +102,8 @@ void BusMonitor::startStop(bool en)
 
 void BusMonitor::selectedRow(const QModelIndex & selected)
 {
-    if (qVariantCanConvert<QString>(selected.data())) {
-            QString val = qVariantValue<QString>(selected.data());
+    if (selected.data().canConvert(QMetaType::QString)) {
+            QString val = selected.data().value<QString>();
             qDebug()<<  "BusMonitor : selectedRow - " << val;
             if (val.indexOf("Sys") > -1)
                 parseSysMsg(val);

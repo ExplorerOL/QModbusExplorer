@@ -36,7 +36,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
     QLOG_INFO()<<  "Modbus Connect RTU";
 
-    m_modbus = modbus_new_rtu(port.toAscii().constData(),baud,parity.toAscii(),dataBits,stopBits,RTS);
+    m_modbus = modbus_new_rtu(port.toLatin1().constData(),baud,parity.toLatin1(),dataBits,stopBits,RTS);
     line = "Connecting to Serial Port [" + port + "]...";
     QLOG_INFO() <<  line;
 
@@ -81,7 +81,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
         return;
     }
     else {
-        m_modbus = modbus_new_tcp(strippedIP.toAscii().constData(), port);
+        m_modbus = modbus_new_tcp(strippedIP.toLatin1().constData(), port);
         QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port;
     }
 

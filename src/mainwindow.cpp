@@ -1,6 +1,5 @@
-#include <QTextCodec>
 #include <QtDebug>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 
 #include "QsLog.h"
 #include "mainwindow.h"
@@ -15,9 +14,6 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    //Text codec
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     //UI - dialogs
     m_dlgAbout = new About();

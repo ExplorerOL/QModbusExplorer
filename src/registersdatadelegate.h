@@ -1,7 +1,7 @@
 #ifndef REGISTERSDELEGATE_H
 #define REGISTERSDELEGATE_H
 
-#include <QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 class RegistersDataDelegate : public QStyledItemDelegate
  {
