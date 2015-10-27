@@ -9,15 +9,15 @@ MyInfoBar::MyInfoBar(QWidget *parent) : QFrame(parent)
     label = new QLabel;
 
     QPushButton *button = new QPushButton;
-    button->setStyleSheet("QPushButton{image: url(:/img/close8-black.png);\
+    button->setStyleSheet("QPushButton{image: url(:/icons/close8-black.png);\
                                        border: none;\
                                        height: 12px;\
                                        width: 12px}\
-                           QPushButton:hover{image: url(:/img/close8-red.png);\
+                           QPushButton:hover{image: url(:/icons/close8-red.png);\
                                              border: none;\
                                              height: 12px;\
                                              width: 12px}\
-                           QPushButton:pressed{image: url(:/img/close8-red.png);\
+                           QPushButton:pressed{image: url(:/icons/close8-red.png);\
                                              background-color: lightgrey;\
                                              border: 1px solid darkgrey;\
                                              border-radius: 2px;\

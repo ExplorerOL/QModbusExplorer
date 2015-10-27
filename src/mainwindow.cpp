@@ -154,6 +154,7 @@ void MainWindow::showBusMonitor()
     //Show Bus Monitor
 
     m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
+    m_busMonitor->move(this->x() + this->width() + 20, this->y());
     m_busMonitor->show();
 
 }
