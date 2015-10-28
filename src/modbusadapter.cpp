@@ -230,14 +230,14 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line = QString(tr("Read data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
-                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
+                //if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line = QString(tr("Read data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
-                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
+                //if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
 
         modbus_flush(m_modbus); //flush data

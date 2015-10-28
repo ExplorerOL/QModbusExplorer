@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QCloseEvent>
+#include <QShowEvent>
 #include "busmonitor.h"
 #include "ui_busmonitor.h"
 #include "./src/rawdatadelegate.h"
@@ -17,14 +18,12 @@ BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
     //TODO Delegate
     //ui->lstRawData->setItemDelegate(new RawDataDelegate());
     //Setup Toolbar
-    ui->toolBar->addAction(ui->actionStart_Stop);
     ui->toolBar->addAction(ui->actionSave);
     ui->toolBar->addAction(ui->actionClear);
     ui->toolBar->addAction(ui->actionExit);
     connect(ui->actionSave,SIGNAL(triggered()),this,SLOT(save()));
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clear()));
     connect(ui->actionExit,SIGNAL(triggered()),this,SLOT(exit()));
-    connect(ui->actionStart_Stop,SIGNAL(toggled(bool)),this,SLOT(startStop(bool)));
     connect(ui->lstRawData,SIGNAL(activated(QModelIndex)),this,SLOT(selectedRow(QModelIndex)));
     connect(ui->lstRawData,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedRow(QModelIndex)));
 
@@ -88,15 +87,16 @@ void BusMonitor::exit()
 void BusMonitor::closeEvent(QCloseEvent *event)
 {
 
-    ui->actionStart_Stop->setChecked(false);
+    m_rawDataModel->enableAddLines(false);
     event->accept();
 
 }
 
-void BusMonitor::startStop(bool en)
+void BusMonitor::showEvent(QShowEvent *event)
 {
 
-    m_rawDataModel->enableAddLines(en);
+    m_rawDataModel->enableAddLines(true);
+    event->accept();
 
 }
 

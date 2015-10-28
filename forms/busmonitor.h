@@ -28,12 +28,12 @@ private:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void showEvent(QShowEvent *event);
 
 private slots:
     void clear();
     void exit();
     void save();
-    void startStop(bool en);
     void selectedRow(const QModelIndex & selected);
 
 };
