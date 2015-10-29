@@ -129,7 +129,7 @@
   <action name="actionClear">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/remove-16.png</normaloff>:/icons/remove-16.png</iconset>
+     <normaloff>:/icons/edit-clear-16.png</normaloff>:/icons/edit-clear-16.png</iconset>
    </property>
    <property name="text">
     <string>Clear</string>
@@ -163,22 +163,6 @@
    </property>
    <property name="toolTip">
     <string>Save</string>
-   </property>
-  </action>
-  <action name="actionStart_Stop">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/run-16.png</normaloff>
-     <normalon>:/icons/stop-16.png</normalon>:/icons/run-16.png</iconset>
-   </property>
-   <property name="text">
-    <string notr="true">Start-Stop</string>
-   </property>
-   <property name="toolTip">
-    <string>Start-Stop Monitor</string>
    </property>
   </action>
  </widget>

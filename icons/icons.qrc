@@ -19,5 +19,15 @@
         <file>ballgreen-16.png</file>
         <file>ballorange-16.png</file>
         <file>Trash-16.png</file>
+        <file>ethernet-port-16.png</file>
+        <file>serial-pot-16.png</file>
+        <file>edit-clear-16.png</file>
+        <file>reset-16.png</file>
+        <file>plug-connect-16.png</file>
+        <file>plug-disconnect-16.png</file>
+        <file>data-sort-16.png</file>
+        <file>China-flag-16.png</file>
+        <file>Taiwan-flag-16.png</file>
+        <file>usa-flag-16.png</file>
     </qresource>
 </RCC>

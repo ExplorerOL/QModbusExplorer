@@ -77,10 +77,9 @@ void BusMonitor::clear()
 void BusMonitor::exit()
 {
 
-    qDebug()<<  "BusMonitor : exit" ;
+   qDebug()<<  "BusMonitor : exit" ;
 
-    ui->actionStart_Stop->setChecked(false);
-    this->close();
+   this->close();
 
 }
 

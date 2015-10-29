@@ -447,7 +447,7 @@
   <action name="actionSerial_RTU">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/edit-16.png</normaloff>:/icons/edit-16.png</iconset>
+     <normaloff>:/icons/serial-pot-16.png</normaloff>:/icons/serial-pot-16.png</iconset>
    </property>
    <property name="text">
     <string notr="true">Modbus RTU...</string>
@@ -459,7 +459,7 @@
   <action name="actionTCP">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/network-16.png</normaloff>:/icons/network-16.png</iconset>
+     <normaloff>:/icons/ethernet-port-16.png</normaloff>:/icons/ethernet-port-16.png</iconset>
    </property>
    <property name="text">
     <string notr="true">Modbus TCP...</string>
@@ -507,7 +507,7 @@
   <action name="actionRead_Write">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/refresh-16.png</normaloff>:/icons/refresh-16.png</iconset>
+     <normaloff>:/icons/data-sort-16.png</normaloff>:/icons/data-sort-16.png</iconset>
    </property>
    <property name="text">
     <string>Read / Write</string>
@@ -519,7 +519,8 @@
    </property>
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/connect-16.png</normaloff>:/icons/connect-16.png</iconset>
+     <normaloff>:/icons/plug-disconnect-16.png</normaloff>
+     <normalon>:/icons/plug-connect-16.png</normalon>:/icons/plug-disconnect-16.png</iconset>
    </property>
    <property name="text">
     <string>Connect</string>
@@ -541,13 +542,17 @@
   <action name="actionReset_Counters">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/Trash-16.png</normaloff>:/icons/Trash-16.png</iconset>
+     <normaloff>:/icons/reset-16.png</normaloff>:/icons/reset-16.png</iconset>
    </property>
    <property name="text">
     <string>Reset Counters</string>
    </property>
   </action>
   <action name="actionSimplified_Chinese_zh_CN">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/China-flag-16.png</normaloff>:/icons/China-flag-16.png</iconset>
+   </property>
    <property name="text">
     <string notr="true">简体中文 (zh_CN)</string>
    </property>
@@ -559,6 +564,10 @@
    </property>
   </action>
   <action name="actionTraditional_Chinese_zh_TW">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/Taiwan-flag-16.png</normaloff>:/icons/Taiwan-flag-16.png</iconset>
+   </property>
    <property name="text">
     <string notr="true">繁體中文 (zh_TW)</string>
    </property>
@@ -570,6 +579,10 @@
    </property>
   </action>
   <action name="actionEnglish_en_US">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/usa-flag-16.png</normaloff>:/icons/usa-flag-16.png</iconset>
+   </property>
    <property name="text">
     <string notr="true">English (en_US)</string>
    </property>
