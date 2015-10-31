@@ -15,6 +15,9 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
 {
     ui->setupUi(this);
 
+    //notepad
+    m_notepad = new QProcess(this);
+
     //UI - dialogs
     m_dlgAbout = new About();
     connect(ui->actionAbout,SIGNAL(triggered()),m_dlgAbout,SLOT(show()));
@@ -34,12 +37,12 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->sbNoOfCoils,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
-    connect(ui->btAddItems,SIGNAL(clicked(bool)),this,SLOT(addItems()));
-    connect(ui->btClear,SIGNAL(clicked(bool)),this,SLOT(clearItems()));
+    connect(ui->actionClear,SIGNAL(clicked(bool)),this,SLOT(clearItems()));
     connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(request()));
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(scan(bool)));
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
+    connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
     connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
@@ -67,8 +70,10 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->mainToolBar->addAction(ui->actionConnect);
     ui->mainToolBar->addAction(ui->actionRead_Write);
     ui->mainToolBar->addAction(ui->actionScan);
+    ui->mainToolBar->addAction(ui->actionClear);
     ui->mainToolBar->addAction(ui->actionReset_Counters);
     ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction(ui->actionOpenLogFile);
     ui->mainToolBar->addAction(ui->actionBus_Monitor);
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionSerial_RTU);
@@ -309,6 +314,18 @@ void MainWindow::changedSlaveIP()
 
 }
 
+void MainWindow::openLogFile()
+{
+
+    //Open log file
+    QStringList arg;
+    QLOG_INFO()<<  "Open log file";
+
+    arg << "QModmaster.log";
+    m_notepad->start("notepad", arg);
+
+}
+
 void MainWindow::changedStartAddress(int value)
 {
 
@@ -357,10 +374,10 @@ void MainWindow::updateStatusBar()
 
     //Connection is valid
     if (m_modbus->isConnected()) {
-        m_statusInd->setPixmap(QPixmap(":/img/ballgreen-16.png"));
+        m_statusInd->setPixmap(QPixmap(":/icons/bullet-green-16.png"));
     }
     else {
-        m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
+        m_statusInd->setPixmap(QPixmap(":/icons/bullet-red-16.png"));
     }
 
 }
@@ -368,9 +385,7 @@ void MainWindow::updateStatusBar()
 void MainWindow::addItems()
 {
 
-    //Add items to registers model and to modbus adapter only if we are connected
-    //if (!m_modbus->isConnected())
-        //return;
+    //add items
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
@@ -451,8 +466,6 @@ void MainWindow::scan(bool value)
     else
         m_modbus->stopPollTimer();
 
-    ui->btAddItems->setEnabled(!value);
-    ui->btClear->setEnabled(!value);
     ui->cmbBase->setEnabled(!value);
     ui->cmbFunctionCode->setEnabled(!value);
     ui->sbSlaveID->setEnabled(!value);

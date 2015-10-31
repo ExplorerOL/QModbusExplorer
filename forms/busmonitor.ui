@@ -9,13 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>560</width>
     <height>360</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>560</width>
     <height>360</height>
    </size>
   </property>
@@ -30,7 +30,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../icons/icons.qrc">
-    <normaloff>:/icons/view-16.png</normaloff>:/icons/view-16.png</iconset>
+    <normaloff>:/icons/TV-16.png</normaloff>:/icons/TV-16.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -144,7 +144,7 @@
   <action name="actionExit">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/close16.png</normaloff>:/icons/close16.png</iconset>
+     <normaloff>:/icons/Close-16.png</normaloff>:/icons/Close-16.png</iconset>
    </property>
    <property name="text">
     <string>Exit</string>

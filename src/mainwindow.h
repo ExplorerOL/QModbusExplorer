@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QLabel>
 #include <QString>
+#include <QProcess>
 
 #include "forms/about.h"
 #include "forms/settingsmodbusrtu.h"
@@ -31,6 +32,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    //notepad
+    QProcess *m_notepad;
     //UI - Dialogs
     About *m_dlgAbout;
     SettingsModbusRTU *m_dlgModbusRTU;
@@ -64,6 +67,7 @@ private slots:
     void changedSlaveIP();
     void addItems();
     void clearItems();
+    void openLogFile();
     void scan(bool value);
     void request();
     void refreshView();

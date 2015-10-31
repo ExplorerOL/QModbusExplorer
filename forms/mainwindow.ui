@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../icons/icons.qrc">
-    <normaloff>:/icons/connect-16.png</normaloff>:/icons/connect-16.png</iconset>
+    <normaloff>:/icons/connect-24.png</normaloff>:/icons/connect-24.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -267,64 +267,6 @@
          </widget>
         </item>
         <item row="2" column="5">
-         <widget class="QPushButton" name="btAddItems">
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="toolTip">
-           <string>Add Items</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../icons/icons.qrc">
-            <normaloff>:/icons/add-16.png</normaloff>:/icons/add-16.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>16</width>
-            <height>16</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="5">
-         <widget class="QPushButton" name="btClear">
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>24</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Clear Items</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../icons/icons.qrc">
-            <normaloff>:/icons/remove-16.png</normaloff>:/icons/remove-16.png</iconset>
-          </property>
-          <property name="iconSize">
-           <size>
-            <width>16</width>
-            <height>16</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="6">
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -393,6 +335,7 @@
     <property name="title">
      <string>View</string>
     </property>
+    <addaction name="actionOpenLogFile"/>
     <addaction name="actionBus_Monitor"/>
    </widget>
    <widget class="QMenu" name="menuCommands">
@@ -435,7 +378,7 @@
   <action name="actionExit">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/close16.png</normaloff>:/icons/close16.png</iconset>
+     <normaloff>:/icons/exit-16.png</normaloff>:/icons/exit-16.png</iconset>
    </property>
    <property name="text">
     <string>Exit</string>
@@ -471,7 +414,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/info16.png</normaloff>:/icons/info16.png</iconset>
+     <normaloff>:/icons/info-sign-16.png</normaloff>:/icons/info-sign-16.png</iconset>
    </property>
    <property name="text">
     <string>About...</string>
@@ -483,7 +426,7 @@
   <action name="actionBus_Monitor">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/view-16.png</normaloff>:/icons/view-16.png</iconset>
+     <normaloff>:/icons/TV-16.png</normaloff>:/icons/TV-16.png</iconset>
    </property>
    <property name="text">
     <string>Bus Monitor</string>
@@ -532,8 +475,7 @@
    </property>
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/run-16.png</normaloff>
-     <normalon>:/icons/pause-16.png</normalon>:/icons/run-16.png</iconset>
+     <normaloff>:/icons/cyclic-process-16.png</normaloff>:/icons/cyclic-process-16.png</iconset>
    </property>
    <property name="text">
     <string>Scan</string>
@@ -591,6 +533,27 @@
    </property>
    <property name="toolTip">
     <string notr="true">English (en_US)</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/edit-clear-16.png</normaloff>:/icons/edit-clear-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Table</string>
+   </property>
+  </action>
+  <action name="actionOpenLogFile">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/text-x-log-16.png</normaloff>:/icons/text-x-log-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Log File</string>
    </property>
   </action>
  </widget>
