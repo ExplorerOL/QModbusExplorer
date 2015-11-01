@@ -321,8 +321,8 @@ void MainWindow::openLogFile()
     QStringList arg;
     QLOG_INFO()<<  "Open log file";
 
-    arg << "QModmaster.log";
-    m_notepad->start("notepad", arg);
+    arg << QCoreApplication::applicationDirPath() + "\\QModmaster.log";
+    m_notepad->start("notepad", arg, QIODevice::ReadOnly);
 
 }
 

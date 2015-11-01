@@ -10,10 +10,12 @@ MyInfoBar::MyInfoBar(QWidget *parent) : QFrame(parent)
 
     QPushButton *button = new QPushButton;
     button->setStyleSheet("QPushButton{image: url(:/icons/close8-black.png);\
+                                       background-color: lightgrey;\
                                        border: none;\
                                        height: 12px;\
                                        width: 12px}\
                            QPushButton:hover{image: url(:/icons/close8-red.png);\
+                                             background-color: lightgrey;\
                                              border: none;\
                                              height: 12px;\
                                              width: 12px}\
@@ -46,14 +48,17 @@ void MyInfoBar::setInfoType(InfoType type)
 {
     switch (type) {
         case Question:
-            setStyleSheet("background-color: skyblue");
+            setStyleSheet("color: black;\
+                          background-color: skyblue");
             break;
         case Error:
-            setStyleSheet("background-color: orange");
+            setStyleSheet("color: white;\
+                          background-color: red");
             break;
         default:
         case Warning:
-            setStyleSheet("background-color: khaki");
+            setStyleSheet("color: black;\
+                          background-color: yellow");
             break;
     }
 }
