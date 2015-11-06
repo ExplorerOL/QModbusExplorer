@@ -224,22 +224,22 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
         regModel->setNoValidValues();
         m_errors += 1;
 
-        QString line;
+        QString line = "";
         if(ret < 0) {
                 line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line = QString(tr("Read data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
-                //if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line = QString(tr("Read data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
-                //if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
 
+        mainWin->showUpInfoBar(line, MyInfoBar::Error);
+        m_timeOutTimer->stop();
         modbus_flush(m_modbus); //flush data
      }
 
@@ -316,16 +316,16 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line = QString(tr("Write data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
-                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
                 line = QString(tr("Write data failed.\nNumber of registers returned does not match number of registers requested!. ["))  +  modbus_strerror(errno) + "]";
-                if (!m_pollTimer->isActive()) mainWin->showUpInfoBar(line, MyInfoBar::Error);
-        }
+         }
 
+        mainWin->showUpInfoBar(line, MyInfoBar::Error);
+        m_timeOutTimer->stop();
         modbus_flush(m_modbus); //flush data
      }
 

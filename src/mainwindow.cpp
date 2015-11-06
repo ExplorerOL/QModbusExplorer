@@ -37,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->sbNoOfCoils,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
-    connect(ui->actionClear,SIGNAL(clicked(bool)),this,SLOT(clearItems()));
     connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(request()));
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(scan(bool)));
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
@@ -70,7 +69,6 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->mainToolBar->addAction(ui->actionConnect);
     ui->mainToolBar->addAction(ui->actionRead_Write);
     ui->mainToolBar->addAction(ui->actionScan);
-    ui->mainToolBar->addAction(ui->actionClear);
     ui->mainToolBar->addAction(ui->actionReset_Counters);
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionOpenLogFile);
@@ -398,16 +396,6 @@ void MainWindow::addItems()
 
 }
 
-void MainWindow::clearItems()
-{
-
-    //Clear items from registers model
-
-    QLOG_INFO()<<  "clearItems" ;
-
-    m_modbus->regModel->clear();
-
-}
 
 void MainWindow::request()
 {
