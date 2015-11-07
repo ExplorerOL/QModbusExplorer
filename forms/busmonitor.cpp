@@ -158,7 +158,7 @@ void BusMonitor::parseTxPDU(QStringList pdu, QString slave)
         ui->txtPDU->appendPlainText("Error! Cannot parse Message");
         return;
     }
-    ui->txtPDU->appendPlainText(slave + pdu[0]); // TODO : RTU> Slave addr, TCP> Unit ID
+    ui->txtPDU->appendPlainText(slave + pdu[0]);
     ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
     ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
     bool ok;

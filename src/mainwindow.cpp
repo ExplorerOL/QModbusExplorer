@@ -165,15 +165,15 @@ void MainWindow::showBusMonitor()
 void MainWindow::changedModbusMode(int currIndex)
 {
 
-    //Show-Hide Slave IP
+    //Change lblSlave text : Slave Addr, Unit ID
 
     QLOG_INFO()<<  "Modbus Mode changed. Index = " << currIndex;
 
     if (currIndex == 0) { //RTU
-
+        ui->lblSlave->setText("Slave Addr");
     }
     else { //TCP
-
+       ui->lblSlave->setText("Unit ID");
     }
 
     updateStatusBar();

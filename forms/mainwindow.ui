@@ -89,9 +89,9 @@
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QLabel" name="lblSlaveID">
+         <widget class="QLabel" name="lblSlave">
           <property name="text">
-           <string>Slave ID</string>
+           <string>Slave Addr</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
