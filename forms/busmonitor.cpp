@@ -87,6 +87,7 @@ void BusMonitor::closeEvent(QCloseEvent *event)
 {
 
     m_rawDataModel->enableAddLines(false);
+    clear();
     event->accept();
 
 }
@@ -129,7 +130,7 @@ void BusMonitor::parseTxMsg(QString msg)
             }
             for (int i = 4; i < row.length() - 1 ; i++)
                 pdu.append(row[i]);
-            parseTxPDU(pdu);
+            parseTxPDU(pdu, "Slave Addr : ");
             ui->txtPDU->appendPlainText("CRC : " + pdu[pdu.length() - 2] + pdu[pdu.length() - 1]);
         }
         else if (msg.indexOf("TCP") > -1){//TCP message
@@ -143,21 +144,21 @@ void BusMonitor::parseTxMsg(QString msg)
             QStringList pdu;
             for (int i = 10; i < row.length() - 1 ; i++)
                 pdu.append(row[i]);
-            parseTxPDU(pdu);
+            parseTxPDU(pdu, "Unit ID : ");
         }
         else
-            ui->txtPDU->appendPlainText("Unknown Message");
+            ui->txtPDU->appendPlainText("Error! Cannot parse Message");
 
 }
 
-void BusMonitor::parseTxPDU(QStringList pdu)
+void BusMonitor::parseTxPDU(QStringList pdu, QString slave)
 {
 
     if (pdu.length() < 6){//check message length
         ui->txtPDU->appendPlainText("Error! Cannot parse Message");
         return;
     }
-    ui->txtPDU->appendPlainText("SlaveID : " + pdu[0]);
+    ui->txtPDU->appendPlainText(slave + pdu[0]); // TODO : RTU> Slave addr, TCP> Unit ID
     ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
     ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
     bool ok;
@@ -197,7 +198,7 @@ void BusMonitor::parseRxMsg(QString msg)
         }
         for (int i = 4; i < row.length() - 1 ; i++)
             pdu.append(row[i]);
-        parseRxPDU(pdu);
+        parseRxPDU(pdu, "Slave Addr : ");
         ui->txtPDU->appendPlainText("CRC : " + pdu[pdu.length() - 2] + pdu[pdu.length() - 1]);
     }
     else if (msg.indexOf("TCP") > -1){//TCP message
@@ -211,14 +212,14 @@ void BusMonitor::parseRxMsg(QString msg)
         QStringList pdu;
         for (int i = 10; i < row.length() - 1 ; i++)
             pdu.append(row[i]);
-        parseRxPDU(pdu);
+        parseRxPDU(pdu, "Unit ID : ");
     }
     else
-        ui->txtPDU->appendPlainText("Unknown Message");
+        ui->txtPDU->appendPlainText("Error! Cannot parse Message");
 
 }
 
-void BusMonitor::parseRxPDU(QStringList pdu)
+void BusMonitor::parseRxPDU(QStringList pdu, QString slave)
 {
 
     bool ok;
@@ -228,7 +229,7 @@ void BusMonitor::parseRxPDU(QStringList pdu)
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText("SlaveID : " + pdu[0]);
+        ui->txtPDU->appendPlainText(slave + pdu[0]);
         ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
         ui->txtPDU->appendPlainText("Byte Count : " + pdu[2]);
         int byteCount = pdu[2].toInt(&ok,16);

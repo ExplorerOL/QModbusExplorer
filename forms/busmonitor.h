@@ -21,9 +21,9 @@ private:
     Ui::BusMonitor *ui;
     RawDataModel *m_rawDataModel;
     void parseTxMsg(QString msg);
-    void parseTxPDU(QStringList pdu);
+    void parseTxPDU(QStringList pdu, QString slave);
     void parseRxMsg(QString msg);
-    void parseRxPDU(QStringList pdu);
+    void parseRxPDU(QStringList pdu, QString slave);
     void parseSysMsg(QString msg);
 
 protected:
