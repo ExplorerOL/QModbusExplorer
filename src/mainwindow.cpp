@@ -16,7 +16,13 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->setupUi(this);
 
     //notepad
-    m_notepad = new QProcess(this);
+    #ifdef Q_OS_WIN32
+        m_notepad = new QProcess(this);
+        ui->actionOpenLogFile->setDisabled(false);
+    #else
+        m_notepad = NULL
+        ui->actionOpenLogFile->setDisabled(true);
+    #endif
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -90,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->sbNoOfCoils->setEnabled(true);
     ui->actionRead_Write->setEnabled(false);
     ui->actionScan->setEnabled(false);
+    ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
     updateStatusBar();
 
     QLOG_INFO()<<  "Start Program" ;
@@ -144,6 +151,7 @@ void MainWindow::showSettings()
         QLOG_INFO()<<  "Settings changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
+        ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
         m_modbusCommSettings->saveSettings();
     }
     else
@@ -319,8 +327,10 @@ void MainWindow::openLogFile()
     QStringList arg;
     QLOG_INFO()<<  "Open log file";
 
-    arg << QCoreApplication::applicationDirPath() + "\\QModmaster.log";
-    m_notepad->start("notepad", arg, QIODevice::ReadOnly);
+    #ifdef Q_OS_WIN32
+        arg << QCoreApplication::applicationDirPath() + "\\QModmaster.log";
+        m_notepad->start("notepad", arg, QIODevice::ReadOnly);
+    #endif
 
 }
 
