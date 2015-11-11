@@ -412,6 +412,8 @@ void MainWindow::request()
 
      //Request items from modbus adapter and add raw data to raw data model
     int rowCount = m_modbus->regModel->model->rowCount();
+    int baseAddr;
+
     QLOG_INFO()<<  "Request transaction. No or registers = " <<  rowCount;
 
     if (rowCount == 0) {
@@ -423,10 +425,12 @@ void MainWindow::request()
         mainWin->hideInfoBar();
     }
 
+    //get base address
+    baseAddr = m_modbusCommSettings->baseAddr().toInt();
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
-    m_modbus->setStartAddr(ui->sbStartAddress->value());
+    m_modbus->setStartAddr(ui->sbStartAddress->value() - baseAddr);
     m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
 
     //Modbus data

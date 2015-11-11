@@ -226,10 +226,10 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
 
         QString line = "";
         if(ret < 0) {
-                line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
+                line = QString("System exception. [") +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Read Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                line = QString(tr("Read data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
+                line = QString(tr("Read data failed.\nSystem exception. [")) +  modbus_strerror(errno) + "]";
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
@@ -312,10 +312,10 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
 
         QString line;
         if(ret < 0) {
-                line = QString("Slave threw exception  >  ").arg(ret) +  modbus_strerror(errno) + " ";
+                line = QString("System exception. [") +  modbus_strerror(errno) + "]";
                 QLOG_ERROR() <<  "Modbus Write Data failed. " << line;
                 rawModel->addLine(EUtils::SysTimeStamp() + " : " + line);
-                line = QString(tr("Write data failed.\nSlave threw exception  >  ")).arg(ret) +  modbus_strerror(errno) + " ";
+                line = QString(tr("Read data failed.\nSystem exception. [")) +  modbus_strerror(errno) + "]";
         }
         else {
                 line = QString("Number of registers returned does not match number of registers requested!. [")  +  modbus_strerror(errno) + "]";
