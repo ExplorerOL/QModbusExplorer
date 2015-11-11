@@ -66,6 +66,7 @@ private slots:
     void changedNoOfRegs(int value);
     void changedSlaveIP();
     void addItems();
+    void clearItems();
     void openLogFile();
     void scan(bool value);
     void request();

@@ -345,6 +345,7 @@
     <addaction name="actionConnect"/>
     <addaction name="actionRead_Write"/>
     <addaction name="actionScan"/>
+    <addaction name="actionClear"/>
     <addaction name="actionReset_Counters"/>
    </widget>
    <widget class="QMenu" name="menuLanguage">
@@ -535,18 +536,6 @@
     <string notr="true">English (en_US)</string>
    </property>
   </action>
-  <action name="actionClear">
-   <property name="icon">
-    <iconset resource="../icons/icons.qrc">
-     <normaloff>:/icons/edit-clear-16.png</normaloff>:/icons/edit-clear-16.png</iconset>
-   </property>
-   <property name="text">
-    <string>Clear</string>
-   </property>
-   <property name="toolTip">
-    <string>Clear Table</string>
-   </property>
-  </action>
   <action name="actionOpenLogFile">
    <property name="icon">
     <iconset resource="../icons/icons.qrc">
@@ -554,6 +543,15 @@
    </property>
    <property name="text">
     <string>Log File</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/edit-clear-16.png</normaloff>:/icons/edit-clear-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Table</string>
    </property>
   </action>
  </widget>
