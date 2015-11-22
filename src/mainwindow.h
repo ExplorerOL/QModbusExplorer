@@ -32,8 +32,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    //notepad
-    QProcess *m_notepad;
     //UI - Dialogs
     About *m_dlgAbout;
     SettingsModbusRTU *m_dlgModbusRTU;

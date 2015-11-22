@@ -1,5 +1,7 @@
 #include <QtDebug>
-#include <QcoreApplication>
+#include <QCoreApplication>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QTranslator>
 
 #include "QsLog.h"
@@ -14,15 +16,6 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    //notepad
-    #ifdef Q_OS_WIN32
-        m_notepad = new QProcess(this);
-        ui->actionOpenLogFile->setDisabled(false);
-    #else
-        m_notepad = NULL
-        ui->actionOpenLogFile->setDisabled(true);
-    #endif
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -326,13 +319,12 @@ void MainWindow::openLogFile()
 {
 
     //Open log file
-    QStringList arg;
+    QString arg;
     QLOG_INFO()<<  "Open log file";
 
-    #ifdef Q_OS_WIN32
-        arg << QCoreApplication::applicationDirPath() + "\\QModmaster.log";
-        m_notepad->start("notepad", arg, QIODevice::ReadOnly);
-    #endif
+    arg = "file:///" + QCoreApplication::applicationDirPath() + "/QModMaster.log";
+    QDesktopServices::openUrl(QUrl(arg));
+
 
 }
 
