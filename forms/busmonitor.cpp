@@ -243,7 +243,7 @@ void BusMonitor::parseRxPDU(QStringList pdu, QString slave)
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText("SlaveID : " + pdu[0]);
+        ui->txtPDU->appendPlainText(slave + pdu[0]);
         ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
         ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
         ui->txtPDU->appendPlainText("Output Value : " + pdu[4] + pdu[5]);
@@ -253,7 +253,7 @@ void BusMonitor::parseRxPDU(QStringList pdu, QString slave)
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText("SlaveID : " + pdu[0]);
+        ui->txtPDU->appendPlainText(slave + pdu[0]);
         ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
         ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
         ui->txtPDU->appendPlainText("Quantity of Registers : " + pdu[4] + pdu[5]);
@@ -263,7 +263,7 @@ void BusMonitor::parseRxPDU(QStringList pdu, QString slave)
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText("SlaveID : " + pdu[0]);
+        ui->txtPDU->appendPlainText(slave + pdu[0]);
         ui->txtPDU->appendPlainText("Function Code [80 + SlaveID] : " + pdu[1]);
         ui->txtPDU->appendPlainText("Exception Code : " + pdu[2]);
     }
