@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
     connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
+    connect(ui->actionModbus_Manual,SIGNAL(triggered()),this,SLOT(openModbusManual()));
     connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
@@ -79,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->mainToolBar->addAction(ui->actionTCP);
     ui->mainToolBar->addAction(ui->actionSettings);
     ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction(ui->actionModbus_Manual);
     ui->mainToolBar->addAction(ui->actionAbout);
     ui->mainToolBar->addAction(ui->actionExit);
 
@@ -328,6 +330,18 @@ void MainWindow::openLogFile()
 
 }
 
+void MainWindow::openModbusManual()
+{
+
+    //Open Modbus Manual
+    QString arg;
+    QLOG_INFO()<<  "Open Modbus Manual";
+
+    arg = "file:///" + QCoreApplication::applicationDirPath() + "/ManModbus/index.html";
+    QDesktopServices::openUrl(QUrl(arg));
+
+
+}
 void MainWindow::changedStartAddress(int value)
 {
 

@@ -70,6 +70,7 @@ private slots:
     void request();
     void refreshView();
     void changeLanguage();
+    void openModbusManual();
 
 signals:
     void resetCounters();
