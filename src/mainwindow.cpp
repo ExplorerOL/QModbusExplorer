@@ -198,45 +198,45 @@ void MainWindow::changedFunctionCode(int currIndex)
     QString String_number_of_registers(tr("Number of Registers"));
     switch(funcionCode)//Label = Read Request, Write Request
     {
-        case _FC_READ_COILS:
+        case MODBUS_FC_READ_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
-        case _FC_READ_DISCRETE_INPUTS:
+        case MODBUS_FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
-        case _FC_READ_HOLDING_REGISTERS:
+        case MODBUS_FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
-        case _FC_READ_INPUT_REGISTERS:
+        case MODBUS_FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
-        case _FC_WRITE_SINGLE_COIL:
+        case MODBUS_FC_WRITE_SINGLE_COIL:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
-        case _FC_WRITE_MULTIPLE_COILS:
+        case MODBUS_FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
-        case _FC_WRITE_SINGLE_REGISTER:
+        case MODBUS_FC_WRITE_SINGLE_REGISTER:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(1);
                 ui->sbNoOfCoils->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
-        case _FC_WRITE_MULTIPLE_REGISTERS:
+        case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
@@ -574,3 +574,4 @@ void MainWindow::changeLanguage()
     Translator->load(":/translations/" + QCoreApplication::applicationName() + sender()->objectName().right(6));
     QCoreApplication::installTranslator(Translator);
 }
+

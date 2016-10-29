@@ -26,7 +26,7 @@
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icons/icons.qrc">
+   <iconset>
     <normaloff>:/icons/info16.png</normaloff>:/icons/info16.png</iconset>
   </property>
   <property name="modal">
@@ -51,7 +51,23 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="lbnURL">
+    <widget class="QLabel" name="lblLibVersion">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>lib version</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblURL">
      <property name="font">
       <font>
        <weight>75</weight>
@@ -71,8 +87,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../icons/icons.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

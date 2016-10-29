@@ -17,13 +17,11 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_connected = false;
     m_ModBusMode = EUtils::None;
     m_pollTimer = new QTimer(this);
-    m_timeOutTimer = new QTimer(this);
     m_timeOut = 0;
     m_transactionIsPending = false;
     m_packets = 0;
     m_errors = 0;
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
-    connect(m_timeOutTimer,SIGNAL(timeout()),this,SLOT(timeOut()));
     connect(regModel,SIGNAL(refreshView()),this,SIGNAL(refreshView()));
 }
 
@@ -53,10 +51,15 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
         line += "Failed";
     }
     else {
+        //TODO : RTU
+        //struct timeval response_timeout;
+        //response_timeout.tv_sec = timeOut;
+        //response_timeout.tv_usec = 0;
+        modbus_set_response_timeout(m_modbus, timeOut, 0);
         m_connected = true;
         line += "OK";
         mainWin->hideInfoBar();
-        QLOG_INFO() <<  line;
+        QLOG_INFO() << line;
     }
 
     m_ModBusMode = EUtils::RTU;
@@ -71,12 +74,16 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
 {
     //Modbus TCP connect
     QString strippedIP = "";
+    QString line;
     modbusDisConnect();
 
     QLOG_INFO()<<  "Modbus Connect TCP";
+
+    line = "Connecting to IP : " + ip + ":" + port;
+    QLOG_INFO() <<  line;
     strippedIP = stripIP(ip);
     if (strippedIP == ""){
-        mainWin->showUpInfoBar(tr("Connection failed\nWrong IP Address."), MyInfoBar::Error);
+        mainWin->showUpInfoBar(tr("Connection failed\nBlank IP Address."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Blank IP Address";
         return;
     }
@@ -97,14 +104,25 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
         mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to TCP port."), MyInfoBar::Error);
         QLOG_ERROR()<<  "Connection to IP : " << ip << ":" << port << "...failed. Could not connect to TCP port";
         m_connected = false;
+        line += "Failed";
     }
     else {
+        //TODO : TCP
+        //struct timeval response_timeout;
+        //response_timeout.tv_sec = timeOut;
+        //response_timeout.tv_usec = 0;
+        modbus_set_response_timeout(m_modbus, timeOut, 0);
         m_connected = true;
+        line += "OK";
         mainWin->hideInfoBar();
-        QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port << "...OK";
+        QLOG_INFO() << line;
     }
 
     m_ModBusMode = EUtils::TCP;
+
+    //Add line to raw data model
+    line = EUtils::SysTimeStamp() + " : " + line;
+    rawModel->addLine(line);
 
 }
 
@@ -141,22 +159,19 @@ void ModbusAdapter::modbusTransaction()
     QLOG_INFO() <<  "Modbus Transaction. Function Code = " << m_functionCode;
     m_packets += 1;
 
-    if (m_timeOut > 0)
-        m_timeOutTimer->start(m_timeOut * 1000);
-
     switch(m_functionCode)
     {
-            case _FC_READ_COILS:
-            case _FC_READ_DISCRETE_INPUTS:
-            case _FC_READ_HOLDING_REGISTERS:
-            case _FC_READ_INPUT_REGISTERS:
+            case MODBUS_FC_READ_COILS:
+            case MODBUS_FC_READ_DISCRETE_INPUTS:
+            case MODBUS_FC_READ_HOLDING_REGISTERS:
+            case MODBUS_FC_READ_INPUT_REGISTERS:
                     modbusReadData(m_slave,m_functionCode,m_startAddr,m_numOfRegs);
                     break;
 
-            case _FC_WRITE_SINGLE_COIL:
-            case _FC_WRITE_SINGLE_REGISTER:
-            case _FC_WRITE_MULTIPLE_COILS:
-            case _FC_WRITE_MULTIPLE_REGISTERS:
+            case MODBUS_FC_WRITE_SINGLE_COIL:
+            case MODBUS_FC_WRITE_SINGLE_REGISTER:
+            case MODBUS_FC_WRITE_MULTIPLE_COILS:
+            case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
                     modbusWriteData(m_slave,m_functionCode,m_startAddr,m_numOfRegs);
                     break;
             default:
@@ -184,20 +199,20 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
     //request data from modbus
     switch(functionCode)
     {
-            case _FC_READ_COILS:
+            case MODBUS_FC_READ_COILS:
                     ret = modbus_read_bits(m_modbus, startAddress, noOfItems, dest);
                     break;
 
-            case _FC_READ_DISCRETE_INPUTS:
+            case MODBUS_FC_READ_DISCRETE_INPUTS:
                     ret = modbus_read_input_bits(m_modbus, startAddress, noOfItems, dest);
                     break;
 
-            case _FC_READ_HOLDING_REGISTERS:
+            case MODBUS_FC_READ_HOLDING_REGISTERS:
                     ret = modbus_read_registers(m_modbus, startAddress, noOfItems, dest16);
                     is16Bit = true;
                     break;
 
-            case _FC_READ_INPUT_REGISTERS:
+            case MODBUS_FC_READ_INPUT_REGISTERS:
                     ret = modbus_read_input_registers(m_modbus, startAddress, noOfItems, dest16);
                     is16Bit = true;
                     break;
@@ -239,7 +254,6 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
         }
 
         mainWin->showUpInfoBar(line, MyInfoBar::Error);
-        m_timeOutTimer->stop();
         modbus_flush(m_modbus); //flush data
      }
 
@@ -258,17 +272,17 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
     //request data from modbus
     switch(functionCode)
     {
-            case _FC_WRITE_SINGLE_COIL:
+            case MODBUS_FC_WRITE_SINGLE_COIL:
                     ret = modbus_write_bit(m_modbus, startAddress,regModel->value(0));
                     noOfItems = 1;
                     break;
 
-            case _FC_WRITE_SINGLE_REGISTER:
+            case MODBUS_FC_WRITE_SINGLE_REGISTER:
                     ret = modbus_write_register( m_modbus, startAddress,regModel->value(0));
                     noOfItems = 1;
                     break;
 
-            case _FC_WRITE_MULTIPLE_COILS:
+            case MODBUS_FC_WRITE_MULTIPLE_COILS:
             {
                     uint8_t * data = new uint8_t[noOfItems];
                     for(int i = 0; i < noOfItems; ++i)
@@ -279,7 +293,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     delete[] data;
                     break;
             }
-            case _FC_WRITE_MULTIPLE_REGISTERS:
+            case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
             {
                     uint16_t * data = new uint16_t[noOfItems];
                     for(int i = 0; i < noOfItems; ++i)
@@ -325,7 +339,6 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
          }
 
         mainWin->showUpInfoBar(line, MyInfoBar::Error);
-        m_timeOutTimer->stop();
         modbus_flush(m_modbus); //flush data
      }
 
@@ -443,21 +456,6 @@ void ModbusAdapter::setTimeOut(int timeOut)
 {
 
     m_timeOut = timeOut;
-
-}
-
-void ModbusAdapter::timeOut()
-{
-
-    QLOG_INFO()<<  "Timeout";
-
-    if (m_transactionIsPending){
-        m_transactionIsPending = false;
-        rawModel->addLine(EUtils::SysTimeStamp() + " : Timeout");
-        QLOG_ERROR() << "Timeout";
-    }
-
-    m_timeOutTimer->stop();
 
 }
 
