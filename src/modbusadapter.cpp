@@ -468,7 +468,7 @@ QString ModbusAdapter::stripIP(QString ip)
 
     ipBytes = ip.split(".");
     if (ipBytes.size() == 4){
-        res = ipBytes[0];
+        res = QString("").setNum(ipBytes[0].toInt());
         i = 1;
         while (i <  ipBytes.size()){
             res = res + "." + QString("").setNum(ipBytes[i].toInt());
