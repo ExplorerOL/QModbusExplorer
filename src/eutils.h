@@ -149,6 +149,8 @@ public:
 
     static QString formatValue(int value,int frmt, bool is16Bit);
 
+    static QString libmodbus_strerror(int errnum);
+
 };
 
 #endif // EUTILS_H

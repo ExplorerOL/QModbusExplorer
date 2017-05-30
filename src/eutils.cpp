@@ -37,3 +37,35 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit)
 
 }
 
+
+QString EUtils::libmodbus_strerror(int errnum)
+{
+    switch (errnum) {
+
+        case EINVAL:
+            return "Protocol context is NULL";
+            break;
+
+        case ETIMEDOUT:
+            return "Timeout";
+            break;
+
+        case ECONNRESET:
+            return "Connection reset";
+            break;
+
+        case ECONNREFUSED:
+            return "Connection refused";
+            break;
+
+        case EPIPE:
+            return "Socket error";
+            break;
+
+        default://Default
+            return modbus_strerror(errno);
+
+    }
+
+}
+

@@ -32,7 +32,7 @@ SOURCES += src/main.cpp \
     3rdparty/QsLog/QsLog.cpp \
     3rdparty/QsLog/QsLogDestConsole.cpp \
     3rdparty/QsLog/QsLogDestFile.cpp \
-    src/MyInfoBar.cpp
+    src/infobar.cpp
 
 HEADERS  += src/mainwindow.h \
     3rdparty/libmodbus/modbus.h \
@@ -54,7 +54,7 @@ HEADERS  += src/mainwindow.h \
     3rdparty/QsLog/QsLogLevel.h \
     3rdparty/QsLog/QsLogDisableForThisFile.h \
     3rdparty/QsLog/QsLogDestFile.h \
-    src/MyInfoBar.h
+    src/infobar.h
 
 INCLUDEPATH += 3rdparty/libmodbus \
     3rdparty/QsLog

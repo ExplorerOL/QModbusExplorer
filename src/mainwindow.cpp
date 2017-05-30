@@ -436,7 +436,7 @@ void MainWindow::request()
     QLOG_INFO()<<  "Request transaction. No or registers = " <<  rowCount;
 
     if (rowCount == 0) {
-        mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), MyInfoBar::Error);
+        mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
         QLOG_WARN()<<  "Request failed. No items in registers table ";
         return;
     }
@@ -460,11 +460,11 @@ void MainWindow::request()
 void MainWindow::scan(bool value)
 {
 
-    //Request items from modbus adapter and add raw data to raw data model
+   //Request items from modbus adapter and add raw data to raw data model
    int rowCount = m_modbus->regModel->model->rowCount();
 
    if (value && rowCount == 0) {
-       mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), MyInfoBar::Error);
+       mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
        QLOG_WARN()<<  "Request failed. No items in registers table ";
        ui->actionScan->setChecked(false);
        return;
@@ -548,7 +548,7 @@ void MainWindow::modbusConnect(bool connect)
 
  }
 
-void MainWindow::showUpInfoBar(QString message, MyInfoBar::InfoType type)
+void MainWindow::showUpInfoBar(QString message, InfoBar::InfoType type)
 {
     ui->infobar->show(message, type);
 }

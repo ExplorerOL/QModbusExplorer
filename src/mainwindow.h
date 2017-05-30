@@ -14,7 +14,7 @@
 #include "forms/busmonitor.h"
 #include "modbuscommsettings.h"
 #include "modbusadapter.h"
-#include "MyInfoBar.h"
+#include "infobar.h"
 
 namespace Ui {
     class MainWindow;
@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0, ModbusAdapter *adapter = 0, ModbusCommSettings *settings = 0);
     ~MainWindow();
-    void showUpInfoBar(QString message, MyInfoBar::InfoType type);
+    void showUpInfoBar(QString message, InfoBar::InfoType type);
     void hideInfoBar();
 
 private:

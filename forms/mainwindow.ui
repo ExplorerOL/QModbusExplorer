@@ -32,7 +32,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="MyInfoBar" name="infobar"/>
+     <widget class="InfoBar" name="infobar"/>
     </item>
     <item>
      <widget class="QFrame" name="frame_1">
@@ -568,9 +568,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MyInfoBar</class>
+   <class>InfoBar</class>
    <extends>QFrame</extends>
-   <header>src/MyInfoBar.h</header>
+   <header>src/InfoBar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

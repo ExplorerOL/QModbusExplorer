@@ -89,12 +89,12 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
         QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
         intVal = (lineEdit->text()).toInt(&ok,m_base);
         if (intVal > 65535){
-            mainWin->showUpInfoBar(tr("Set value failed\nValue is greater than 65535."), MyInfoBar::Error);
+            mainWin->showUpInfoBar(tr("Set value failed\nValue is greater than 65535."), InfoBar::Error);
             QLOG_WARN() <<  "Set value failed. Value is greater than 65535";
             return;
         }
         else if (intVal < -32768){
-            mainWin->showUpInfoBar(tr("Set value failed\nValue is smaller than -32768."), MyInfoBar::Error);
+            mainWin->showUpInfoBar(tr("Set value failed\nValue is smaller than -32768."), InfoBar::Error);
             QLOG_WARN() <<  "Set value failed. Value is smaller than -32768";
             return;
         }

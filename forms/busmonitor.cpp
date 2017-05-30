@@ -102,7 +102,7 @@ void BusMonitor::showEvent(QShowEvent *event)
 
 void BusMonitor::selectedRow(const QModelIndex & selected)
 {
-    if (selected.data().canConvert(QMetaType::QString)) {
+    if (selected.data().canConvert(QVariant::String)) {
             QString val = selected.data().value<QString>();
             qDebug()<<  "BusMonitor : selectedRow - " << val;
             if (val.indexOf("Sys") > -1)

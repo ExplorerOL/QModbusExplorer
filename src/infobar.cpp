@@ -2,9 +2,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
-#include "MyInfoBar.h"
+#include "infobar.h"
 
-MyInfoBar::MyInfoBar(QWidget *parent) : QFrame(parent)
+InfoBar::InfoBar(QWidget *parent) : QFrame(parent)
 {
     label = new QLabel;
 
@@ -38,13 +38,13 @@ MyInfoBar::MyInfoBar(QWidget *parent) : QFrame(parent)
     hide();
 }
 
-MyInfoBar::MyInfoBar(QString message, InfoType type, QWidget *parent) : MyInfoBar(parent)
+InfoBar::InfoBar(QString message, InfoType type, QWidget *parent) : InfoBar(parent)
 {
     setMessage(message);
     setInfoType(type);
 }
 
-void MyInfoBar::setInfoType(InfoType type)
+void InfoBar::setInfoType(InfoType type)
 {
     switch (type) {
         case Question:
@@ -63,12 +63,12 @@ void MyInfoBar::setInfoType(InfoType type)
     }
 }
 
-void MyInfoBar::setMessage(QString message)
+void InfoBar::setMessage(QString message)
 {
     label->setText(message);
 }
 
-void MyInfoBar::show(QString message, InfoType type)
+void InfoBar::show(QString message, InfoType type)
 {
     setMessage(message);
     setInfoType(type);
