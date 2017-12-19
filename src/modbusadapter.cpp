@@ -45,16 +45,28 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
     m_timeOut = timeOut;
 
-    if(m_modbus && modbus_connect(m_modbus) == -1) {
+    if(m_modbus == NULL){
+        mainWin->showUpInfoBar(tr("Unable to create the libmodbus context."), InfoBar::Error);
+        QLOG_ERROR()<<  "Connection failed. Unable to create the libmodbus context";
+        return;
+    }
+    else if(m_modbus && modbus_set_slave(m_modbus, m_slave) == -1){
+        modbus_free(m_modbus);
+        mainWin->showUpInfoBar(tr("Invalid slave ID."), InfoBar::Error);
+        QLOG_ERROR()<<  "Connection failed. Invalid slave ID";
+        return;
+    }
+    else if(m_modbus && modbus_connect(m_modbus) == -1) {
+        modbus_free(m_modbus);
         mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to serial port."), InfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Could not connect to serial port";
         m_connected = false;
         line += "Failed";
     }
     else {
-        //struct timeval response_timeout;
-        //response_timeout.tv_sec = timeOut;
-        //response_timeout.tv_usec = 0;
+        //error recovery mode
+        modbus_set_error_recovery(m_modbus, MODBUS_ERROR_RECOVERY_PROTOCOL);
+        //response_timeout;
         modbus_set_response_timeout(m_modbus, timeOut, 0);
         m_connected = true;
         line += "OK";
@@ -100,16 +112,22 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
 
     m_timeOut = timeOut;
 
-    if(m_modbus && modbus_connect(m_modbus) == -1) {
+    if(m_modbus == NULL){
+        mainWin->showUpInfoBar(tr("Unable to create the libmodbus context."), InfoBar::Error);
+        QLOG_ERROR()<<  "Connection failed. Unable to create the libmodbus context";
+        return;
+    }
+    else if(m_modbus && modbus_connect(m_modbus) == -1) {
+        modbus_free(m_modbus);
         mainWin->showUpInfoBar(tr("Connection failed\nCould not connect to TCP port."), InfoBar::Error);
         QLOG_ERROR()<<  "Connection to IP : " << ip << ":" << port << "...failed. Could not connect to TCP port";
         m_connected = false;
         line += " Failed";
     }
     else {
-        //struct timeval response_timeout;
-        //response_timeout.tv_sec = timeOut;
-        //response_timeout.tv_usec = 0;
+        //error recovery mode
+        modbus_set_error_recovery(m_modbus, MODBUS_ERROR_RECOVERY_PROTOCOL);
+        //response_timeout;
         modbus_set_response_timeout(m_modbus, timeOut, 0);
         m_connected = true;
         line += " OK";

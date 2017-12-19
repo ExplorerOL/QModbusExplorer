@@ -43,6 +43,7 @@ private:
     void updateStatusBar();
     QLabel *m_statusText;
     QLabel *m_statusInd;
+    QLabel *m_baseAddr;
     QLabel *m_statusPackets;
     QLabel *m_statusErrors;
     ModbusAdapter *m_modbus;
@@ -58,6 +59,7 @@ private slots:
     void changedModbusMode(int currIndex);
     void changedFunctionCode(int currIndex);
     void changedBase(int currIndex);
+    void changedStartAddrBase(int currIndex);
     void changedScanRate(int value);
     void changedConnect(bool value);
     void changedStartAddress(int value);

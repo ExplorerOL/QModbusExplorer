@@ -49,16 +49,6 @@
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
-       <property name="buddy">
-        <cstring>cmbPort</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="cmbPort">
-       <property name="editable">
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item row="1" column="1">
@@ -273,6 +263,16 @@
      </item>
      <item row="5" column="1">
       <widget class="QComboBox" name="cmbRTS"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="sbPort">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>128</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

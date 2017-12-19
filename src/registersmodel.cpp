@@ -12,6 +12,7 @@ RegistersModel::RegistersModel(QObject *parent) :
    m_regDataDelegate = new RegistersDataDelegate(0);
    m_noOfItems = 0;
    m_is16Bit = false;
+   m_startAddrBase = 10;
    clear();
 }
 
@@ -114,8 +115,7 @@ void RegistersModel::setValue(int idx, int value)
     QModelIndex index = model->index(row, col, QModelIndex());
     model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
     model->setData(index,convertedValue,Qt::DisplayRole);
-    model->setData(index,QString("Address : %1").arg(m_startAddress + idx),Qt::ToolTipRole);
-
+    model->setData(index,QString("Address : %1").arg(m_startAddress + idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
 }
 
 int RegistersModel::value(int idx)
@@ -190,6 +190,7 @@ void RegistersModel::changeBase(int frmt)
         }
         QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,convertedVal,Qt::DisplayRole);
+        model->setData(index,QString("Address : %1").arg(m_startAddress + idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
     }
 
     emit(refreshView());
@@ -206,6 +207,15 @@ void RegistersModel::clear()
 
 }
 
+void RegistersModel::setStartAddrBase(int base)
+{
+
+    QLOG_INFO()<<  "Registers Model start addr set base = " << base ;
+
+    m_startAddrBase = base;
+    changeBase(m_frmt);
+
+}
 void RegistersModel::setBase(int frmt)
 {
 

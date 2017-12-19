@@ -18,6 +18,7 @@ public:
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
     void setValue(int idx, int value);
     void setBase(int frmt);
+    void setStartAddrBase(int base);
     void setIs16Bit(bool is16Bit);
     QString strValue(int idx);
     int value(int idx);
@@ -35,6 +36,7 @@ private:
     int m_lastRow;
     bool m_is16Bit;
     int m_base;
+    int m_startAddrBase;
     int m_frmt;
     RegistersDataDelegate *m_regDataDelegate;
 

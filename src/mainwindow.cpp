@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
     connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
     connect(ui->cmbBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedBase(int)));
+    connect(ui->cmbStartAddrBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedStartAddrBase(int)));
     connect(ui->sbNoOfCoils,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
@@ -51,12 +52,14 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     m_statusInd = new QLabel;
     m_statusInd->setFixedSize( 16, 16 );
     m_statusText = new QLabel;
+    m_baseAddr = new QLabel(tr("Base Addr : ") + "0");
     m_statusPackets = new QLabel(tr("Packets : ") + "0");
     m_statusPackets->setStyleSheet("QLabel {color:blue;}");
     m_statusErrors = new QLabel(tr("Errors : ") + "0");
     m_statusErrors->setStyleSheet("QLabel {color:red;}");
     ui->statusBar->addWidget(m_statusInd);
     ui->statusBar->addWidget(m_statusText, 10);
+    ui->statusBar->addWidget(m_baseAddr, 10);
     ui->statusBar->addWidget(m_statusPackets, 10);
     ui->statusBar->addWidget(m_statusErrors, 10);
     m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
@@ -88,6 +91,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->tblRegisters->setItemDelegate(m_modbus->regModel->itemDelegate());
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     m_modbus->regModel->setBase(EUtils::UInt);
+    m_modbus->regModel->setStartAddrBase(10);
 
     //Update UI
     ui->sbNoOfCoils->setEnabled(true);
@@ -148,11 +152,12 @@ void MainWindow::showSettings()
         QLOG_INFO()<<  "Settings changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
-        ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
         m_modbusCommSettings->saveSettings();
     }
     else
         QLOG_INFO()<<  "Settings changes rejected ";
+
+    updateStatusBar();
 
 }
 
@@ -342,6 +347,32 @@ void MainWindow::openModbusManual()
 
 
 }
+
+void MainWindow::changedStartAddrBase(int currIndex)
+{
+
+    //Change Base
+
+    QLOG_INFO()<<  "Start Addr Base changed. Index = " << currIndex;
+
+    switch(currIndex)
+    {
+        case 0:
+                ui->sbStartAddress->setDisplayIntegerBase(10);
+                m_modbus->regModel->setStartAddrBase(10);
+                break;
+        case 1:
+                 ui->sbStartAddress->setDisplayIntegerBase(16);
+                 m_modbus->regModel->setStartAddrBase(16);
+                break;
+        default:
+                ui->sbStartAddress->setDisplayIntegerBase(10);
+                m_modbus->regModel->setStartAddrBase(10);
+                break;
+     }
+
+}
+
 void MainWindow::changedStartAddress(int value)
 {
 
@@ -373,7 +404,7 @@ void MainWindow::updateStatusBar()
 
     if(ui->cmbModbusMode->currentIndex() == 0) { //RTU
         msg = "RTU : ";
-        msg += m_modbusCommSettings->serialPort() + " | ";
+        msg += m_modbusCommSettings->serialPortName() + " | ";
         msg += m_modbusCommSettings->baud() + ",";
         msg += m_modbusCommSettings->dataBits() + ",";
         msg += m_modbusCommSettings->stopBits() + ",";
@@ -395,6 +426,9 @@ void MainWindow::updateStatusBar()
     else {
         m_statusInd->setPixmap(QPixmap(":/icons/bullet-red-16.png"));
     }
+
+    //basr Address
+    m_baseAddr->setText("Base Addr : " + m_modbusCommSettings->baseAddr());
 
 }
 
@@ -449,7 +483,7 @@ void MainWindow::request()
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
-    m_modbus->setStartAddr(ui->sbStartAddress->value() - baseAddr);
+    m_modbus->setStartAddr(ui->sbStartAddress->value() + baseAddr);
     m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
 
     //Modbus data
@@ -462,6 +496,7 @@ void MainWindow::scan(bool value)
 
    //Request items from modbus adapter and add raw data to raw data model
    int rowCount = m_modbus->regModel->model->rowCount();
+   int baseAddr;
 
    if (value && rowCount == 0) {
        mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
@@ -473,16 +508,25 @@ void MainWindow::scan(bool value)
        mainWin->hideInfoBar();
    }
 
+   //get base address
+   baseAddr = m_modbusCommSettings->baseAddr().toInt();
+
    m_modbus->setSlave(ui->sbSlaveID->value());
    m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
-   m_modbus->setStartAddr(ui->sbStartAddress->value());
+   m_modbus->setStartAddr(ui->sbStartAddress->value() + baseAddr);
    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
 
     //Start-Stop poll timer
     QLOG_INFO()<<  "Scan time = " << value;
     if (value){
-        m_modbus->setScanRate(ui->spInterval->value());
-        m_modbus->startPollTimer();
+        if (ui->spInterval->value() < m_modbusCommSettings->timeOut().toInt() * 1000 * 2){
+            mainWin->showUpInfoBar(tr("Scan rate  should be at least 2 * Timeout."), InfoBar::Error);
+            QLOG_WARN()<<  "Scan rate error. should be at least 2 * Timeout ";
+        }
+        else {
+            m_modbus->setScanRate(ui->spInterval->value());
+            m_modbus->startPollTimer();
+        }
     }
     else
         m_modbus->stopPollTimer();
@@ -507,7 +551,8 @@ void MainWindow::modbusConnect(bool connect)
 
     if (connect) { //RTU
         if (ui->cmbModbusMode->currentIndex() == EUtils::RTU) {
-            m_modbus->modbusConnectRTU(m_modbusCommSettings->serialPort(),
+            m_modbus->setSlave(ui->sbSlaveID->value());
+            m_modbus->modbusConnectRTU(m_modbusCommSettings->serialPortName(),
                                         m_modbusCommSettings->baud().toInt(),
                                         EUtils::parity(m_modbusCommSettings->parity()),
                                         m_modbusCommSettings->dataBits().toInt(),

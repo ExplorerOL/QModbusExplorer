@@ -20,9 +20,18 @@ void  ModbusCommSettings::loadSettings()
         m_slaveIP = this->value("SlaveIP").toString();
 
     if (this->value("SerialPort").isNull())
-        m_serialPort = "COM1";
-    else
+    {
+        m_serialPort = "1";
+        #ifdef Q_OS_WIN32
+            m_serialPortName = "COM" + m_serialPort;
+        #else
+            m_serialPortName = "/dev/ttyS" + (m_serialPort - 1);
+        #endif
+    }
+    else {
         m_serialPort = this->value("SerialPort").toString();
+        m_serialPortName = this->value("SerialPortName").toString();
+    }
 
     if (this->value("Baud").isNull())
         m_baud = "9600";
@@ -77,6 +86,7 @@ void  ModbusCommSettings::saveSettings()
     this->setValue("TCPPort",m_TCPPort);
     this->setValue("SlaveIP",m_slaveIP);
     this->setValue("SerialPort",m_serialPort);
+    this->setValue("SerialPortName",m_serialPortName);
     this->setValue("Baud",m_baud);
     this->setValue("DataBits",m_dataBits);
     this->setValue("StopBits",m_stopBits);
@@ -113,9 +123,24 @@ QString  ModbusCommSettings::serialPort()
     return m_serialPort;
 }
 
+QString  ModbusCommSettings::serialPortName()
+{
+    return m_serialPortName;
+}
+
 void ModbusCommSettings::setSerialPort(QString serialPort)
 {
+int serialPortNo;
     m_serialPort = serialPort;
+    serialPortNo = serialPort.toInt();
+    #ifdef Q_OS_WIN32
+    if (serialPortNo > 9)
+        m_serialPortName = "\\\\.\\COM" + serialPort;
+    else
+        m_serialPortName = "COM" + serialPort;
+    #else
+        m_serialPortName = "/dev/ttyS" + (serialPort - 1);
+    #endif
 }
 
 QString  ModbusCommSettings::baud()

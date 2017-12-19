@@ -16,6 +16,7 @@ public:
     QString slaveIP();
     //Serial
     QString serialPort();
+    QString serialPortName();
     void setSerialPort(QString serialPort);
     QString baud();
     void setBaud(QString baud);
@@ -43,6 +44,7 @@ private:
     QString m_slaveIP;
     //Serial
     QString m_serialPort;
+    QString m_serialPortName;
     QString m_baud;
     QString m_dataBits;
     QString m_stopBits;
