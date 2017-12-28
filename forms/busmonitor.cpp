@@ -37,7 +37,7 @@ BusMonitor::~BusMonitor()
 void BusMonitor::save()
 {
 
-    qDebug()<<  "BusMonitor : save" ;
+    //qDebug()<<  "BusMonitor : save" ;
 
     //Select file
     QString fileName = QFileDialog::getSaveFileName(NULL,"Save File As...",
@@ -67,7 +67,7 @@ void BusMonitor::save()
 void BusMonitor::clear()
 {
 
-    qDebug()<<  "BusMonitor : clear" ;
+    //qDebug()<<  "BusMonitor : clear" ;
 
     m_rawDataModel->clear();
     ui->txtPDU->clear();
@@ -77,7 +77,7 @@ void BusMonitor::clear()
 void BusMonitor::exit()
 {
 
-   qDebug()<<  "BusMonitor : exit" ;
+   //qDebug()<<  "BusMonitor : exit" ;
 
    this->close();
 

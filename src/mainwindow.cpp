@@ -107,6 +107,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
 MainWindow::~MainWindow()
 {
 
+    if (m_modbus)
+        m_modbus->modbusDisConnect();
     delete ui;
 
     QLOG_INFO()<<  "Stop Program" ;
@@ -231,7 +233,8 @@ void MainWindow::changedFunctionCode(int currIndex)
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
-                ui->sbNoOfCoils->setValue(2);
+                if (ui->sbNoOfCoils->value() < 2)
+                    ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
@@ -243,7 +246,8 @@ void MainWindow::changedFunctionCode(int currIndex)
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
-                ui->sbNoOfCoils->setValue(2);
+                if (ui->sbNoOfCoils->value() < 2)
+                    ui->sbNoOfCoils->setValue(2);
                 ui->sbNoOfCoils->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
