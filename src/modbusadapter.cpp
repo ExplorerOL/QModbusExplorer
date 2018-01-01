@@ -151,8 +151,10 @@ void ModbusAdapter::modbusDisConnect()
     QLOG_INFO()<<  "Modbus disconnected";
 
     if(m_modbus) {
-        modbus_close(m_modbus);
-        modbus_free(m_modbus);
+        if (m_connected){
+            modbus_close(m_modbus);
+            modbus_free(m_modbus);
+        }
         m_modbus = NULL;
     }
 
