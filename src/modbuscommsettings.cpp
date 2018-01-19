@@ -25,7 +25,7 @@ void  ModbusCommSettings::loadSettings()
         #ifdef Q_OS_WIN32
             m_serialPortName = "COM" + m_serialPort;
         #else
-            m_serialPortName = "/dev/ttyS" + (m_serialPort - 1);
+            m_serialPortName = QStringLiteral("/dev/ttyS%1").arg(m_serialPort.toInt() - 1);
         #endif
     }
     else {
@@ -139,7 +139,7 @@ int serialPortNo;
     else
         m_serialPortName = "COM" + serialPort;
     #else
-        m_serialPortName = "/dev/ttyS" + (serialPort - 1);
+        m_serialPortName = QStringLiteral("/dev/ttyS%1").arg(serialPort.toInt() - 1);
     #endif
 }
 
