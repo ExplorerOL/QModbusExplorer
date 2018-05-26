@@ -70,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
         ui->cmbFunctionCode->addItem(EUtils::ModbusFunctionName(i));
 
     //Setup Toolbar
+    ui->mainToolBar->addAction(ui->actionLoad_Session);
+    ui->mainToolBar->addAction(ui->actionSave_Session);
     ui->mainToolBar->addAction(ui->actionConnect);
     ui->mainToolBar->addAction(ui->actionRead_Write);
     ui->mainToolBar->addAction(ui->actionScan);

@@ -335,6 +335,9 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLoad_Session"/>
+    <addaction name="actionSave_Session"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
@@ -583,6 +586,24 @@
    </property>
    <property name="text">
     <string>Modbus Manual</string>
+   </property>
+  </action>
+  <action name="actionLoad_Session">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/document-import-16.png</normaloff>:/icons/document-import-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load Session...</string>
+   </property>
+  </action>
+  <action name="actionSave_Session">
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/document-export-16.png</normaloff>:/icons/document-export-16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Session...</string>
    </property>
   </action>
  </widget>
