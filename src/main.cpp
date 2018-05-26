@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     //init the logging mechanism
     QsLogging::Logger& logger = QsLogging::Logger::instance();
-    logger.setLoggingLevel(QsLogging::InfoLevel);
+    logger.setLoggingLevel(QsLogging::OffLevel);
     const QString sLogPath(QDir(app.applicationDirPath()).filePath("QModMaster.log"));
     QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(sLogPath,true,65535,2));
     QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination());

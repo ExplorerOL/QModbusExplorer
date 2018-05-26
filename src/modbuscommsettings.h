@@ -38,6 +38,8 @@ public:
     void setTimeOut(QString timeOut);
     void loadSettings();
     void saveSettings();
+    //logging
+    int loggingLevel();
 
 private:
     //TCP
@@ -56,6 +58,8 @@ private:
     QString m_maxNoOfLines;
     QString m_baseAddr;
     QString m_timeOut;
+    //Log
+    int m_loggingLevel;
 
 signals:
 

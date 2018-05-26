@@ -84,6 +84,11 @@ void  ModbusCommSettings::loadSettings()
     else
         m_timeOut = this->value("TimeOut").toString();
 
+    if (this->value("LoggingLevel").isNull())
+        m_loggingLevel = 3; //warning level
+    else
+        m_loggingLevel = this->value("LoggingLevel").toInt();
+
 }
 
 void  ModbusCommSettings::saveSettings()
@@ -102,6 +107,7 @@ void  ModbusCommSettings::saveSettings()
     this->setValue("MaxNoOfLines",m_maxNoOfLines);
     this->setValue("BaseAddr",m_baseAddr);
     this->setValue("TimeOut",m_timeOut);
+    this->setValue("LoggingLevel",m_loggingLevel);
 
 }
 
@@ -235,4 +241,9 @@ QString  ModbusCommSettings::timeOut()
 void ModbusCommSettings::setTimeOut(QString timeOut)
 {
     m_timeOut = timeOut;
+}
+
+int  ModbusCommSettings::loggingLevel()
+{
+    return m_loggingLevel;
 }

@@ -26,7 +26,7 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     m_firstRow = startAddress / 10;
     m_lastRow = (startAddress + noOfItems - 1) / 10;
 
-    QLOG_INFO() <<  "Registers Model Address = " << startAddress << " , noOfItems = " << noOfItems
+    QLOG_TRACE() <<  "Registers Model Address = " << startAddress << " , noOfItems = " << noOfItems
                 << " , offset = " << m_offset << " , first row = " << m_firstRow << " , last row = " << m_lastRow;
 
     //Format Vertical - Horizontal Header
@@ -167,7 +167,7 @@ void RegistersModel::changeBase(int frmt)
     bool ok;
     QString convertedVal;
 
-    QLOG_INFO()<<  "Registers Model changed base from " << m_base << " to " << frmt ;
+    QLOG_TRACE()<<  "Registers Model changed base from " << m_base << " to " << frmt ;
 
     //change base
     for (int idx = 0; idx < m_noOfItems ; idx++) {
@@ -200,7 +200,7 @@ void RegistersModel::changeBase(int frmt)
 void RegistersModel::clear()
 {
 
-    QLOG_INFO()<<  "Registers Model Cleared" ;
+    QLOG_TRACE()<<  "Registers Model Cleared" ;
 
     //Clear model
     model->clear();
@@ -210,7 +210,7 @@ void RegistersModel::clear()
 void RegistersModel::setStartAddrBase(int base)
 {
 
-    QLOG_INFO()<<  "Registers Model start addr set base = " << base ;
+    QLOG_TRACE()<<  "Registers Model start addr set base = " << base ;
 
     m_startAddrBase = base;
     changeBase(m_frmt);
@@ -219,7 +219,7 @@ void RegistersModel::setStartAddrBase(int base)
 void RegistersModel::setBase(int frmt)
 {
 
-    QLOG_INFO()<<  "Registers Model set base = " << frmt ;
+    QLOG_TRACE()<<  "Registers Model set base = " << frmt ;
 
     m_regDataDelegate->setBase(frmt);
     changeBase(frmt);
@@ -231,7 +231,7 @@ void RegistersModel::setBase(int frmt)
 void RegistersModel::setIs16Bit(bool is16Bit)
 {
 
-    QLOG_INFO()<<  "Registers Model Is16Bit = " << is16Bit ;
+    QLOG_TRACE()<<  "Registers Model Is16Bit = " << is16Bit ;
     m_is16Bit = is16Bit;
     m_regDataDelegate->setIs16Bit(is16Bit);
 

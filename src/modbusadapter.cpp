@@ -36,7 +36,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
     m_modbus = modbus_new_rtu(port.toLatin1().constData(),baud,parity.toLatin1(),dataBits,stopBits,RTS);
     line = "Connecting to Serial Port [" + port + "]...";
-    QLOG_INFO() <<  line;
+    QLOG_TRACE() <<  line;
 
     //Debug messages from libmodbus
     #ifdef LIB_MODBUS_DEBUG_OUTPUT
@@ -71,7 +71,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
         m_connected = true;
         line += "OK";
         mainWin->hideInfoBar();
-        QLOG_INFO() << line;
+        QLOG_TRACE() << line;
     }
 
     m_ModBusMode = EUtils::RTU;
@@ -92,7 +92,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     QLOG_INFO()<<  "Modbus Connect TCP";
 
     line = "Connecting to IP : " + ip + ":" + QString::number(port);
-    QLOG_INFO() <<  line;
+    QLOG_TRACE() <<  line;
     strippedIP = stripIP(ip);
     if (strippedIP == ""){
         mainWin->showUpInfoBar(tr("Connection failed\nBlank IP Address."), InfoBar::Error);
@@ -102,7 +102,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
     else {
         m_modbus = modbus_new_tcp(strippedIP.toLatin1().constData(), port);
         mainWin->hideInfoBar();
-        QLOG_INFO() <<  "Connecting to IP : " << ip << ":" << port;
+        QLOG_TRACE() <<  "Connecting to IP : " << ip << ":" << port;
     }
 
     //Debug messages from libmodbus
@@ -132,7 +132,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
         m_connected = true;
         line += " OK";
         mainWin->hideInfoBar();
-        QLOG_INFO() << line;
+        QLOG_TRACE() << line;
     }
 
     m_ModBusMode = EUtils::TCP;
@@ -244,7 +244,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                     break;
     }
 
-    QLOG_INFO() <<  "Modbus Read Data return value = " << ret << ", errno = " << errno;
+    QLOG_TRACE() <<  "Modbus Read Data return value = " << ret << ", errno = " << errno;
 
     //update data model
     if(ret == noOfItems)
@@ -332,7 +332,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     break;
     }
 
-    QLOG_INFO() <<  "Modbus Write Data return value = " << ret << ", errno = " << errno;;
+    QLOG_TRACE() <<  "Modbus Write Data return value = " << ret << ", errno = " << errno;;
 
     //update data model
     if(ret == noOfItems)

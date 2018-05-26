@@ -105,7 +105,7 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
         value = EUtils::formatValue(intVal, m_frmt, m_is16Bit);
     }
 
-    QLOG_INFO() <<  "Set model data value = " << value;
+    QLOG_TRACE() <<  "Set model data value = " << value;
 
     model->setData(index, value, Qt::EditRole);
 }

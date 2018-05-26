@@ -102,6 +102,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
     updateStatusBar();
 
+    //Logging level
+    QsLogging::Logger::instance().setLoggingLevel((QsLogging::Level)m_modbusCommSettings->loggingLevel());
     QLOG_INFO()<<  "Start Program" ;
 
 }
@@ -123,12 +125,12 @@ void MainWindow::showSettingsModbusRTU()
     //Show RTU Settings Dialog
 
     if (m_dlgModbusRTU->exec()==QDialog::Accepted) {
-        QLOG_INFO()<<  "RTU settings changes accepted ";
+        QLOG_TRACE()<<  "RTU settings changes accepted ";
         updateStatusBar();
         m_modbusCommSettings->saveSettings();
     }
     else
-        QLOG_INFO()<<  "RTU settings changes rejected ";
+        QLOG_WARN()<<  "RTU settings changes rejected ";
 
 }
 
@@ -138,12 +140,12 @@ void MainWindow::showSettingsModbusTCP()
     //Show TCP Settings Dialog
 
     if (m_dlgModbusTCP->exec()==QDialog::Accepted) {
-        QLOG_INFO()<<  "TCP settings changes accepted ";
+        QLOG_TRACE()<<  "TCP settings changes accepted ";
         updateStatusBar();
         m_modbusCommSettings->saveSettings();
     }
     else
-        QLOG_INFO()<<  "TCP settings changes rejected ";
+        QLOG_WARN()<<  "TCP settings changes rejected ";
 
 }
 
@@ -153,13 +155,13 @@ void MainWindow::showSettings()
     //Show General Settings Dialog
 
     if (m_dlgSettings->exec()==QDialog::Accepted) {
-        QLOG_INFO()<<  "Settings changes accepted ";
+        QLOG_TRACE()<<  "Settings changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
         m_modbusCommSettings->saveSettings();
     }
     else
-        QLOG_INFO()<<  "Settings changes rejected ";
+        QLOG_WARN()<<  "Settings changes rejected ";
 
     updateStatusBar();
 
@@ -181,7 +183,7 @@ void MainWindow::changedModbusMode(int currIndex)
 
     //Change lblSlave text : Slave Addr, Unit ID
 
-    QLOG_INFO()<<  "Modbus Mode changed. Index = " << currIndex;
+    QLOG_TRACE()<<  "Modbus Mode changed. Index = " << currIndex;
 
     if (currIndex == 0) { //RTU
         ui->lblSlave->setText("Slave Addr");
@@ -199,7 +201,7 @@ void MainWindow::changedFunctionCode(int currIndex)
 
     //Enable-Disable number of coils or registers
 
-    QLOG_INFO()<<  "Function Code changed. Index = " << currIndex;
+    QLOG_TRACE()<<  "Function Code changed. Index = " << currIndex;
 
     const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
 
@@ -271,7 +273,7 @@ void MainWindow::changedBase(int currIndex)
 
     //Change Base
 
-    QLOG_INFO()<<  "Base changed. Index = " << currIndex;
+    QLOG_TRACE()<<  "Base changed. Index = " << currIndex;
 
     switch(currIndex)
     {
@@ -296,7 +298,7 @@ void MainWindow::changedScanRate(int value)
 
     //Enable-Disable Time Interval
 
-    QLOG_INFO()<<  "ScanRate changed. Value = " << value;
+    QLOG_TRACE()<<  "ScanRate changed. Value = " << value;
 
     m_modbus->setScanRate(value);
 
@@ -333,7 +335,7 @@ void MainWindow::openLogFile()
 
     //Open log file
     QString arg;
-    QLOG_INFO()<<  "Open log file";
+    QLOG_TRACE()<<  "Open log file";
 
     arg = "file:///" + QCoreApplication::applicationDirPath() + "/QModMaster.log";
     QDesktopServices::openUrl(QUrl(arg));
@@ -346,7 +348,7 @@ void MainWindow::openModbusManual()
 
     //Open Modbus Manual
     QString arg;
-    QLOG_INFO()<<  "Open Modbus Manual";
+    QLOG_TRACE()<<  "Open Modbus Manual";
 
     arg = "file:///" + QCoreApplication::applicationDirPath() + "/ManModbus/index.html";
     QDesktopServices::openUrl(QUrl(arg));
@@ -359,7 +361,7 @@ void MainWindow::changedStartAddrBase(int currIndex)
 
     //Change Base
 
-    QLOG_INFO()<<  "Start Addr Base changed. Index = " << currIndex;
+    QLOG_TRACE()<<  "Start Addr Base changed. Index = " << currIndex;
 
     switch(currIndex)
     {
@@ -383,7 +385,7 @@ void MainWindow::changedStartAddress(int value)
 {
 
     //Start Address changed
-    QLOG_INFO()<<  "Start Address changed. Value = " << value;
+    QLOG_TRACE()<<  "Start Address changed. Value = " << value;
 
     m_modbus->setStartAddr(value);
     addItems();
@@ -394,7 +396,7 @@ void MainWindow::changedNoOfRegs(int value)
 {
 
     //No of regs changed
-    QLOG_INFO()<<  "No Of Regs changed. Value = " << value;
+    QLOG_TRACE()<<  "No Of Regs changed. Value = " << value;
 
     m_modbus->setNumOfRegs(value);
     addItems();
@@ -459,7 +461,7 @@ void MainWindow::clearItems()
 
     //Clear items from registers model
 
-    QLOG_INFO()<<  "clearItems" ;
+    QLOG_TRACE()<<  "clearItems" ;
 
     m_modbus->regModel->clear();
     addItems();
@@ -473,7 +475,7 @@ void MainWindow::request()
     int rowCount = m_modbus->regModel->model->rowCount();
     int baseAddr;
 
-    QLOG_INFO()<<  "Request transaction. No or registers = " <<  rowCount;
+    QLOG_TRACE()<<  "Request transaction. No or registers = " <<  rowCount;
 
     if (rowCount == 0) {
         mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
@@ -523,11 +525,11 @@ void MainWindow::scan(bool value)
    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
 
     //Start-Stop poll timer
-    QLOG_INFO()<<  "Scan time = " << value;
+    QLOG_TRACE()<<  "Scan time = " << value;
     if (value){
         if (ui->spInterval->value() < m_modbusCommSettings->timeOut().toInt() * 1000 * 2){
             mainWin->showUpInfoBar(tr("Scan rate  should be at least 2 * Timeout."), InfoBar::Error);
-            QLOG_WARN()<<  "Scan rate error. should be at least 2 * Timeout ";
+            QLOG_ERROR()<<  "Scan rate error. should be at least 2 * Timeout ";
         }
         else {
             m_modbus->setScanRate(ui->spInterval->value());
@@ -553,7 +555,7 @@ void MainWindow::modbusConnect(bool connect)
  {
 
     //Modbus connect - RTU/TCP
-    QLOG_INFO()<<  "Modbus Connect. Value = " << connect;
+    QLOG_TRACE()<<  "Modbus Connect. Value = " << connect;
 
     if (connect) { //RTU
         if (ui->cmbModbusMode->currentIndex() == EUtils::RTU) {
@@ -591,7 +593,7 @@ void MainWindow::modbusConnect(bool connect)
  void MainWindow::refreshView()
  {
 
-     QLOG_INFO()<<  "Packets sent / received = " << m_modbus->packets() << ", errors = " << m_modbus->errors();
+     QLOG_TRACE()<<  "Packets sent / received = " << m_modbus->packets() << ", errors = " << m_modbus->errors();
      ui->tblRegisters->resizeColumnsToContents();
 
      m_statusPackets->setText(tr("Packets : ") + QString("%1").arg(m_modbus->packets()));
