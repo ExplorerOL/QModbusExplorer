@@ -172,6 +172,46 @@
          <property name="frame">
           <bool>true</bool>
          </property>
+         <item>
+          <property name="text">
+           <string>Read Coils (0x01)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Read Discrete Inputs (0x02)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Read Holding Registers (0x03)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Read Input Registers (0x04)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Write Single Coil (0x05)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Write Single Register (0x06)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Write Multiple Coils (0x0f)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Write Multiple Registers (0x10)</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="0" column="0">
@@ -249,12 +289,12 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="buddy">
-          <cstring>sbNoOfCoils</cstring>
+          <cstring>sbNoOfRegs</cstring>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QSpinBox" name="sbNoOfCoils">
+        <widget class="QSpinBox" name="sbNoOfRegs">
          <property name="minimum">
           <number>1</number>
          </property>

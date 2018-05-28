@@ -3,6 +3,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QTranslator>
+#include <QMessageBox>
 
 #include "QsLog.h"
 #include "mainwindow.h"
@@ -34,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
     connect(ui->cmbBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedBase(int)));
     connect(ui->cmbStartAddrBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedStartAddrBase(int)));
-    connect(ui->sbNoOfCoils,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
+    connect(ui->sbSlaveID,SIGNAL(valueChanged(int)),this,SLOT(changedSlaveID(int)));
+    connect(ui->sbNoOfRegs,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
@@ -47,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
+    connect(ui->actionLoad_Session,SIGNAL(triggered(bool)),this,SLOT(loadSession()));
+    connect(ui->actionSave_Session,SIGNAL(triggered(bool)),this,SLOT(saveSession()));
 
     //UI - status
     m_statusInd = new QLabel;
@@ -63,11 +67,6 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->statusBar->addWidget(m_statusPackets, 10);
     ui->statusBar->addWidget(m_statusErrors, 10);
     m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
-
-    //Populate function name combo box
-    ui->cmbFunctionCode->clear();
-    for(int i=0; i<8; i++)
-        ui->cmbFunctionCode->addItem(EUtils::ModbusFunctionName(i));
 
     //Setup Toolbar
     ui->mainToolBar->addAction(ui->actionLoad_Session);
@@ -96,11 +95,19 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     m_modbus->regModel->setStartAddrBase(10);
 
     //Update UI
-    ui->sbNoOfCoils->setEnabled(true);
+    ui->sbNoOfRegs->setEnabled(true);
     ui->actionRead_Write->setEnabled(false);
     ui->actionScan->setEnabled(false);
     ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
+    ui->cmbBase->setCurrentIndex(m_modbusCommSettings->base());
+    ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
+    ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
+    ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
+    ui->spInterval->setValue(m_modbusCommSettings->scanRate());
+    ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
+    ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
     updateStatusBar();
+    refreshView();
 
     //Logging level
     QsLogging::Logger::instance().setLoggingLevel((QsLogging::Level)m_modbusCommSettings->loggingLevel());
@@ -184,6 +191,8 @@ void MainWindow::changedModbusMode(int currIndex)
     //Change lblSlave text : Slave Addr, Unit ID
 
     QLOG_TRACE()<<  "Modbus Mode changed. Index = " << currIndex;
+    m_modbusCommSettings->setModbusMode(currIndex);
+    m_modbusCommSettings->saveSettings();
 
     if (currIndex == 0) { //RTU
         ui->lblSlave->setText("Slave Addr");
@@ -202,68 +211,70 @@ void MainWindow::changedFunctionCode(int currIndex)
     //Enable-Disable number of coils or registers
 
     QLOG_TRACE()<<  "Function Code changed. Index = " << currIndex;
+    m_modbusCommSettings->setFunctionCode(currIndex);
+    m_modbusCommSettings->saveSettings();
 
-    const int funcionCode = EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex());
-
+    const int functionCode = EUtils::ModbusFunctionCode(currIndex);
     QString String_number_of_coils(tr("Number of Coils"));
+    QString String_number_of_inputs(tr("Number of Inputs"));
     QString String_number_of_registers(tr("Number of Registers"));
-    switch(funcionCode)//Label = Read Request, Write Request
+    switch(functionCode)//Label = Read Request, Write Request
     {
         case MODBUS_FC_READ_COILS:
                 m_modbus->regModel->setIs16Bit(false);
-                ui->sbNoOfCoils->setEnabled(true);
+                ui->sbNoOfRegs->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case MODBUS_FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
-                ui->sbNoOfCoils->setEnabled(true);
-                ui->lblNoOfCoils->setText(String_number_of_coils);
+                ui->sbNoOfRegs->setEnabled(true);
+                ui->lblNoOfCoils->setText(String_number_of_inputs);
                 break;
         case MODBUS_FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
-                ui->sbNoOfCoils->setEnabled(true);
+                ui->sbNoOfRegs->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case MODBUS_FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
-                ui->sbNoOfCoils->setEnabled(true);
+                ui->sbNoOfRegs->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case MODBUS_FC_WRITE_SINGLE_COIL:
                 m_modbus->regModel->setIs16Bit(false);
-                ui->sbNoOfCoils->setValue(1);
-                ui->sbNoOfCoils->setEnabled(false);
+                ui->sbNoOfRegs->setValue(1);
+                ui->sbNoOfRegs->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
-                if (ui->sbNoOfCoils->value() < 2)
-                    ui->sbNoOfCoils->setValue(2);
-                ui->sbNoOfCoils->setEnabled(true);
+                if (ui->sbNoOfRegs->value() < 2)
+                    ui->sbNoOfRegs->setValue(2);
+                ui->sbNoOfRegs->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case MODBUS_FC_WRITE_SINGLE_REGISTER:
                 m_modbus->regModel->setIs16Bit(true);
-                ui->sbNoOfCoils->setValue(1);
-                ui->sbNoOfCoils->setEnabled(false);
+                ui->sbNoOfRegs->setValue(1);
+                ui->sbNoOfRegs->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
-                if (ui->sbNoOfCoils->value() < 2)
-                    ui->sbNoOfCoils->setValue(2);
-                ui->sbNoOfCoils->setEnabled(true);
+                if (ui->sbNoOfRegs->value() < 2)
+                    ui->sbNoOfRegs->setValue(2);
+                ui->sbNoOfRegs->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         default:
                 m_modbus->regModel->setIs16Bit(false);
-                ui->sbNoOfCoils->setValue(1);
-                ui->sbNoOfCoils->setEnabled(true);
+                ui->sbNoOfRegs->setValue(1);
+                ui->sbNoOfRegs->setEnabled(true);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
      }
 
-    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
+    m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
     addItems();
 
 }
@@ -274,6 +285,8 @@ void MainWindow::changedBase(int currIndex)
     //Change Base
 
     QLOG_TRACE()<<  "Base changed. Index = " << currIndex;
+    m_modbusCommSettings->setBase(currIndex);
+    m_modbusCommSettings->saveSettings();
 
     switch(currIndex)
     {
@@ -299,6 +312,8 @@ void MainWindow::changedScanRate(int value)
     //Enable-Disable Time Interval
 
     QLOG_TRACE()<<  "ScanRate changed. Value = " << value;
+    m_modbusCommSettings->setScanRate(value);
+    m_modbusCommSettings->saveSettings();
 
     m_modbus->setScanRate(value);
 
@@ -323,10 +338,14 @@ void MainWindow::changedConnect(bool value)
 
 }
 
-void MainWindow::changedSlaveIP()
+void MainWindow::changedSlaveID(int value)
 {
 
-    // NOT USED
+    //Slave ID
+
+    QLOG_TRACE()<<  "Slave ID Changed. Value = " << value;
+    m_modbusCommSettings->setSlaveID(value);
+    m_modbusCommSettings->saveSettings();
 
 }
 
@@ -386,6 +405,8 @@ void MainWindow::changedStartAddress(int value)
 
     //Start Address changed
     QLOG_TRACE()<<  "Start Address changed. Value = " << value;
+    m_modbusCommSettings->setStartAddr(value);
+    m_modbusCommSettings->saveSettings();
 
     m_modbus->setStartAddr(value);
     addItems();
@@ -397,6 +418,8 @@ void MainWindow::changedNoOfRegs(int value)
 
     //No of regs changed
     QLOG_TRACE()<<  "No Of Regs changed. Value = " << value;
+    m_modbusCommSettings->setNoOfRegs(value);
+    m_modbusCommSettings->saveSettings();
 
     m_modbus->setNumOfRegs(value);
     addItems();
@@ -448,7 +471,7 @@ void MainWindow::addItems()
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
     m_modbus->setStartAddr(ui->sbStartAddress->value());
-    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
+    m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
 
     QLOG_INFO()<<  "Add Items. Function Code = " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
 
@@ -492,7 +515,7 @@ void MainWindow::request()
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
     m_modbus->setStartAddr(ui->sbStartAddress->value() + baseAddr);
-    m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
+    m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
 
     //Modbus data
     m_modbus->modbusTransaction();
@@ -522,7 +545,7 @@ void MainWindow::scan(bool value)
    m_modbus->setSlave(ui->sbSlaveID->value());
    m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
    m_modbus->setStartAddr(ui->sbStartAddress->value() + baseAddr);
-   m_modbus->setNumOfRegs(ui->sbNoOfCoils->value());
+   m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
 
     //Start-Stop poll timer
     QLOG_TRACE()<<  "Scan time = " << value;
@@ -547,7 +570,7 @@ void MainWindow::scan(bool value)
     if (!value)
         changedFunctionCode(ui->cmbFunctionCode->currentIndex());
     else
-        ui->sbNoOfCoils->setEnabled(false);
+        ui->sbNoOfRegs->setEnabled(false);
 
 }
 
@@ -601,6 +624,27 @@ void MainWindow::modbusConnect(bool connect)
 
  }
 
+void MainWindow::loadSession()
+{
+
+     QLOG_TRACE()<<  "load session";
+    //debug
+     QMessageBox msgBox;
+     msgBox.setText("Load Session.");
+     msgBox.exec();
+
+}
+
+void MainWindow::saveSession()
+{
+
+     QLOG_TRACE()<<  "save session";
+    //debug
+     QMessageBox msgBox;
+     msgBox.setText("Save Session.");
+     msgBox.exec();
+
+}
 void MainWindow::showUpInfoBar(QString message, InfoBar::InfoType type)
 {
     ui->infobar->show(message, type);

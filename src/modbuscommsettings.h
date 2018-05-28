@@ -40,6 +40,21 @@ public:
     void saveSettings();
     //logging
     int loggingLevel();
+    //session
+    int modbusMode();
+    void setModbusMode(int modbusMode);
+    int slaveID();
+    void setSlaveID(int slaveID);
+    int scanRate();
+    void setScanRate(int scanRate);
+    int functionCode();
+    void setFunctionCode(int functionCode);
+    int startAddr();
+    void setStartAddr(int startAddr);
+    int noOfRegs();
+    void setNoOfRegs(int noOfRegs);
+    int base();
+    void setBase(int base);
 
 private:
     //TCP
@@ -60,6 +75,14 @@ private:
     QString m_timeOut;
     //Log
     int m_loggingLevel;
+    //Session vars
+    int m_modbusMode;
+    int m_slaveID;
+    int m_scanRate;
+    int m_functionCode;
+    int m_startAddr;
+    int m_noOfRegs;
+    int m_base;
 
 signals:
 

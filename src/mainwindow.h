@@ -64,7 +64,7 @@ private slots:
     void changedConnect(bool value);
     void changedStartAddress(int value);
     void changedNoOfRegs(int value);
-    void changedSlaveIP();
+    void changedSlaveID(int value);
     void addItems();
     void clearItems();
     void openLogFile();
@@ -73,6 +73,8 @@ private slots:
     void refreshView();
     void changeLanguage();
     void openModbusManual();
+    void loadSession();
+    void saveSession();
 
 signals:
     void resetCounters();

@@ -12,6 +12,15 @@
 
 QTranslator *Translator;
 
+//Logging Levels
+//TraceLevel : 0
+//DebugLevel : 1
+//InfoLevel : 2
+//WarnLevel : 3
+//ErrorLevel : 4
+//FatalLevel : 5
+//OffLevel : 6
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -21,7 +30,7 @@ int main(int argc, char *argv[])
 
     //init the logging mechanism
     QsLogging::Logger& logger = QsLogging::Logger::instance();
-    logger.setLoggingLevel(QsLogging::OffLevel);
+    logger.setLoggingLevel(QsLogging::OffLevel); // start with no logging
     const QString sLogPath(QDir(app.applicationDirPath()).filePath("QModMaster.log"));
     QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(sLogPath,true,65535,2));
     QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination());
