@@ -4,6 +4,7 @@
 #include <QUrl>
 #include <QTranslator>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #include "QsLog.h"
 #include "mainwindow.h"
@@ -606,6 +607,8 @@ void MainWindow::modbusConnect(bool connect)
     updateStatusBar();
 
     //Update UI
+    ui->actionLoad_Session->setEnabled(!m_modbus->isConnected());
+    ui->actionSave_Session->setEnabled(!m_modbus->isConnected());
     ui->actionConnect->setChecked(m_modbus->isConnected());
     ui->actionRead_Write->setEnabled(m_modbus->isConnected());
     ui->actionScan->setEnabled(m_modbus->isConnected());
@@ -626,22 +629,39 @@ void MainWindow::modbusConnect(bool connect)
 
 void MainWindow::loadSession()
 {
+QString fName;
+QMessageBox msgBox;
 
      QLOG_TRACE()<<  "load session";
+     fName = QFileDialog::getOpenFileName(this,
+                                          "Load Session file",
+                                          "",
+                                          "Session Files (*.ses);;All Files (*.*)");
     //debug
-     QMessageBox msgBox;
-     msgBox.setText("Load Session.");
+     if (fName != "")
+         msgBox.setText(fName);
+     else
+         msgBox.setText("No File Selected");
      msgBox.exec();
 
 }
 
 void MainWindow::saveSession()
 {
+QString fName;
+QMessageBox msgBox;
 
      QLOG_TRACE()<<  "save session";
-    //debug
-     QMessageBox msgBox;
-     msgBox.setText("Save Session.");
+     fName = QFileDialog::getSaveFileName(this,
+                                          "Save Session file",
+                                          "",
+                                          "Session Files (*.ses)");
+
+     //debug
+     if (fName != "")
+         msgBox.setText(fName);
+     else
+         msgBox.setText("No File Selected");
      msgBox.exec();
 
 }
