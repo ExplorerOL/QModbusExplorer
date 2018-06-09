@@ -55,6 +55,8 @@ public:
     void setNoOfRegs(int noOfRegs);
     int base();
     void setBase(int base);
+    void loadSession(QString fName);
+    void saveSession(QString fName);
 
 private:
     //TCP

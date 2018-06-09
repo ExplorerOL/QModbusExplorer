@@ -630,26 +630,36 @@ void MainWindow::modbusConnect(bool connect)
 void MainWindow::loadSession()
 {
 QString fName;
-QMessageBox msgBox;
 
      QLOG_TRACE()<<  "load session";
      fName = QFileDialog::getOpenFileName(this,
                                           "Load Session file",
                                           "",
                                           "Session Files (*.ses);;All Files (*.*)");
-    //debug
-     if (fName != "")
-         msgBox.setText(fName);
+    //check
+     if (fName != ""){
+         m_modbusCommSettings->loadSession(fName);
+         //Update UI
+         ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
+         ui->cmbBase->setCurrentIndex(m_modbusCommSettings->base());
+         ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
+         ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
+         ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
+         ui->spInterval->setValue(m_modbusCommSettings->scanRate());
+         ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
+         ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
+         updateStatusBar();
+         refreshView();
+         QMessageBox::information(this, "QModMaster", "Load session file : " + fName);
+     }
      else
-         msgBox.setText("No File Selected");
-     msgBox.exec();
+         QMessageBox::information(this, "QModMaster", "Cancel operation Or no file selected");
 
 }
 
 void MainWindow::saveSession()
 {
 QString fName;
-QMessageBox msgBox;
 
      QLOG_TRACE()<<  "save session";
      fName = QFileDialog::getSaveFileName(this,
@@ -657,12 +667,13 @@ QMessageBox msgBox;
                                           "",
                                           "Session Files (*.ses)");
 
-     //debug
-     if (fName != "")
-         msgBox.setText(fName);
+     //check
+     if (fName != ""){
+         m_modbusCommSettings->saveSession(fName);
+         QMessageBox::information(this, "QModMaster", "Save session file : " + fName);
+     }
      else
-         msgBox.setText("No File Selected");
-     msgBox.exec();
+         QMessageBox::information(this, "QModMaster", "Cancel operation Or no file selected");
 
 }
 void MainWindow::showUpInfoBar(QString message, InfoBar::InfoType type)
