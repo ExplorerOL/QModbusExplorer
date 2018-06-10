@@ -10,147 +10,14 @@ ModbusCommSettings::ModbusCommSettings(const QString &fileName, Format format , 
 void  ModbusCommSettings::loadSettings()
 {
 
-    if (this->value("TCP/TCPPort").isNull())
-        m_TCPPort = "502";
-    else
-        m_TCPPort = this->value("TCP/TCPPort").toString();
-
-    if (this->value("TCP/SlaveIP").isNull())
-        m_slaveIP = "127.000.000.001";
-    else
-        m_slaveIP = this->value("TCP/SlaveIP").toString();
-
-    if (this->value("RTU/SerialDev").isNull())
-        m_serialDev = "/dev/ttyS";
-    else
-        m_serialDev = this->value("RTU/SerialDev").toString();
-
-    if (this->value("RTU/SerialPort").isNull())
-    {
-        m_serialPort = "1";
-        #ifdef Q_OS_WIN32
-            m_serialPortName = "COM" + m_serialPort;
-        #else
-            m_serialPortName = m_serialDev;
-            m_serialPortName += QStringLiteral("%1").arg(m_serialPort.toInt() - 1);
-        #endif
-    }
-    else {
-        m_serialPort = this->value("RTU/SerialPort").toString();
-        m_serialPortName = this->value("RTU/SerialPortName").toString();
-    }
-
-    if (this->value("RTU/Baud").isNull())
-        m_baud = "9600";
-    else
-        m_baud = this->value("RTU/Baud").toString();
-
-    if (this->value("RTU/DataBits").isNull())
-        m_dataBits = "8";
-    else
-        m_dataBits = this->value("RTU/DataBits").toString();
-
-    if (this->value("RTU/StopBits").isNull())
-        m_stopBits = "1";
-    else
-        m_stopBits = this->value("RTU/StopBits").toString();
-
-    if (this->value("RTU/Parity").isNull())
-        m_parity = "None";
-    else
-        m_parity = this->value("RTU/Parity").toString();
-
-    if (this->value("RTU/RTS").isNull())
-        #ifdef Q_OS_WIN32
-            m_RTS = "Disable";
-        #else
-            m_RTS = "None";
-        #endif
-    else
-        m_RTS = this->value("RTU/RTS").toString();
-
-    if (this->value("Var/MaxNoOfLines").toInt() == 0 ||
-            this->value("Var/MaxNoOfLines").isNull())
-        m_maxNoOfLines = "60";
-    else
-        m_maxNoOfLines = this->value("Var/MaxNoOfLines").toString();
-
-    if (this->value("Var/BaseAddr").isNull())
-        m_baseAddr = "0";
-    else
-        m_baseAddr = this->value("Var/BaseAddr").toString();
-
-    if (this->value("Var/TimeOut").isNull())
-        m_timeOut = "0";
-    else
-        m_timeOut = this->value("Var/TimeOut").toString();
-
-    if (this->value("Var/LoggingLevel").isNull())
-        m_loggingLevel = 3; //warning level
-    else
-        m_loggingLevel = this->value("Var/LoggingLevel").toInt();
-
-    if (this->value("Session/ModBusMode").isNull())
-        m_modbusMode = 0; //RTU
-    else
-        m_modbusMode = this->value("Session/ModBusMode").toInt();
-
-    if (this->value("Session/SlaveID").isNull())
-        m_slaveID = 1;
-    else
-        m_slaveID = this->value("Session/SlaveID").toInt();
-
-    if (this->value("Session/ScanRate").isNull())
-        m_scanRate = 1000;
-    else
-        m_scanRate = this->value("Session/ScanRate").toInt();
-
-    if (this->value("Session/FunctionCode").isNull())
-        m_functionCode = 0; //FC1 : Read Coils
-    else
-        m_functionCode = this->value("Session/FunctionCode").toInt();
-
-    if (this->value("Session/StartAddr").isNull())
-        m_startAddr = 0;
-    else
-        m_startAddr = this->value("Session/StartAddr").toInt();
-
-    if (this->value("Session/NoOfRegs").isNull())
-        m_noOfRegs = 0;
-    else
-        m_noOfRegs = this->value("Session/NoOfRegs").toInt();
-
-    if (this->value("Session/Base").isNull())
-        m_base = 1; //Dec
-    else
-        m_base = this->value("Session/Base").toInt();
+    load(this);
 
 }
 
 void  ModbusCommSettings::saveSettings()
 {
 
-    this->setValue("TCP/TCPPort",m_TCPPort);
-    this->setValue("TCP/SlaveIP",m_slaveIP);
-    this->setValue("RTU/SerialDev",m_serialDev);
-    this->setValue("RTU/SerialPort",m_serialPort);
-    this->setValue("RTU/SerialPortName",m_serialPortName);
-    this->setValue("RTU/Baud",m_baud);
-    this->setValue("RTU/DataBits",m_dataBits);
-    this->setValue("RTU/StopBits",m_stopBits);
-    this->setValue("RTU/Parity",m_parity);
-    this->setValue("RTU/RTS",m_RTS);
-    this->setValue("Var/MaxNoOfLines",m_maxNoOfLines);
-    this->setValue("Var/BaseAddr",m_baseAddr);
-    this->setValue("Var/TimeOut",m_timeOut);
-    this->setValue("Var/LoggingLevel",m_loggingLevel);
-    this->setValue("Session/ModBusMode",m_modbusMode);
-    this->setValue("Session/SlaveID",m_slaveID);
-    this->setValue("Session/ScanRate",m_scanRate);
-    this->setValue("Session/FunctionCode",m_functionCode);
-    this->setValue("Session/StartAddr",m_startAddr);
-    this->setValue("Session/NoOfRegs",m_noOfRegs);
-    this->setValue("Session/Base",m_base);
+    save(this);
 
 }
 
@@ -366,22 +233,38 @@ void ModbusCommSettings::loadSession(QString fName)
 
     QLOG_INFO()<<  "Load session config from file " << fName;
     QSettings m_save_session(fName, QSettings::IniFormat, this);
-    if (m_save_session.value("TCP/TCPPort").isNull())
+    load(&m_save_session);
+
+}
+
+void ModbusCommSettings::saveSession(QString fName)
+{
+
+    QLOG_INFO()<<  "Save session config to file " << fName;
+    QSettings m_save_session(fName, QSettings::IniFormat, this);
+    save(&m_save_session);
+
+}
+
+void ModbusCommSettings::load(QSettings *s)
+{
+
+    if (s->value("TCP/TCPPort").isNull())
         m_TCPPort = "502";
     else
-        m_TCPPort = m_save_session.value("TCP/TCPPort").toString();
+        m_TCPPort = s->value("TCP/TCPPort").toString();
 
-    if (m_save_session.value("TCP/SlaveIP").isNull())
+    if (s->value("TCP/SlaveIP").isNull())
         m_slaveIP = "127.000.000.001";
     else
-        m_slaveIP = m_save_session.value("TCP/SlaveIP").toString();
+        m_slaveIP = s->value("TCP/SlaveIP").toString();
 
-    if (m_save_session.value("RTU/SerialDev").isNull())
+    if (s->value("RTU/SerialDev").isNull())
         m_serialDev = "/dev/ttyS";
     else
-        m_serialDev = m_save_session.value("RTU/SerialDev").toString();
+        m_serialDev = s->value("RTU/SerialDev").toString();
 
-    if (m_save_session.value("RTU/SerialPort").isNull())
+    if (s->value("RTU/SerialPort").isNull())
     {
         m_serialPort = "1";
         #ifdef Q_OS_WIN32
@@ -392,123 +275,120 @@ void ModbusCommSettings::loadSession(QString fName)
         #endif
     }
     else {
-        m_serialPort = m_save_session.value("RTU/SerialPort").toString();
-        m_serialPortName = m_save_session.value("RTU/SerialPortName").toString();
+        m_serialPort = s->value("RTU/SerialPort").toString();
+        m_serialPortName = s->value("RTU/SerialPortName").toString();
     }
 
-    if (m_save_session.value("RTU/Baud").isNull())
+    if (s->value("RTU/Baud").isNull())
         m_baud = "9600";
     else
-        m_baud = m_save_session.value("RTU/Baud").toString();
+        m_baud = s->value("RTU/Baud").toString();
 
-    if (m_save_session.value("RTU/DataBits").isNull())
+    if (s->value("RTU/DataBits").isNull())
         m_dataBits = "8";
     else
-        m_dataBits = m_save_session.value("RTU/DataBits").toString();
+        m_dataBits = s->value("RTU/DataBits").toString();
 
-    if (m_save_session.value("RTU/StopBits").isNull())
+    if (s->value("RTU/StopBits").isNull())
         m_stopBits = "1";
     else
-        m_stopBits = m_save_session.value("RTU/StopBits").toString();
+        m_stopBits = s->value("RTU/StopBits").toString();
 
-    if (m_save_session.value("RTU/Parity").isNull())
+    if (s->value("RTU/Parity").isNull())
         m_parity = "None";
     else
-        m_parity = m_save_session.value("RTU/Parity").toString();
+        m_parity = s->value("RTU/Parity").toString();
 
-    if (m_save_session.value("RTU/RTS").isNull())
+    if (s->value("RTU/RTS").isNull())
         #ifdef Q_OS_WIN32
             m_RTS = "Disable";
         #else
             m_RTS = "None";
         #endif
     else
-        m_RTS = m_save_session.value("RTU/RTS").toString();
+        m_RTS = s->value("RTU/RTS").toString();
 
-    if (m_save_session.value("Var/MaxNoOfLines").toInt() == 0 ||
-            m_save_session.value("Var/MaxNoOfLines").isNull())
+    if (s->value("Var/MaxNoOfLines").toInt() == 0 ||
+            s->value("Var/MaxNoOfLines").isNull())
         m_maxNoOfLines = "60";
     else
-        m_maxNoOfLines = m_save_session.value("Var/MaxNoOfLines").toString();
+        m_maxNoOfLines = s->value("Var/MaxNoOfLines").toString();
 
-    if (m_save_session.value("Var/BaseAddr").isNull())
+    if (s->value("Var/BaseAddr").isNull())
         m_baseAddr = "0";
     else
-        m_baseAddr = m_save_session.value("Var/BaseAddr").toString();
+        m_baseAddr = s->value("Var/BaseAddr").toString();
 
-    if (m_save_session.value("Var/TimeOut").isNull())
+    if (s->value("Var/TimeOut").isNull())
         m_timeOut = "0";
     else
-        m_timeOut = m_save_session.value("Var/TimeOut").toString();
+        m_timeOut = s->value("Var/TimeOut").toString();
 
-    if (m_save_session.value("Var/LoggingLevel").isNull())
+    if (s->value("Var/LoggingLevel").isNull())
         m_loggingLevel = 3; //warning level
     else
-        m_loggingLevel = m_save_session.value("Var/LoggingLevel").toInt();
+        m_loggingLevel = s->value("Var/LoggingLevel").toInt();
 
-    if (m_save_session.value("Session/ModBusMode").isNull())
+    if (s->value("Session/ModBusMode").isNull())
         m_modbusMode = 0; //RTU
     else
-        m_modbusMode = m_save_session.value("Session/ModBusMode").toInt();
+        m_modbusMode = s->value("Session/ModBusMode").toInt();
 
-    if (m_save_session.value("Session/SlaveID").isNull())
+    if (s->value("Session/SlaveID").isNull())
         m_slaveID = 1;
     else
-        m_slaveID = m_save_session.value("Session/SlaveID").toInt();
+        m_slaveID = s->value("Session/SlaveID").toInt();
 
-    if (m_save_session.value("Session/ScanRate").isNull())
+    if (s->value("Session/ScanRate").isNull())
         m_scanRate = 1000;
     else
-        m_scanRate = m_save_session.value("Session/ScanRate").toInt();
+        m_scanRate = s->value("Session/ScanRate").toInt();
 
-    if (m_save_session.value("Session/FunctionCode").isNull())
+    if (s->value("Session/FunctionCode").isNull())
         m_functionCode = 0; //FC1 : Read Coils
     else
-        m_functionCode = m_save_session.value("Session/FunctionCode").toInt();
+        m_functionCode = s->value("Session/FunctionCode").toInt();
 
-    if (m_save_session.value("Session/StartAddr").isNull())
+    if (s->value("Session/StartAddr").isNull())
         m_startAddr = 0;
     else
-        m_startAddr = m_save_session.value("Session/StartAddr").toInt();
+        m_startAddr = s->value("Session/StartAddr").toInt();
 
-    if (m_save_session.value("Session/NoOfRegs").isNull())
+    if (s->value("Session/NoOfRegs").isNull())
         m_noOfRegs = 0;
     else
-        m_noOfRegs = m_save_session.value("Session/NoOfRegs").toInt();
+        m_noOfRegs = s->value("Session/NoOfRegs").toInt();
 
-    if (m_save_session.value("Session/Base").isNull())
+    if (s->value("Session/Base").isNull())
         m_base = 1; //Dec
     else
-        m_base = m_save_session.value("Session/Base").toInt();
+        m_base = s->value("Session/Base").toInt();
 
 }
 
-void ModbusCommSettings::saveSession(QString fName)
+void ModbusCommSettings::save(QSettings *s)
 {
 
-    QLOG_INFO()<<  "Save session config to file " << fName;
-    QSettings m_save_session(fName, QSettings::IniFormat, this);
-    m_save_session.setValue("TCP/TCPPort",m_TCPPort);
-    m_save_session.setValue("TCP/SlaveIP",m_slaveIP);
-    m_save_session.setValue("RTU/SerialDev",m_serialDev);
-    m_save_session.setValue("RTU/SerialPort",m_serialPort);
-    m_save_session.setValue("RTU/SerialPortName",m_serialPortName);
-    m_save_session.setValue("RTU/Baud",m_baud);
-    m_save_session.setValue("RTU/DataBits",m_dataBits);
-    m_save_session.setValue("RTU/StopBits",m_stopBits);
-    m_save_session.setValue("RTU/Parity",m_parity);
-    m_save_session.setValue("RTU/RTS",m_RTS);
-    m_save_session.setValue("Var/MaxNoOfLines",m_maxNoOfLines);
-    m_save_session.setValue("Var/BaseAddr",m_baseAddr);
-    m_save_session.setValue("Var/TimeOut",m_timeOut);
-    m_save_session.setValue("Var/LoggingLevel",m_loggingLevel);
-    m_save_session.setValue("Session/ModBusMode",m_modbusMode);
-    m_save_session.setValue("Session/SlaveID",m_slaveID);
-    m_save_session.setValue("Session/ScanRate",m_scanRate);
-    m_save_session.setValue("Session/FunctionCode",m_functionCode);
-    m_save_session.setValue("Session/StartAddr",m_startAddr);
-    m_save_session.setValue("Session/NoOfRegs",m_noOfRegs);
-    m_save_session.setValue("Session/Base",m_base);
-    m_save_session.sync();
+    s->setValue("TCP/TCPPort",m_TCPPort);
+    s->setValue("TCP/SlaveIP",m_slaveIP);
+    s->setValue("RTU/SerialDev",m_serialDev);
+    s->setValue("RTU/SerialPort",m_serialPort);
+    s->setValue("RTU/SerialPortName",m_serialPortName);
+    s->setValue("RTU/Baud",m_baud);
+    s->setValue("RTU/DataBits",m_dataBits);
+    s->setValue("RTU/StopBits",m_stopBits);
+    s->setValue("RTU/Parity",m_parity);
+    s->setValue("RTU/RTS",m_RTS);
+    s->setValue("Var/MaxNoOfLines",m_maxNoOfLines);
+    s->setValue("Var/BaseAddr",m_baseAddr);
+    s->setValue("Var/TimeOut",m_timeOut);
+    s->setValue("Var/LoggingLevel",m_loggingLevel);
+    s->setValue("Session/ModBusMode",m_modbusMode);
+    s->setValue("Session/SlaveID",m_slaveID);
+    s->setValue("Session/ScanRate",m_scanRate);
+    s->setValue("Session/FunctionCode",m_functionCode);
+    s->setValue("Session/StartAddr",m_startAddr);
+    s->setValue("Session/NoOfRegs",m_noOfRegs);
+    s->setValue("Session/Base",m_base);
 
 }

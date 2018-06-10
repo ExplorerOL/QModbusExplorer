@@ -75,6 +75,8 @@ private:
     QString m_maxNoOfLines;
     QString m_baseAddr;
     QString m_timeOut;
+    void load(QSettings *s);
+    void save(QSettings *s);
     //Log
     int m_loggingLevel;
     //Session vars
