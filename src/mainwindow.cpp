@@ -563,11 +563,13 @@ void MainWindow::scan(bool value)
     else
         m_modbus->stopPollTimer();
 
+    //Update UI
     ui->cmbBase->setEnabled(!value);
     ui->cmbFunctionCode->setEnabled(!value);
     ui->sbSlaveID->setEnabled(!value);
     ui->sbStartAddress->setEnabled(!value);
     ui->spInterval->setEnabled(!value);
+    ui->cmbStartAddrBase->setEnabled(!value);
     if (!value)
         changedFunctionCode(ui->cmbFunctionCode->currentIndex());
     else
