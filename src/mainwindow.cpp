@@ -17,7 +17,19 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     QMainWindow(parent), m_modbus(adapter), m_modbusCommSettings(settings),
     ui(new Ui::MainWindow)
 {
+    //setup UI
     ui->setupUi(this);
+    ui->sbNoOfRegs->setEnabled(true);
+    ui->actionRead_Write->setEnabled(false);
+    ui->actionScan->setEnabled(false);
+    ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
+    ui->cmbBase->setCurrentIndex(m_modbusCommSettings->base());
+    ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
+    ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
+    ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
+    ui->spInterval->setValue(m_modbusCommSettings->scanRate());
+    ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
+    ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -94,19 +106,9 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     m_modbus->regModel->setBase(EUtils::UInt);
     m_modbus->regModel->setStartAddrBase(10);
+    clearItems();//init model ui
 
     //Update UI
-    ui->sbNoOfRegs->setEnabled(true);
-    ui->actionRead_Write->setEnabled(false);
-    ui->actionScan->setEnabled(false);
-    ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
-    ui->cmbBase->setCurrentIndex(m_modbusCommSettings->base());
-    ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
-    ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
-    ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
-    ui->spInterval->setValue(m_modbusCommSettings->scanRate());
-    ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
-    ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
     updateStatusBar();
     refreshView();
 
