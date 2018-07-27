@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //Init models
     ui->tblRegisters->setItemDelegate(m_modbus->regModel->itemDelegate());
     ui->tblRegisters->setModel(m_modbus->regModel->model);
-    m_modbus->regModel->setBase(EUtils::UInt);
+    changedBase(m_modbusCommSettings->base());
     m_modbus->regModel->setStartAddrBase(10);
     clearItems();//init model ui
 
