@@ -392,8 +392,8 @@ void MainWindow::changedStartAddrBase(int currIndex)
                 m_modbus->regModel->setStartAddrBase(10);
                 break;
         case 1:
-                 ui->sbStartAddress->setDisplayIntegerBase(16);
-                 m_modbus->regModel->setStartAddrBase(16);
+                ui->sbStartAddress->setDisplayIntegerBase(16);
+                m_modbus->regModel->setStartAddrBase(16);
                 break;
         default:
                 ui->sbStartAddress->setDisplayIntegerBase(10);

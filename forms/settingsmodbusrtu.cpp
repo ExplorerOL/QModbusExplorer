@@ -11,11 +11,9 @@ SettingsModbusRTU::SettingsModbusRTU(QWidget *parent,ModbusCommSettings * settin
 
     /* device name is needed only in Linux */
     #ifdef Q_OS_WIN32
-        ui->lblDev->setVisible(false);
-        ui->cmbDev->setVisible(false);
+        ui->cmbDev->setDisabled(true);
     #else
-        ui->lblDev->setVisible(true);
-        ui->cmbDev->setVisible(true);
+        ui->cmbDev->setDisabled(false);
     #endif
 
     connect(ui->buttonBox,SIGNAL(accepted()),this,SLOT(changesAccepted()));

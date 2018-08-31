@@ -260,10 +260,17 @@ void ModbusCommSettings::load(QSettings *s)
         m_slaveIP = s->value("TCP/SlaveIP").toString();
 
     if (s->value("RTU/SerialDev").isNull())
-        m_serialDev = "/dev/ttyS";
+        #ifdef Q_OS_WIN32
+            m_serialDev = "COM";
+        #else
+            m_serialDev = "/dev/ttyS";
+        #endif
     else
-        m_serialDev = s->value("RTU/SerialDev").toString();
-
+        #ifdef Q_OS_WIN32
+            m_serialDev = "COM";
+        #else
+            m_serialDev = s->value("RTU/SerialDev").toString();
+        #endif
     if (s->value("RTU/SerialPort").isNull())
     {
         m_serialPort = "1";

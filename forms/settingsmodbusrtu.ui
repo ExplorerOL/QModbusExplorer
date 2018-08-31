@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>300</width>
+    <width>220</width>
     <height>300</height>
    </size>
   </property>
@@ -35,133 +35,51 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QLabel" name="lblPort">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cmbDev">
+       <property name="editable">
+        <bool>true</bool>
        </property>
+       <item>
+        <property name="text">
+         <string>/dev/ttyS</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>/dev/ttyUSB</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblDev">
        <property name="text">
-        <string>Serial port</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <string>Serial device</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="lblParity">
+     <item row="2" column="0">
+      <widget class="QLabel" name="lblBaud">
        <property name="text">
-        <string>Parity</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>cmbParity</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="cmbStopBits">
-       <property name="currentIndex">
-        <number>-1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">1.5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">2</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="cmbParity">
-       <property name="currentIndex">
-        <number>-1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>None</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Odd</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Even</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QComboBox" name="cmbRTS"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="lblStopBits">
-       <property name="text">
-        <string>Stop Bits</string>
+        <string>Baud</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
-        <cstring>cmbStopBits</cstring>
+        <cstring>cmbBaud</cstring>
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="lblRTS">
-       <property name="text">
-        <string notr="true">RTS</string>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="sbPort">
+       <property name="minimum">
+        <number>1</number>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <property name="maximum">
+        <number>128</number>
        </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="lblDataBits">
-       <property name="text">
-        <string>Data Bits</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>cmbDataBits</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="cmbDataBits">
-       <property name="currentIndex">
-        <number>-1</number>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true">7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">8</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="2" column="1">
@@ -251,51 +169,133 @@
        </item>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QSpinBox" name="sbPort">
-       <property name="minimum">
-        <number>1</number>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="cmbDataBits">
+       <property name="currentIndex">
+        <number>-1</number>
        </property>
-       <property name="maximum">
-        <number>128</number>
-       </property>
+       <item>
+        <property name="text">
+         <string notr="true">7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">8</string>
+        </property>
+       </item>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="lblBaud">
+     <item row="3" column="0">
+      <widget class="QLabel" name="lblDataBits">
        <property name="text">
-        <string>Baud</string>
+        <string>Data Bits</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
-        <cstring>cmbBaud</cstring>
+        <cstring>cmbDataBits</cstring>
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="lblDev">
+     <item row="6" column="0">
+      <widget class="QLabel" name="lblRTS">
        <property name="text">
-        <string>Serial device</string>
+        <string notr="true">RTS</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="cmbDev">
-       <property name="editable">
-        <bool>true</bool>
+     <item row="4" column="0">
+      <widget class="QLabel" name="lblStopBits">
+       <property name="text">
+        <string>Stop Bits</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>cmbStopBits</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="cmbRTS"/>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="cmbParity">
+       <property name="currentIndex">
+        <number>-1</number>
        </property>
        <item>
         <property name="text">
-         <string>/dev/ttyS</string>
+         <string>None</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>/dev/ttyUSB</string>
+         <string>Odd</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Even</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="cmbStopBits">
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+       <item>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">1.5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">2</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="lblParity">
+       <property name="text">
+        <string>Parity</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>cmbParity</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblPort">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Serial port</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
     </layout>
