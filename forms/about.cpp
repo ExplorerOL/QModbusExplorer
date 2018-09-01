@@ -2,7 +2,7 @@
 #include "ui_about.h"
 #include "modbus-version.h"
 
-const QString VER = "QModMaster 0.5.1-1";
+const QString VER = "QModMaster 0.5.1-2";
 const QString LIB_VER = LIBMODBUS_VERSION_STRING;
 const QString URL = "<a href = ""http://sourceforge.net/projects/qmodmaster"">Sourceforge Project Home Page</a>";
 
