@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->spInterval->setValue(m_modbusCommSettings->scanRate());
     ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
     ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
+    ui->chkSigned->setVisible(false);
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
     connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
     connect(ui->cmbBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedBase(int)));
+    connect(ui->chkSigned,SIGNAL(toggled(bool)),this,SLOT(changedDecSign(bool)));
     connect(ui->cmbStartAddrBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedStartAddrBase(int)));
     connect(ui->sbSlaveID,SIGNAL(valueChanged(int)),this,SLOT(changedSlaveID(int)));
     connect(ui->sbNoOfRegs,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
@@ -295,17 +297,37 @@ void MainWindow::changedBase(int currIndex)
     {
         case 0:
                 m_modbus->regModel->setBase(EUtils::Bin);
+                ui->chkSigned->setVisible(false);
                 break;
         case 1:
-                m_modbus->regModel->setBase(EUtils::UInt);
+                ui->chkSigned->setVisible(true);
+                if (ui->chkSigned->isChecked())
+                    m_modbus->regModel->setBase(EUtils::SInt);
+                else
+                    m_modbus->regModel->setBase(EUtils::UInt);
                 break;
         case 2:
                 m_modbus->regModel->setBase(EUtils::Hex);
+                ui->chkSigned->setVisible(false);
                 break;
         default:
                 m_modbus->regModel->setBase(EUtils::UInt);
+                ui->chkSigned->setVisible(true);
                 break;
      }
+
+}
+
+void MainWindow::changedDecSign(bool value)
+{
+    //Change Dec Signed - Unsigned
+
+    QLOG_TRACE()<<  "Dec Signed-Unsigned changed. Signed = " << value;
+
+    if (value)
+        m_modbus->regModel->setBase(EUtils::SInt);
+    else
+        m_modbus->regModel->setBase(EUtils::UInt);
 
 }
 

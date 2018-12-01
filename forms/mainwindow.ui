@@ -151,7 +151,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>65</height>
+        <height>36</height>
        </size>
       </property>
       <property name="frameShape">
@@ -160,14 +160,27 @@
       <property name="frameShadow">
        <enum>QFrame::Sunken</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <property name="topMargin">
         <number>6</number>
        </property>
        <property name="bottomMargin">
         <number>6</number>
        </property>
-       <item row="0" column="1">
+       <item>
+        <widget class="QLabel" name="lblFunctionCode">
+         <property name="text">
+          <string>Function Code</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>cmbFunctionCode</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="cmbFunctionCode">
          <property name="frame">
           <bool>true</bool>
@@ -214,33 +227,7 @@
          </item>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="lblFunctionCode">
-         <property name="text">
-          <string>Function Code</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>cmbFunctionCode</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="5">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="2">
+       <item>
         <widget class="QLabel" name="lblStartAddress">
          <property name="text">
           <string>Start Address</string>
@@ -253,7 +240,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
+       <item>
         <widget class="QSpinBox" name="sbStartAddress">
          <property name="maximum">
           <number>65535</number>
@@ -263,7 +250,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="4">
+       <item>
         <widget class="QComboBox" name="cmbStartAddrBase">
          <property name="currentIndex">
           <number>0</number>
@@ -280,7 +267,41 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_3">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>36</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <item>
         <widget class="QLabel" name="lblNoOfCoils">
          <property name="text">
           <string>Number of Coils</string>
@@ -293,7 +314,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item>
         <widget class="QSpinBox" name="sbNoOfRegs">
          <property name="minimum">
           <number>1</number>
@@ -303,7 +324,20 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
+       <item>
+        <widget class="QLabel" name="lblDataFormat">
+         <property name="text">
+          <string>Data Format</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>sbStartAddress</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="cmbBase">
          <property name="currentText">
           <string>Dec</string>
@@ -328,18 +362,28 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="lblDataFormat">
+       <item>
+        <widget class="QCheckBox" name="chkSigned">
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
          <property name="text">
-          <string>Data Format</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>sbStartAddress</cstring>
+          <string>Signed</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -413,19 +457,10 @@
     <addaction name="actionClear"/>
     <addaction name="actionReset_Counters"/>
    </widget>
-   <widget class="QMenu" name="menuLanguage">
-    <property name="title">
-     <string notr="true">Language</string>
-    </property>
-    <addaction name="actionSimplified_Chinese_zh_CN"/>
-    <addaction name="actionTraditional_Chinese_zh_TW"/>
-    <addaction name="actionEnglish_en_US"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuCommands"/>
    <addaction name="menuView"/>
-   <addaction name="menuLanguage"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -570,6 +605,9 @@
    <property name="toolTip">
     <string notr="true">简体中文 (zh_CN)</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionTraditional_Chinese_zh_TW">
    <property name="icon">
@@ -585,6 +623,9 @@
    <property name="toolTip">
     <string notr="true">繁體中文 (zh_TW)</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionEnglish_en_US">
    <property name="icon">
@@ -599,6 +640,9 @@
    </property>
    <property name="toolTip">
     <string notr="true">English (en_US)</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionOpenLogFile">
