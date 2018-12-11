@@ -76,6 +76,7 @@ private slots:
     void openModbusManual();
     void loadSession();
     void saveSession();
+    void showHeaders(bool value);
 
 signals:
     void resetCounters();

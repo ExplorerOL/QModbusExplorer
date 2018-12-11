@@ -390,17 +390,20 @@
     </item>
     <item>
      <widget class="QTableView" name="tblRegisters">
-      <attribute name="horizontalHeaderVisible">
+      <property name="cornerButtonEnabled">
        <bool>false</bool>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
       </attribute>
       <attribute name="horizontalHeaderHighlightSections">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderVisible">
        <bool>false</bool>
       </attribute>
-      <attribute name="verticalHeaderHighlightSections">
+      <attribute name="verticalHeaderVisible">
        <bool>true</bool>
+      </attribute>
+      <attribute name="verticalHeaderHighlightSections">
+       <bool>false</bool>
       </attribute>
      </widget>
     </item>
@@ -446,6 +449,7 @@
     </property>
     <addaction name="actionOpenLogFile"/>
     <addaction name="actionBus_Monitor"/>
+    <addaction name="actionHeaders"/>
    </widget>
    <widget class="QMenu" name="menuCommands">
     <property name="title">
@@ -688,6 +692,18 @@
    </property>
    <property name="text">
     <string>Save Session...</string>
+   </property>
+  </action>
+  <action name="actionHeaders">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons/icons.qrc">
+     <normaloff>:/icons/Header16.png</normaloff>:/icons/Header16.png</iconset>
+   </property>
+   <property name="text">
+    <string>Headers</string>
    </property>
   </action>
  </widget>

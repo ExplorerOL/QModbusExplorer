@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
     connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
+    connect(ui->actionHeaders,SIGNAL(triggered(bool)),this,SLOT(showHeaders(bool)));
     connect(ui->actionModbus_Manual,SIGNAL(triggered()),this,SLOT(openModbusManual()));
     connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
@@ -94,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionOpenLogFile);
     ui->mainToolBar->addAction(ui->actionBus_Monitor);
+    ui->mainToolBar->addAction(ui->actionHeaders);
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionSerial_RTU);
     ui->mainToolBar->addAction(ui->actionTCP);
@@ -106,6 +108,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //Init models
     ui->tblRegisters->setItemDelegate(m_modbus->regModel->itemDelegate());
     ui->tblRegisters->setModel(m_modbus->regModel->model);
+    ui->tblRegisters->horizontalHeader()->hide();
+    ui->tblRegisters->verticalHeader()->hide();
     changedBase(m_modbusCommSettings->base());
     m_modbus->regModel->setStartAddrBase(10);
     clearItems();//init model ui
@@ -301,10 +305,7 @@ void MainWindow::changedBase(int currIndex)
                 break;
         case 1:
                 ui->chkSigned->setVisible(true);
-                if (ui->chkSigned->isChecked())
-                    m_modbus->regModel->setBase(EUtils::SInt);
-                else
-                    m_modbus->regModel->setBase(EUtils::UInt);
+                m_modbus->regModel->setBase(EUtils::UInt);
                 break;
         case 2:
                 m_modbus->regModel->setBase(EUtils::Hex);
@@ -324,10 +325,7 @@ void MainWindow::changedDecSign(bool value)
 
     QLOG_TRACE()<<  "Dec Signed-Unsigned changed. Signed = " << value;
 
-    if (value)
-        m_modbus->regModel->setBase(EUtils::SInt);
-    else
-        m_modbus->regModel->setBase(EUtils::UInt);
+    m_modbus->regModel->setIsSigned(value);
 
 }
 
@@ -641,6 +639,21 @@ void MainWindow::modbusConnect(bool connect)
     ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
 
  }
+
+void MainWindow::showHeaders(bool value)
+{
+    QLOG_TRACE()<<  "Show Headers = " << value;
+
+    if (value){
+        ui->tblRegisters->horizontalHeader()->show();
+        ui->tblRegisters->verticalHeader()->show();
+    }
+    else {
+        ui->tblRegisters->horizontalHeader()->hide();
+        ui->tblRegisters->verticalHeader()->hide();
+    }
+
+}
 
  void MainWindow::refreshView()
  {

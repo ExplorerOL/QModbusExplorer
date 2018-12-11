@@ -20,6 +20,7 @@ public:
     void setBase(int frmt);
     void setStartAddrBase(int base);
     void setIs16Bit(bool is16Bit);
+    void setIsSigned(bool isSigned);
     QString strValue(int idx);
     int value(int idx);
     QStandardItemModel *model;
@@ -35,6 +36,7 @@ private:
     int m_firstRow;
     int m_lastRow;
     bool m_is16Bit;
+    bool m_isSigned;
     int m_base;
     int m_startAddrBase;
     int m_frmt;

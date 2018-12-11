@@ -4,7 +4,7 @@ EUtils::EUtils()
 {
 }
 
-QString EUtils::formatValue(int value,int frmt, bool is16Bit)
+QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=false)
 {
     QString convertedValue;
 
@@ -18,11 +18,10 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit)
         break;
 
         case 10://Decimal - Unsigned Integer
-            convertedValue = QString("%1").arg((unsigned short)value,0,10).toUpper();
-        break;
-
-        case 11://Decimal - Signed Integer
-             convertedValue = QString("%1").arg((signed short)value,0,10).toUpper();
+            if (isSigned)
+                convertedValue = QString("%1").arg((signed short)value,0,10).toUpper();
+            else
+                convertedValue = QString("%1").arg((unsigned short)value,0,10).toUpper();
         break;
 
         case 16://Hex

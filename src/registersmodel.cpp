@@ -12,6 +12,7 @@ RegistersModel::RegistersModel(QObject *parent) :
    m_regDataDelegate = new RegistersDataDelegate(0);
    m_noOfItems = 0;
    m_is16Bit = false;
+   m_isSigned = false;
    m_startAddrBase = 10;
    clear();
 }
@@ -100,7 +101,7 @@ void RegistersModel::setValue(int idx, int value)
     int col;
     QString convertedValue;
 
-    convertedValue = EUtils::formatValue(value, m_frmt, m_is16Bit);
+    convertedValue = EUtils::formatValue(value, m_frmt, m_is16Bit, m_isSigned);
 
     //set model data
     if (m_noOfItems == 1){
@@ -176,7 +177,7 @@ void RegistersModel::changeBase(int frmt)
         intVal = stringVal.toInt(&ok,m_base);
         //Format Value
         if (ok)
-            convertedVal = EUtils::formatValue(intVal, frmt, m_is16Bit);
+            convertedVal = EUtils::formatValue(intVal, frmt, m_is16Bit, m_isSigned);
         else
             convertedVal = "-/-";
         //Update
@@ -234,6 +235,16 @@ void RegistersModel::setIs16Bit(bool is16Bit)
     QLOG_TRACE()<<  "Registers Model Is16Bit = " << is16Bit ;
     m_is16Bit = is16Bit;
     m_regDataDelegate->setIs16Bit(is16Bit);
+
+}
+
+void RegistersModel::setIsSigned(bool isSigned)
+{
+
+    QLOG_TRACE()<<  "Registers Model IsSigned = " << isSigned ;
+    m_isSigned = isSigned;
+    m_regDataDelegate->setIsSigned(isSigned);
+    changeBase(m_frmt);
 
 }
 

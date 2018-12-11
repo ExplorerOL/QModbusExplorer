@@ -140,14 +140,14 @@ public:
 
     static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;
 
-    static enum {Bin = 2, UInt = 10, SInt = 11, Hex = 16} NumberFormat;
+    static enum {Bin = 2, UInt = 10, Hex = 16} NumberFormat;
 
     static enum {ReadCoils = 0x1, ReadDisInputs = 0x2,
                 ReadHoldRegs = 0x3, ReadInputRegs = 0x4,
                 WriteSingleCoil = 0x5, WriteSingleReg = 0x6,
                 WriteMultiCoils = 0xf, WriteMultiRegs = 0x10} FunctionCodes;
 
-    static QString formatValue(int value,int frmt, bool is16Bit);
+    static QString formatValue(int value,int frmt, bool is16Bit, bool isSigned);
 
     static QString libmodbus_strerror(int errnum);
 
