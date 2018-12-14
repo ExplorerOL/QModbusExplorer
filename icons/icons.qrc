@@ -28,5 +28,7 @@
         <file>document-export-16.png</file>
         <file>document-import-16.png</file>
         <file>Header16.png</file>
+        <file>tools-16.png</file>
+        <file>play-16.png</file>
     </qresource>
 </RCC>

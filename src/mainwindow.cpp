@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionSettings,SIGNAL(triggered()),this,SLOT(showSettings()));
     m_busMonitor = new BusMonitor(this, m_modbus->rawModel);
     connect(ui->actionBus_Monitor,SIGNAL(triggered()),this,SLOT(showBusMonitor()));
+    m_tools = new Tools(this, m_modbus, m_modbusCommSettings);
+    connect(ui->actionTools,SIGNAL(triggered()),this,SLOT(showTools()));
 
     //UI - connections
     connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
@@ -55,8 +57,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
-    connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(request()));
-    connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(scan(bool)));
+    connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(modbusRequest()));
+    connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(modbusScanCycle(bool)));
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
     connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
@@ -95,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionOpenLogFile);
     ui->mainToolBar->addAction(ui->actionBus_Monitor);
+    ui->mainToolBar->addAction(ui->actionTools);
     ui->mainToolBar->addAction(ui->actionHeaders);
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionSerial_RTU);
@@ -191,6 +194,16 @@ void MainWindow::showBusMonitor()
     m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
     m_busMonitor->move(this->x() + this->width() + 20, this->y());
     m_busMonitor->show();
+
+}
+
+void MainWindow::showTools()
+{
+
+    //Show Tools
+
+    m_tools->move(this->x() + this->width() + 40, this->y() + 20);
+    m_tools->show();
 
 }
 
@@ -514,7 +527,7 @@ void MainWindow::clearItems()
 
 }
 
-void MainWindow::request()
+void MainWindow::modbusRequest()
 {
 
      //Request items from modbus adapter and add raw data to raw data model
@@ -545,7 +558,7 @@ void MainWindow::request()
 
 }
 
-void MainWindow::scan(bool value)
+void MainWindow::modbusScanCycle(bool value)
 {
 
    //Request items from modbus adapter and add raw data to raw data model

@@ -32,7 +32,8 @@ SOURCES += src/main.cpp \
     3rdparty/QsLog/QsLog.cpp \
     3rdparty/QsLog/QsLogDestConsole.cpp \
     3rdparty/QsLog/QsLogDestFile.cpp \
-    src/infobar.cpp
+    src/infobar.cpp \
+    forms/tools.cpp
 
 HEADERS  += src/mainwindow.h \
     3rdparty/libmodbus/modbus.h \
@@ -54,7 +55,8 @@ HEADERS  += src/mainwindow.h \
     3rdparty/QsLog/QsLogLevel.h \
     3rdparty/QsLog/QsLogDisableForThisFile.h \
     3rdparty/QsLog/QsLogDestFile.h \
-    src/infobar.h
+    src/infobar.h \
+    forms/tools.h
 
 INCLUDEPATH += 3rdparty/libmodbus \
     3rdparty/QsLog
@@ -84,7 +86,8 @@ FORMS    += forms/mainwindow.ui \
     forms/settingsmodbusrtu.ui \
     forms/settingsmodbustcp.ui \
     forms/settings.ui \
-    forms/busmonitor.ui
+    forms/busmonitor.ui \
+    forms/tools.ui
 
 RESOURCES += \
     icons/icons.qrc \
