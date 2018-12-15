@@ -2,6 +2,8 @@
 #define TOOLS_H
 
 #include <QMainWindow>
+#include <QProcess>
+#include <QTcpSocket>
 #include <qcombobox.h>
 
 #include "src/modbusadapter.h"
@@ -25,12 +27,18 @@ private:
     QComboBox *cmbCmd;
     ModbusAdapter *m_modbus;
     ModbusCommSettings *m_modbusCommSettings;
+    QProcess m_pingProc;
+    QTcpSocket m_portProc;
+    void pingProc();
+    void portProc();
+    void diagnosticsProc();
 
 private slots:
     void exit();
     void changedModbusMode(int currIndex);
     void execCmd();
-    void Clear();
+    void clear();
+    void pingData();
 
 };
 

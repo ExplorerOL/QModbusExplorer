@@ -37,7 +37,6 @@ BusMonitor::~BusMonitor()
 void BusMonitor::save()
 {
 
-    //qDebug()<<  "BusMonitor : save" ;
 
     //Select file
     QString fileName = QFileDialog::getSaveFileName(NULL,"Save File As...",
