@@ -25,13 +25,14 @@ private:
     Ui::Tools *ui;
     QComboBox *cmbModbusMode;
     QComboBox *cmbCmd;
-    ModbusAdapter *m_modbus;
+    ModbusAdapter *m_modbusAdapter;
     ModbusCommSettings *m_modbusCommSettings;
     QProcess m_pingProc;
     QTcpSocket m_portProc;
     void pingProc();
     void portProc();
     void diagnosticsProc();
+    void modbusDiagnostics();
 
 private slots:
     void exit();

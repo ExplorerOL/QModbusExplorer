@@ -17,6 +17,11 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QPlainTextEdit" name="txtOutput">
+      <property name="font">
+       <font>
+        <family>Tahoma</family>
+       </font>
+      </property>
       <property name="acceptDrops">
        <bool>false</bool>
       </property>

@@ -5,7 +5,7 @@
 
 Tools::Tools(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettings *settings) :
     QMainWindow(parent),
-    m_modbus(adapter), m_modbusCommSettings(settings),
+    m_modbusAdapter(adapter), m_modbusCommSettings(settings),
     ui(new Ui::Tools)
 {
     //setup UI
@@ -105,7 +105,14 @@ void Tools::clear()
 void Tools::diagnosticsProc()
 {
 
-    qDebug() << "Diagnostics";
+    qApp->processEvents();
+    ui->txtOutput->moveCursor(QTextCursor::End);
+    if(m_modbusAdapter->m_modbus != NULL){
+        modbusDiagnostics();
+    }
+    else{
+        ui->txtOutput->insertPlainText("Not Connected.\n");
+    }
 
 }
 
@@ -143,3 +150,48 @@ void Tools::portProc()
     }
 
 }
+
+void Tools::modbusDiagnostics()
+{
+//Modbus diagnostics - RTU/TCP
+QLOG_TRACE()<<  "Modbus diagnostics.";
+
+    //Modbus data
+    m_modbusAdapter->setFunctionCode(0x11);
+    uint8_t dest[1024]; //setup memory for data
+    memset(dest, 0, 1024);
+    int ret = -1; //return value from read functions
+
+    modbus_set_slave(m_modbusAdapter->m_modbus, m_modbusCommSettings->slaveID());
+    //request data from modbus
+    ret = modbus_report_slave_id(m_modbusAdapter->m_modbus, MODBUS_MAX_PDU_LENGTH, dest);
+    QLOG_TRACE() <<  "Modbus Read Data return value = " << ret << ", errno = " << errno;
+
+    //update data model
+    if(ret > 1)
+    {
+        QString line;
+        line = dest[1]?"ON":"OFF";
+        ui->txtOutput->insertPlainText(line);
+    }
+    else
+    {
+        QString line = "";
+        if(ret < 0) {
+                line = QString("Error : ") +  EUtils::libmodbus_strerror(errno);
+                QLOG_ERROR() <<  "Read diagnostics data failed. " << line;
+                line = QString(tr("Read diagnostics data failed.\nError : ")) +  EUtils::libmodbus_strerror(errno);
+                ui->txtOutput->insertPlainText(line);
+        }
+        else {
+                line = QString("Unknown Error : ")  +  EUtils::libmodbus_strerror(errno);
+                QLOG_ERROR() <<  "Read diagnostics data failed. " << line;
+                line = QString(tr("Read diagnostics data failed.\nUnknown Error : "))  +  EUtils::libmodbus_strerror(errno);
+                ui->txtOutput->insertPlainText(line);
+        }
+
+        modbus_flush(m_modbusAdapter->m_modbus); //flush data
+     }
+
+}
+

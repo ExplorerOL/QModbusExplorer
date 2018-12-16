@@ -154,7 +154,9 @@ void BusMonitor::parseTxPDU(QStringList pdu, QString slave)
 {
 
     if (pdu.length() < 6){//check message length
-        ui->txtPDU->appendPlainText("Error! Cannot parse Message");
+        ui->txtPDU->appendPlainText(slave + pdu[0]);
+        ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
+        //ui->txtPDU->appendPlainText("Error! Cannot parse Message");
         return;
     }
     ui->txtPDU->appendPlainText(slave + pdu[0]);
