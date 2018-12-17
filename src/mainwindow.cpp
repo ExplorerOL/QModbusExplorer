@@ -313,16 +313,18 @@ void MainWindow::changedBase(int currIndex)
     switch(currIndex)
     {
         case 0:
-                m_modbus->regModel->setBase(EUtils::Bin);
                 ui->chkSigned->setVisible(false);
+                ui->chkSigned->setChecked(false);
+                m_modbus->regModel->setBase(EUtils::Bin);
                 break;
         case 1:
                 ui->chkSigned->setVisible(true);
                 m_modbus->regModel->setBase(EUtils::UInt);
                 break;
         case 2:
-                m_modbus->regModel->setBase(EUtils::Hex);
                 ui->chkSigned->setVisible(false);
+                ui->chkSigned->setChecked(false);
+                m_modbus->regModel->setBase(EUtils::Hex);
                 break;
         default:
                 m_modbus->regModel->setBase(EUtils::UInt);

@@ -12,10 +12,10 @@ Tools::Tools(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettings *settin
     ui->setupUi(this);
     cmbModbusMode = new QComboBox(this);
     cmbModbusMode->setMinimumWidth(96);
-    cmbModbusMode->addItem("RTU");cmbModbusMode->addItem("TCP");
+    cmbModbusMode->addItem("RTU/TCP");cmbModbusMode->addItem("TCP");
     cmbCmd = new QComboBox(this);
     cmbCmd->setMinimumWidth(96);
-    cmbCmd->addItem("Diagnostic");
+    cmbCmd->addItem("Report Slave ID");
     ui->toolBar->addWidget(cmbModbusMode);
     ui->toolBar->addWidget(cmbCmd);
     ui->toolBar->addSeparator();
@@ -51,11 +51,11 @@ void Tools::changedModbusMode(int currIndex)
     QLOG_TRACE()<<  "Modbus Mode changed. Index = " << currIndex;
 
     cmbCmd->clear();
-    if (currIndex == 0) { //RTU
-       cmbCmd->addItem("Diagnostic");
+    if (currIndex == 0) { //RTU/TCP
+       cmbCmd->addItem("Report Slave ID");
     }
     else { //TCP
-       cmbCmd->addItem("Diagnostic");cmbCmd->addItem("Ping");cmbCmd->addItem("Port Status");
+       cmbCmd->addItem("Report Slave ID");cmbCmd->addItem("Ping");cmbCmd->addItem("Port Status");
     }
 
 }
@@ -68,10 +68,7 @@ void Tools::execCmd()
     QLOG_TRACE()<<  "Tools Execute Cmd " << cmbCmd->currentText();
     switch (cmbCmd->currentIndex()){
         case 0:
-        if (cmbModbusMode->currentIndex()==0)
-           ui->txtOutput->appendPlainText(QString("------- Modbus RTU : Slave Addr %1 Diagnostics -------\n").arg(m_modbusCommSettings->slaveID()));
-        else
-           ui->txtOutput->appendPlainText(QString("------- Modbus TCP : Slave ID %1 Diagnostics -------\n").arg(m_modbusCommSettings->slaveID()));
+        ui->txtOutput->appendPlainText(QString("------- Modbus Diagnotics : Report Slave ID %1 -------\n").arg(m_modbusCommSettings->slaveID()));
         diagnosticsProc();
         break;
 
@@ -172,7 +169,9 @@ QLOG_TRACE()<<  "Modbus diagnostics.";
     {
         QString line;
         line = dest[1]?"ON":"OFF";
-        ui->txtOutput->insertPlainText(line);
+        ui->txtOutput->insertPlainText("Run Status : " + line + "\n");
+        QString id = QString::fromUtf8((char*)dest);
+        ui->txtOutput->insertPlainText("ID : " + id.right(id.size()-2) + "\n");;
     }
     else
     {
