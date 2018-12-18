@@ -601,7 +601,6 @@ void MainWindow::modbusScanCycle(bool value)
         m_modbus->stopPollTimer();
 
     //Update UI
-    ui->cmbBase->setEnabled(!value);
     ui->cmbFunctionCode->setEnabled(!value);
     ui->sbSlaveID->setEnabled(!value);
     ui->sbStartAddress->setEnabled(!value);
