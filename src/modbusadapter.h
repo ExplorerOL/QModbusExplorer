@@ -12,8 +12,8 @@ class ModbusAdapter : public QObject
 {
     Q_OBJECT
 public:
-    explicit ModbusAdapter(QObject *parent = 0);
-
+     explicit ModbusAdapter(QObject *parent = 0);
+     ~ModbusAdapter();
      void busMonitorRequestData(uint8_t * data,uint8_t dataLen);
      void busMonitorResponseData(uint8_t * data,uint8_t dataLen);
 
@@ -54,6 +54,8 @@ private:
      int m_errors;
      int m_timeOut;
      bool m_transactionIsPending;
+     uint8_t *dest;
+     uint16_t *dest16;
 
 signals:
     void refreshView();

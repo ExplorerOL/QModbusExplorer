@@ -24,6 +24,17 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_errors = 0;
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
     connect(regModel,SIGNAL(refreshView()),this,SIGNAL(refreshView()));
+    //setup memory for data
+    dest = (uint8_t *) malloc(2000 * sizeof(uint8_t));
+    memset(dest, 0, 2000 * sizeof(uint8_t));
+    dest16 = (uint16_t *) malloc(125 * sizeof(uint16_t));
+    memset(dest16, 0, 125 * sizeof(uint16_t));
+}
+
+ModbusAdapter::~ModbusAdapter()
+{
+    free(dest);
+    free(dest16);
 }
 
 void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut)
@@ -212,9 +223,6 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
 
     if(m_modbus == NULL) return;
 
-    uint8_t dest[1024]; //setup memory for data
-    uint16_t * dest16 = (uint16_t *) dest;
-    memset(dest, 0, 1024);
     int ret = -1; //return value from read functions
     bool is16Bit = false;
 

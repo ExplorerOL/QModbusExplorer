@@ -245,21 +245,25 @@ void MainWindow::changedFunctionCode(int currIndex)
         case MODBUS_FC_READ_COILS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case MODBUS_FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_inputs);
                 break;
         case MODBUS_FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case MODBUS_FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         case MODBUS_FC_WRITE_SINGLE_COIL:
@@ -273,6 +277,7 @@ void MainWindow::changedFunctionCode(int currIndex)
                 if (ui->sbNoOfRegs->value() < 2)
                     ui->sbNoOfRegs->setValue(2);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
         case MODBUS_FC_WRITE_SINGLE_REGISTER:
@@ -286,12 +291,14 @@ void MainWindow::changedFunctionCode(int currIndex)
                 if (ui->sbNoOfRegs->value() < 2)
                     ui->sbNoOfRegs->setValue(2);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
                 break;
         default:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setValue(1);
                 ui->sbNoOfRegs->setEnabled(true);
+                ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
                 break;
      }

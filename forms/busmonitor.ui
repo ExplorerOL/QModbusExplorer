@@ -88,7 +88,7 @@
          </font>
         </property>
         <property name="text">
-         <string notr="true">PDU</string>
+         <string notr="true">ADU</string>
         </property>
        </widget>
       </item>
