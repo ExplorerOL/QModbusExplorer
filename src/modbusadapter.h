@@ -14,8 +14,8 @@ class ModbusAdapter : public QObject
 public:
      explicit ModbusAdapter(QObject *parent = 0);
      ~ModbusAdapter();
-     void busMonitorRequestData(uint8_t * data,uint8_t dataLen);
-     void busMonitorResponseData(uint8_t * data,uint8_t dataLen);
+     void busMonitorRequestData(uint8_t * data,int dataLen);
+     void busMonitorResponseData(uint8_t * data,int dataLen);
 
      void modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut=1);
      void modbusConnectTCP(QString ip, int port, int timeOut=1);

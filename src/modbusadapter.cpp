@@ -375,7 +375,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
 
 }
 
-void ModbusAdapter::busMonitorRequestData(uint8_t * data, uint8_t dataLen)
+void ModbusAdapter::busMonitorRequestData(uint8_t * data, int dataLen)
 {
 
     //Request Raw data from port - Update raw data model
@@ -394,7 +394,7 @@ void ModbusAdapter::busMonitorRequestData(uint8_t * data, uint8_t dataLen)
     m_transactionIsPending = true;
 
 }
-void ModbusAdapter::busMonitorResponseData(uint8_t * data, uint8_t dataLen)
+void ModbusAdapter::busMonitorResponseData(uint8_t * data, int dataLen)
 {
 
     //Response Raw data from port - Update raw data model
@@ -514,12 +514,12 @@ QString ModbusAdapter::stripIP(QString ip)
 
 extern "C" {
 
-void busMonitorRawResponseData(uint8_t * data, uint8_t dataLen)
+void busMonitorRawResponseData(uint8_t * data, int dataLen)
 {
         m_instance->busMonitorResponseData(data, dataLen);
 }
 
-void busMonitorRawRequestData(uint8_t * data, uint8_t dataLen)
+void busMonitorRawRequestData(uint8_t * data, int dataLen)
 {
         m_instance->busMonitorRequestData(data, dataLen);
 }
