@@ -24,6 +24,7 @@ QTranslator *Translator;
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     Translator = new QTranslator;
     Translator->load(":/translations/" + QCoreApplication::applicationName() + "_" + QLocale::system().name());
     app.installTranslator(Translator);
