@@ -45,6 +45,27 @@ void Tools::exit()
 
 }
 
+QString Tools::ipConv(QString ip)
+{
+    /* convert ip - remove leding 0's */
+
+    QStringList m_ip;
+    QStringList m_ip_conv;
+    QString m_ip_byte;
+
+    m_ip = ip.split(".");
+    for (int i = 0; i < m_ip.size(); i++){
+         m_ip_byte = m_ip.at(i);
+         if (m_ip_byte.at(0)=='0')
+             m_ip_conv << m_ip_byte.remove(0,1);
+         else
+             m_ip_conv << m_ip_byte;
+    }
+
+    return  (m_ip_conv.at(0) + "." + m_ip_conv.at(1) + "." + m_ip_conv.at(2) + "." + m_ip_conv.at(3));
+
+}
+
 void Tools::changedModbusMode(int currIndex)
 {
 
@@ -74,7 +95,6 @@ void Tools::execCmd()
 
         case 1:
         ui->txtOutput->appendPlainText(QString("------- Modbus TCP : Ping IP %1 -------\n").arg(m_modbusCommSettings->slaveIP()));
-        //m_pingProc.start("ping", QStringList() << m_modbusCommSettings->slaveIP());
         pingProc();
         break;
 
@@ -117,7 +137,7 @@ void Tools::pingProc()
 {
 
     qApp->processEvents();
-    m_pingProc.start("ping", QStringList() << m_modbusCommSettings->slaveIP());
+    m_pingProc.start("ping", QStringList() << ipConv(m_modbusCommSettings->slaveIP()));
     if (m_pingProc.waitForFinished(5000)){
             //just wait -> execute button is pressed
     }
@@ -137,7 +157,7 @@ void Tools::portProc()
 
     qApp->processEvents();
     ui->txtOutput->moveCursor(QTextCursor::End);
-    m_portProc.connectToHost(m_modbusCommSettings->slaveIP(),m_modbusCommSettings->TCPPort().toInt());
+    m_portProc.connectToHost(ipConv(m_modbusCommSettings->slaveIP()),m_modbusCommSettings->TCPPort().toInt());
     if (m_portProc.waitForConnected(5000)){//wait -> execute button is pressed
         ui->txtOutput->insertPlainText("Connected.Port is opened\n");
         m_portProc.close();
@@ -150,8 +170,8 @@ void Tools::portProc()
 
 void Tools::modbusDiagnostics()
 {
-//Modbus diagnostics - RTU/TCP
-QLOG_TRACE()<<  "Modbus diagnostics.";
+    //Modbus diagnostics - RTU/TCP
+    QLOG_TRACE()<<  "Modbus diagnostics.";
 
     //Modbus data
     m_modbusAdapter->setFunctionCode(0x11);

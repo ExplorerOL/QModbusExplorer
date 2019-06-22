@@ -29,6 +29,7 @@ private:
     ModbusCommSettings *m_modbusCommSettings;
     QProcess m_pingProc;
     QTcpSocket m_portProc;
+    QString ipConv(QString ip);
     void pingProc();
     void portProc();
     void diagnosticsProc();
