@@ -22,6 +22,8 @@ void SettingsModbusTCP::showEvent(QShowEvent * event)
 {
 
     //Load Settings
+    ui->leSlaveIP->setEnabled(!modbus_connected);
+    ui->leTCPPort->setEnabled(!modbus_connected);
     if (m_settings != NULL) {
         ui->leTCPPort->setText(m_settings->TCPPort());
         ui->leSlaveIP->setText(m_settings->slaveIP());

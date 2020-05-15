@@ -142,7 +142,7 @@ void MainWindow::showSettingsModbusRTU()
 {
 
     //Show RTU Settings Dialog
-
+    m_dlgModbusRTU->modbus_connected = m_modbus->isConnected();
     if (m_dlgModbusRTU->exec()==QDialog::Accepted) {
         QLOG_TRACE()<<  "RTU settings changes accepted ";
         updateStatusBar();
@@ -157,7 +157,7 @@ void MainWindow::showSettingsModbusTCP()
 {
 
     //Show TCP Settings Dialog
-
+    m_dlgModbusTCP->modbus_connected = m_modbus->isConnected();
     if (m_dlgModbusTCP->exec()==QDialog::Accepted) {
         QLOG_TRACE()<<  "TCP settings changes accepted ";
         updateStatusBar();
@@ -172,11 +172,12 @@ void MainWindow::showSettings()
 {
 
     //Show General Settings Dialog
-
+    m_dlgSettings->modbus_connected = m_modbus->isConnected();
     if (m_dlgSettings->exec()==QDialog::Accepted) {
         QLOG_TRACE()<<  "Settings changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
+        ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
         m_modbusCommSettings->saveSettings();
     }
     else
@@ -559,7 +560,7 @@ void MainWindow::modbusRequest()
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
-    m_modbus->setStartAddr(ui->sbStartAddress->value() + baseAddr);
+    m_modbus->setStartAddr(ui->sbStartAddress->value() - baseAddr);
     m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
 
     //Modbus data

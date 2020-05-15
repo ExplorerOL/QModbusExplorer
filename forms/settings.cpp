@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "ui_settings.h"
 
-Settings::Settings(QWidget *parent ,ModbusCommSettings * settings) :
+Settings::Settings(QWidget *parent ,ModbusCommSettings *settings) :
     QDialog(parent),
     ui(new Ui::Settings),
     m_settings(settings)
@@ -22,6 +22,8 @@ void Settings::showEvent(QShowEvent * event)
 {
 
     //Load Settings
+    ui->sbMaxNoOfRawDataLines->setEnabled(!modbus_connected);
+    ui->sbResponseTimeout->setEnabled(!modbus_connected);
     if (m_settings != NULL) {
         ui->sbMaxNoOfRawDataLines->setValue(m_settings->maxNoOfLines().toInt());
         ui->sbResponseTimeout->setValue(m_settings->timeOut().toInt());

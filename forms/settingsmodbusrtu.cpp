@@ -29,6 +29,12 @@ void SettingsModbusRTU::showEvent(QShowEvent * event)
 {
 
     //Load Settings
+    ui->cmbDataBits->setEnabled(!modbus_connected);
+    ui->cmbBaud->setEnabled(!modbus_connected);
+    ui->sbPort->setEnabled(!modbus_connected);
+    ui->cmbParity->setEnabled(!modbus_connected);
+    ui->cmbRTS->setEnabled(!modbus_connected);
+    ui->cmbStopBits->setEnabled(!modbus_connected);
     if (m_settings != NULL) {
 
          ui->cmbRTS->clear();

@@ -17,6 +17,7 @@ class SettingsModbusRTU : public QDialog
 public:
     explicit SettingsModbusRTU(QWidget *parent = 0 ,ModbusCommSettings * settings = 0);
     ~SettingsModbusRTU();
+    bool modbus_connected;
 
 private:
     Ui::SettingsModbusRTU *ui;

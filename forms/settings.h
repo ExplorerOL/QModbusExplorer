@@ -17,10 +17,11 @@ class Settings : public QDialog
 public:
     explicit Settings(QWidget *parent = 0 ,ModbusCommSettings * settings = 0);
     ~Settings();
+    bool modbus_connected;
 
 private:
     Ui::Settings *ui;
-    ModbusCommSettings * m_settings;
+    ModbusCommSettings *m_settings;
 
 private slots:
     void changesAccepted();
