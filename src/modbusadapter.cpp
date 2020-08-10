@@ -257,11 +257,24 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
     //update data model
     if(ret == noOfItems)
     {
+        if (true)
+        {
             for(int i = 0; i < noOfItems; ++i)
             {
                 int data = is16Bit ? dest16[i] : dest[i];
                 regModel->setValue(i,data);
             }
+        }
+        else//TODO : read float values
+        {
+            for(int i = 0; i < noOfItems/2; ++i)
+            {
+                int dataHi = is16Bit ? dest16[i*2] : dest[i*2];
+                int dataLo = is16Bit ? dest16[i*2+1] : dest[i*2+1];
+                regModel->setValue32(i*2,dataHi,dataLo);
+            }
+        }
+
             mainWin->hideInfoBar();
     }
     else

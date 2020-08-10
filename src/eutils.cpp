@@ -44,6 +44,29 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
 
 }
 
+QString EUtils::formatValue32(int valueHi, int valueLo,int frmt, bool is16Bit, bool isSigned=false)
+{//TODO : add float convertion
+    union{
+        struct{qint16 high, low;} reg;
+        float value;
+    } data;
+
+    data.reg.high = valueHi;
+    data.reg.low = valueLo;
+
+    QString convertedValue;
+
+    switch(frmt){
+
+        default://Default
+        convertedValue = QString("%1").arg(data.value, 0, 'G', 3);
+
+    }
+
+    return convertedValue.toUpper();
+
+}
+
 
 QString EUtils::libmodbus_strerror(int errnum)
 {

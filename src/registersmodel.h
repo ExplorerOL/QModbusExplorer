@@ -17,6 +17,7 @@ public:
 
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
     void setValue(int idx, int value);
+    void setValue32(int idx, int valueHi, int valueLo);
     void setBase(int frmt);
     void setStartAddrBase(int base);
     void setIs16Bit(bool is16Bit);

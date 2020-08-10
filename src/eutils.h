@@ -149,6 +149,8 @@ public:
 
     static QString formatValue(int value,int frmt, bool is16Bit, bool isSigned);
 
+    static QString formatValue32(int valueHi, int valueLo,int frmt, bool is16Bit, bool isSigned);
+
     static QString libmodbus_strerror(int errnum);
 
 };

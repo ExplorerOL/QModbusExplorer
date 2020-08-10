@@ -15,7 +15,7 @@ BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
 {
     ui->setupUi(this);
     ui->lstRawData->setModel(m_rawDataModel->model);
-    //TODO : Delegate
+    //TODO : delegate
     //ui->lstRawData->setItemDelegate(new RawDataDelegate());
     //Setup Toolbar
     ui->toolBar->addAction(ui->actionSave);

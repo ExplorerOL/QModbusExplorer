@@ -119,6 +119,30 @@ void RegistersModel::setValue(int idx, int value)
     model->setData(index,QString("Address : %1").arg(m_startAddress + idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
 }
 
+void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
+{//TODO : write float values
+    int row;
+    int col;
+    QString convertedValue;
+
+    convertedValue = EUtils::formatValue32(valueHi, valueLo, m_frmt, m_is16Bit, m_isSigned);
+
+    //set model data
+    if (m_noOfItems == 1){
+        row = 0;
+        col = 0;
+    }
+    else {
+        row = (m_offset + idx) / 10;
+        col = (m_offset + idx) % 10;
+    }
+
+    QModelIndex index = model->index(row, col, QModelIndex());
+    model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
+    model->setData(index,convertedValue,Qt::DisplayRole);
+    model->setData(index,QString("Address : %1").arg(m_startAddress + idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
+}
+
 int RegistersModel::value(int idx)
 {
     QString stringVal;
