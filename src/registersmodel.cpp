@@ -120,7 +120,7 @@ void RegistersModel::setValue(int idx, int value)
 }
 
 void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
-{//TODO : write float values
+{//TODO : update model with float values
     int row;
     int col;
     QString convertedValue;
@@ -241,6 +241,7 @@ void RegistersModel::setStartAddrBase(int base)
     changeBase(m_frmt);
 
 }
+
 void RegistersModel::setBase(int frmt)
 {
 
@@ -250,6 +251,15 @@ void RegistersModel::setBase(int frmt)
     changeBase(frmt);
     m_base = frmt;
     m_frmt = frmt;
+
+}
+
+int RegistersModel::getBase()
+{
+
+    QLOG_TRACE()<<  "Registers Model get base = " << m_base ;
+
+    return m_base;
 
 }
 

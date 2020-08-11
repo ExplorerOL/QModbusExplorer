@@ -139,8 +139,8 @@ public:
     }
 
     static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;
-
-    static enum {Bin = 2, UInt = 10, Hex = 16} NumberFormat;
+    //TODO : add float number format
+    static enum {Bin = 2, UInt = 10, Float = 11, Hex = 16} NumberFormat;
 
     static enum {ReadCoils = 0x1, ReadDisInputs = 0x2,
                 ReadHoldRegs = 0x3, ReadInputRegs = 0x4,

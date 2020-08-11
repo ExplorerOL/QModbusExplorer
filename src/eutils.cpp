@@ -10,7 +10,7 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
 
     switch(frmt){
 
-        case 2://Binary
+        case EUtils::Bin://Binary
         if (is16Bit)
             if (isSigned)
                 convertedValue = QString("%1").arg((signed short)value,16,2,QLatin1Char('0'));
@@ -21,14 +21,17 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
             convertedValue = QString("%1").arg(value,0,2);
         break;
 
-        case 10://Decimal - Unsigned Integer
+        case EUtils::UInt://Decimal - Unsigned Integer
             if (isSigned)
                 convertedValue = QString("%1").arg((signed short)value,0,10);
             else
                 convertedValue = QString("%1").arg((unsigned short)value,0,10);
         break;
 
-        case 16://Hex
+        case EUtils::Float://TODO : format float value
+        break;
+
+        case EUtils::Hex://Hex
             if (is16Bit)
                 convertedValue = QString("%1").arg(value,4,16,QLatin1Char('0'));
             else

@@ -19,6 +19,7 @@ public:
     void setValue(int idx, int value);
     void setValue32(int idx, int valueHi, int valueLo);
     void setBase(int frmt);
+    int getBase();
     void setStartAddrBase(int base);
     void setIs16Bit(bool is16Bit);
     void setIsSigned(bool isSigned);

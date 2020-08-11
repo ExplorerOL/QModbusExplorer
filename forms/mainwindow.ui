@@ -340,10 +340,10 @@
        <item>
         <widget class="QComboBox" name="cmbBase">
          <property name="currentText">
-          <string>Dec</string>
+          <string>Bin</string>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <item>
           <property name="text">
@@ -358,6 +358,11 @@
          <item>
           <property name="text">
            <string>Hex</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Float</string>
           </property>
          </item>
         </widget>
@@ -415,7 +420,7 @@
      <x>0</x>
      <y>0</y>
      <width>564</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

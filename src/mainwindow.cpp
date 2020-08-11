@@ -248,30 +248,38 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
+                ui->cmbBase->setCurrentIndex(0);
+                ui->cmbBase->setEnabled(false);
                 break;
         case MODBUS_FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_inputs);
+                ui->cmbBase->setCurrentIndex(0);
+                ui->cmbBase->setEnabled(false);
                 break;
         case MODBUS_FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
+                ui->cmbBase->setEnabled(true);
                 break;
         case MODBUS_FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
+                ui->cmbBase->setEnabled(true);
                 break;
         case MODBUS_FC_WRITE_SINGLE_COIL:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setValue(1);
                 ui->sbNoOfRegs->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
+                ui->cmbBase->setCurrentIndex(0);
+                ui->cmbBase->setEnabled(false);
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
@@ -280,12 +288,15 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
+                ui->cmbBase->setCurrentIndex(0);
+                ui->cmbBase->setEnabled(false);
                 break;
         case MODBUS_FC_WRITE_SINGLE_REGISTER:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setValue(1);
                 ui->sbNoOfRegs->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
+                ui->cmbBase->setEnabled(true);
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
@@ -294,6 +305,7 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
+                ui->cmbBase->setEnabled(true);
                 break;
         default:
                 m_modbus->regModel->setIs16Bit(false);
@@ -301,6 +313,7 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
+                ui->cmbBase->setEnabled(true);
                 break;
      }
 
@@ -333,6 +346,11 @@ void MainWindow::changedBase(int currIndex)
                 ui->chkSigned->setVisible(false);
                 ui->chkSigned->setChecked(false);
                 m_modbus->regModel->setBase(EUtils::Hex);
+                break;
+        case 3: //TODO : change base to float
+                ui->chkSigned->setVisible(false);
+                ui->chkSigned->setChecked(false);
+                m_modbus->regModel->setBase(EUtils::Float);
                 break;
         default:
                 m_modbus->regModel->setBase(EUtils::UInt);
