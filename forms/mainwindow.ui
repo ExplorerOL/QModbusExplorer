@@ -338,7 +338,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="cmbBase">
+        <widget class="QComboBox" name="cmbFrmt">
          <property name="currentText">
           <string>Bin</string>
          </property>
@@ -374,6 +374,26 @@
          </property>
          <property name="text">
           <string>Signed</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblPrecision">
+         <property name="text">
+          <string>Precision</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="sbPrecision">
+         <property name="minimum">
+          <number>-1</number>
+         </property>
+         <property name="maximum">
+          <number>7</number>
+         </property>
+         <property name="value">
+          <number>3</number>
          </property>
         </widget>
        </item>

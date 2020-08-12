@@ -21,7 +21,7 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     const QModelIndex &/* index */) const
 {
 
-    if (m_base == 2) {//Bin
+    if (m_frmt == EUtils::Bin) {//Bin
             if (m_is16Bit) {
                 QLineEdit *editor = new QLineEdit(parent);
                 editor->setInputMask("bbbbbbbbbbbbbbbb");
@@ -34,14 +34,21 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
                 return editor;
             }
     }
-    else if (m_base == 10) {//Dec
+    else if (m_frmt == EUtils::Dec) {//Dec
             QLineEdit *editor = new QLineEdit(parent);
             QRegExp rx("-{0,1}[0-9]{1,5}");
             QValidator *validator = new QRegExpValidator(rx);
             editor->setValidator(validator);
             return editor;
     }
-    else if (m_base == 16) {//Hex
+    else if (m_frmt == EUtils::Float) {//TODO : add float editor
+            QLineEdit *editor = new QLineEdit(parent);
+            QRegExp rx("-{0,1}[0-9]{1,5}");
+            QValidator *validator = new QRegExpValidator(rx);
+            editor->setValidator(validator);
+            return editor;
+    }
+    else if (m_frmt == EUtils::Hex) {//Hex
             QLineEdit *editor = new QLineEdit(parent);
             editor->setInputMask("hhhh");
             return editor;
@@ -62,11 +69,11 @@ void RegistersDataDelegate::setEditorData(QWidget *editor,
 
     QString value = index.model()->data(index, Qt::EditRole).toString();
 
-    if (m_base == 2 && !m_is16Bit) {//Bin
+    if (m_frmt == EUtils::Bin && !m_is16Bit) {//Bin
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         spinBox->setValue(value.toInt());
     }
-    else { //Bin 16 Bit, Dec, Hex
+    else { //Bin 16 Bit, Dec, Hex, Float?
         QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
         lineEdit->setText(value);
     }
@@ -80,14 +87,14 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
     int intVal;
     bool ok;
 
-    if (m_base == 2 && !m_is16Bit) {//Bin
+    if (m_frmt == EUtils::Bin && !m_is16Bit) {//Bin
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
-        intVal = (spinBox->text()).toInt(&ok,m_base);
+        intVal = (spinBox->text()).toInt(&ok,m_frmt);
         value = EUtils::formatValue(intVal, m_frmt, m_is16Bit, m_isSigned);
     }
-    else { //Bin 16 Bit,Dec, Hex
+    else { //Bin 16 Bit, Dec, Hex, Float?
         QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
-        intVal = (lineEdit->text()).toInt(&ok,m_base);
+        intVal = (lineEdit->text()).toInt(&ok,m_frmt);
         if (intVal > 65535){
             mainWin->showUpInfoBar(tr("Set value failed\nValue is greater than 65535."), InfoBar::Error);
             QLOG_WARN() <<  "Set value failed. Value is greater than 65535";
@@ -116,10 +123,9 @@ void RegistersDataDelegate::updateEditorGeometry(QWidget *editor,
     editor->setGeometry(option.rect);
 }
 
-void RegistersDataDelegate::setBase(int frmt)
+void RegistersDataDelegate::setFrmt(int frmt)
 {
 
-    m_base = frmt;
     m_frmt = frmt;
 
 }

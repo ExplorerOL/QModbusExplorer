@@ -28,6 +28,7 @@ void Settings::showEvent(QShowEvent * event)
         ui->sbMaxNoOfRawDataLines->setValue(m_settings->maxNoOfLines().toInt());
         ui->sbResponseTimeout->setValue(m_settings->timeOut().toInt());
         ui->sbBaseAddr->setValue(m_settings->baseAddr().toInt());
+        ui->cmbEndian->setCurrentIndex(ui->cmbEndian->findText(m_settings->endian()));
     }
 
 }
@@ -40,6 +41,7 @@ void Settings::changesAccepted()
         m_settings->setMaxNoOfLines(ui->sbMaxNoOfRawDataLines->cleanText());
         m_settings->setTimeOut(ui->sbResponseTimeout->cleanText());
         m_settings->setBaseAddr(ui->sbBaseAddr->cleanText());
+        m_settings->setEndian(ui->cmbEndian->currentText());
     }
 
 }

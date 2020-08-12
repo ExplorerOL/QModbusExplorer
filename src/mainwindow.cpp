@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->actionRead_Write->setEnabled(false);
     ui->actionScan->setEnabled(false);
     ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
-    ui->cmbBase->setCurrentIndex(m_modbusCommSettings->base());
+    ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
     ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
     ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
     ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //UI - connections
     connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
     connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
-    connect(ui->cmbBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedBase(int)));
+    connect(ui->cmbFrmt,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFrmt(int)));
     connect(ui->chkSigned,SIGNAL(toggled(bool)),this,SLOT(changedDecSign(bool)));
     connect(ui->cmbStartAddrBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedStartAddrBase(int)));
     connect(ui->sbSlaveID,SIGNAL(valueChanged(int)),this,SLOT(changedSlaveID(int)));
@@ -113,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->tblRegisters->setModel(m_modbus->regModel->model);
     ui->tblRegisters->horizontalHeader()->hide();
     ui->tblRegisters->verticalHeader()->hide();
-    changedBase(m_modbusCommSettings->base());
+    changedFrmt(m_modbusCommSettings->frmt());
     m_modbus->regModel->setStartAddrBase(10);
     clearItems();//init model ui
 
@@ -248,38 +248,38 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
-                ui->cmbBase->setCurrentIndex(0);
-                ui->cmbBase->setEnabled(false);
+                ui->cmbFrmt->setCurrentIndex(0);
+                ui->cmbFrmt->setEnabled(false);
                 break;
         case MODBUS_FC_READ_DISCRETE_INPUTS:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_inputs);
-                ui->cmbBase->setCurrentIndex(0);
-                ui->cmbBase->setEnabled(false);
+                ui->cmbFrmt->setCurrentIndex(0);
+                ui->cmbFrmt->setEnabled(false);
                 break;
         case MODBUS_FC_READ_HOLDING_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
-                ui->cmbBase->setEnabled(true);
+                ui->cmbFrmt->setEnabled(true);
                 break;
         case MODBUS_FC_READ_INPUT_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
-                ui->cmbBase->setEnabled(true);
+                ui->cmbFrmt->setEnabled(true);
                 break;
         case MODBUS_FC_WRITE_SINGLE_COIL:
                 m_modbus->regModel->setIs16Bit(false);
                 ui->sbNoOfRegs->setValue(1);
                 ui->sbNoOfRegs->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
-                ui->cmbBase->setCurrentIndex(0);
-                ui->cmbBase->setEnabled(false);
+                ui->cmbFrmt->setCurrentIndex(0);
+                ui->cmbFrmt->setEnabled(false);
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_COILS:
                 m_modbus->regModel->setIs16Bit(false);
@@ -288,15 +288,15 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
-                ui->cmbBase->setCurrentIndex(0);
-                ui->cmbBase->setEnabled(false);
+                ui->cmbFrmt->setCurrentIndex(0);
+                ui->cmbFrmt->setEnabled(false);
                 break;
         case MODBUS_FC_WRITE_SINGLE_REGISTER:
                 m_modbus->regModel->setIs16Bit(true);
                 ui->sbNoOfRegs->setValue(1);
                 ui->sbNoOfRegs->setEnabled(false);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
-                ui->cmbBase->setEnabled(true);
+                ui->cmbFrmt->setEnabled(true);
                 break;
         case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
                 m_modbus->regModel->setIs16Bit(true);
@@ -305,7 +305,7 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(125);
                 ui->lblNoOfCoils->setText(String_number_of_registers);
-                ui->cmbBase->setEnabled(true);
+                ui->cmbFrmt->setEnabled(true);
                 break;
         default:
                 m_modbus->regModel->setIs16Bit(false);
@@ -313,7 +313,7 @@ void MainWindow::changedFunctionCode(int currIndex)
                 ui->sbNoOfRegs->setEnabled(true);
                 ui->sbNoOfRegs->setMaximum(2000);
                 ui->lblNoOfCoils->setText(String_number_of_coils);
-                ui->cmbBase->setEnabled(true);
+                ui->cmbFrmt->setEnabled(true);
                 break;
      }
 
@@ -322,13 +322,13 @@ void MainWindow::changedFunctionCode(int currIndex)
 
 }
 
-void MainWindow::changedBase(int currIndex)
+void MainWindow::changedFrmt(int currIndex)
 {
 
-    //Change Base
+    //Change Format
 
-    QLOG_TRACE()<<  "Base changed. Index = " << currIndex;
-    m_modbusCommSettings->setBase(currIndex);
+    QLOG_TRACE()<<  "Format changed. Index = " << currIndex;
+    m_modbusCommSettings->setFrmt(currIndex);
     m_modbusCommSettings->saveSettings();
 
     switch(currIndex)
@@ -336,25 +336,35 @@ void MainWindow::changedBase(int currIndex)
         case 0:
                 ui->chkSigned->setVisible(false);
                 ui->chkSigned->setChecked(false);
-                m_modbus->regModel->setBase(EUtils::Bin);
+                m_modbus->regModel->setFrmt(EUtils::Bin);
+                ui->lblPrecision->setVisible(false);
+                ui->sbPrecision->setVisible(false);
                 break;
         case 1:
                 ui->chkSigned->setVisible(true);
-                m_modbus->regModel->setBase(EUtils::UInt);
+                m_modbus->regModel->setFrmt(EUtils::Dec);
+                ui->lblPrecision->setVisible(false);
+                ui->sbPrecision->setVisible(false);
                 break;
         case 2:
                 ui->chkSigned->setVisible(false);
                 ui->chkSigned->setChecked(false);
-                m_modbus->regModel->setBase(EUtils::Hex);
+                m_modbus->regModel->setFrmt(EUtils::Hex);
+                ui->lblPrecision->setVisible(false);
+                ui->sbPrecision->setVisible(false);
                 break;
         case 3: //TODO : change base to float
                 ui->chkSigned->setVisible(false);
                 ui->chkSigned->setChecked(false);
-                m_modbus->regModel->setBase(EUtils::Float);
+                m_modbus->regModel->setFrmt(EUtils::Float);
+                ui->lblPrecision->setVisible(true);
+                ui->sbPrecision->setVisible(true);
                 break;
         default:
-                m_modbus->regModel->setBase(EUtils::UInt);
+                m_modbus->regModel->setFrmt(EUtils::Dec);
                 ui->chkSigned->setVisible(true);
+                ui->lblPrecision->setVisible(false);
+                ui->sbPrecision->setVisible(false);
                 break;
      }
 
@@ -720,7 +730,7 @@ QString fName;
          m_modbusCommSettings->loadSession(fName);
          //Update UI
          ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
-         ui->cmbBase->setCurrentIndex(m_modbusCommSettings->base());
+         ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
          ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
          ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
          ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());

@@ -8,7 +8,6 @@ class RegistersDataDelegate : public QStyledItemDelegate
      Q_OBJECT
 
  private:
-    int m_base;
     int m_frmt;
     bool m_is16Bit;
     bool m_isSigned;
@@ -29,7 +28,7 @@ class RegistersDataDelegate : public QStyledItemDelegate
      void updateEditorGeometry(QWidget *editor,
          const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
-     void setBase(int frmt);
+     void setFrmt(int frmt);
      void setIs16Bit(bool is16Bit);
      void setIsSigned(bool isSigned);
 

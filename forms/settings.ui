@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>220</width>
-    <height>134</height>
+    <height>150</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>220</width>
-    <height>134</height>
+    <height>150</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -48,13 +48,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="lblTimeout">
+     <item row="2" column="1">
+      <widget class="QLabel" name="lblBaseAddr">
        <property name="text">
-        <string>Response Timeout (sec)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        <string>Base Addr</string>
        </property>
       </widget>
      </item>
@@ -80,6 +77,16 @@
        </property>
        <property name="text">
         <string>Max No Of Bus Monitor Lines</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="lblTimeout">
+       <property name="text">
+        <string>Response Timeout (sec)</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -130,11 +137,25 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="lblBaseAddr">
+     <item row="3" column="1">
+      <widget class="QLabel" name="lblEndian">
        <property name="text">
-        <string>Base Addr</string>
+        <string>Endian</string>
        </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QComboBox" name="cmbEndian">
+       <item>
+        <property name="text">
+         <string>Little</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Big</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

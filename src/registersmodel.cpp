@@ -125,7 +125,7 @@ void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
     int col;
     QString convertedValue;
 
-    convertedValue = EUtils::formatValue32(valueHi, valueLo, m_frmt, m_is16Bit, m_isSigned);
+    convertedValue = EUtils::formatValue32(valueHi, valueLo, EUtils::Big, -1);
 
     //set model data
     if (m_noOfItems == 1){
@@ -140,7 +140,7 @@ void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
     QModelIndex index = model->index(row, col, QModelIndex());
     model->setData(index,QBrush(Qt::black),Qt::ForegroundRole);
     model->setData(index,convertedValue,Qt::DisplayRole);
-    model->setData(index,QString("Address : %1").arg(m_startAddress + idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
+    model->setData(index,QString("Address : %1").arg(m_startAddress + 2*idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
 }
 
 int RegistersModel::value(int idx)
@@ -151,7 +151,7 @@ int RegistersModel::value(int idx)
 
     //Get Value
     stringVal = strValue(idx);
-    intVal = stringVal.toInt(&ok,m_base);
+    intVal = stringVal.toInt(&ok,m_frmt);
     if (ok)
         return intVal;
     else
@@ -182,7 +182,7 @@ QString RegistersModel::strValue(int idx)
 
 }
 
-void RegistersModel::changeBase(int frmt)
+void RegistersModel::changeFrmt(int frmt)
 {
 
     QString stringVal;
@@ -192,13 +192,13 @@ void RegistersModel::changeBase(int frmt)
     bool ok;
     QString convertedVal;
 
-    QLOG_TRACE()<<  "Registers Model changed base from " << m_base << " to " << frmt ;
+    QLOG_TRACE()<<  "Registers Model changed format from " << m_frmt << " to " << frmt ;
 
     //change base
     for (int idx = 0; idx < m_noOfItems ; idx++) {
         //Get Value
         stringVal = strValue(idx);
-        intVal = stringVal.toInt(&ok,m_base);
+        intVal = stringVal.toInt(&ok,m_frmt);
         //Format Value
         if (ok)
             convertedVal = EUtils::formatValue(intVal, frmt, m_is16Bit, m_isSigned);
@@ -238,28 +238,27 @@ void RegistersModel::setStartAddrBase(int base)
     QLOG_TRACE()<<  "Registers Model start addr set base = " << base ;
 
     m_startAddrBase = base;
-    changeBase(m_frmt);
+    changeFrmt(m_frmt);
 
 }
 
-void RegistersModel::setBase(int frmt)
+void RegistersModel::setFrmt(int frmt)
 {
 
     QLOG_TRACE()<<  "Registers Model set base = " << frmt ;
 
-    m_regDataDelegate->setBase(frmt);
-    changeBase(frmt);
-    m_base = frmt;
+    m_regDataDelegate->setFrmt(frmt);
+    changeFrmt(frmt);
     m_frmt = frmt;
 
 }
 
-int RegistersModel::getBase()
+int RegistersModel::getFrmt()
 {
 
-    QLOG_TRACE()<<  "Registers Model get base = " << m_base ;
+    QLOG_TRACE()<<  "Registers Model get format = " << m_frmt ;
 
-    return m_base;
+    return m_frmt;
 
 }
 
@@ -278,7 +277,7 @@ void RegistersModel::setIsSigned(bool isSigned)
     QLOG_TRACE()<<  "Registers Model IsSigned = " << isSigned ;
     m_isSigned = isSigned;
     m_regDataDelegate->setIsSigned(isSigned);
-    changeBase(m_frmt);
+    changeFrmt(m_frmt);
 
 }
 

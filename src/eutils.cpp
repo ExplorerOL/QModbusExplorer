@@ -21,14 +21,11 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
             convertedValue = QString("%1").arg(value,0,2);
         break;
 
-        case EUtils::UInt://Decimal - Unsigned Integer
+        case EUtils::Dec://Decimal - Unsigned Integer
             if (isSigned)
                 convertedValue = QString("%1").arg((signed short)value,0,10);
             else
                 convertedValue = QString("%1").arg((unsigned short)value,0,10);
-        break;
-
-        case EUtils::Float://TODO : format float value
         break;
 
         case EUtils::Hex://Hex
@@ -47,24 +44,24 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
 
 }
 
-QString EUtils::formatValue32(int valueHi, int valueLo,int frmt, bool is16Bit, bool isSigned=false)
+QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Little, int precision = -1)
 {//TODO : add float convertion
     union{
         struct{qint16 high, low;} reg;
         float value;
     } data;
-
-    data.reg.high = valueHi;
-    data.reg.low = valueLo;
-
     QString convertedValue;
 
-    switch(frmt){
-
-        default://Default
-        convertedValue = QString("%1").arg(data.value, 0, 'G', 3);
-
+    if (endian == EUtils::Little){
+        data.reg.high = valueLo;
+        data.reg.low = valueHi;
     }
+    else if (endian == EUtils::Big){
+        data.reg.high = valueHi;
+        data.reg.low = valueLo;
+    }
+
+    convertedValue = QString("%1").arg(data.value, 0, 'G', precision);
 
     return convertedValue.toUpper();
 
@@ -77,23 +74,18 @@ QString EUtils::libmodbus_strerror(int errnum)
 
         case EINVAL:
             return "Protocol context is NULL";
-            break;
 
         case ETIMEDOUT:
             return "Timeout";
-            break;
 
         case ECONNRESET:
             return "Connection reset";
-            break;
 
         case ECONNREFUSED:
             return "Connection refused";
-            break;
 
         case EPIPE:
             return "Socket error";
-            break;
 
         default://Default
             return modbus_strerror(errno);

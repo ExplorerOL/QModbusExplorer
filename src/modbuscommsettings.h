@@ -36,6 +36,8 @@ public:
     void setBaseAddr(QString baseAddr);
     QString  timeOut();
     void setTimeOut(QString timeOut);
+    QString  endian();
+    void setEndian(QString endian);
     void loadSettings();
     void saveSettings();
     //logging
@@ -53,8 +55,8 @@ public:
     void setStartAddr(int startAddr);
     int noOfRegs();
     void setNoOfRegs(int noOfRegs);
-    int base();
-    void setBase(int base);
+    int frmt();
+    void setFrmt(int frmt);
     void loadSession(QString fName);
     void saveSession(QString fName);
 
@@ -75,6 +77,7 @@ private:
     QString m_maxNoOfLines;
     QString m_baseAddr;
     QString m_timeOut;
+    QString m_endian;
     void load(QSettings *s);
     void save(QSettings *s);
     //Log
@@ -86,7 +89,7 @@ private:
     int m_functionCode;
     int m_startAddr;
     int m_noOfRegs;
-    int m_base;
+    int m_frmt;
 
 signals:
 

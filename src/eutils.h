@@ -140,7 +140,8 @@ public:
 
     static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;
     //TODO : add float number format
-    static enum {Bin = 2, UInt = 10, Float = 11, Hex = 16} NumberFormat;
+    static enum {Bin = 2, Dec = 10, Float = 11, Hex = 16} NumberFormat;
+    static enum {Little =0, Big = 1} Endianness;
 
     static enum {ReadCoils = 0x1, ReadDisInputs = 0x2,
                 ReadHoldRegs = 0x3, ReadInputRegs = 0x4,
@@ -149,7 +150,7 @@ public:
 
     static QString formatValue(int value,int frmt, bool is16Bit, bool isSigned);
 
-    static QString formatValue32(int valueHi, int valueLo,int frmt, bool is16Bit, bool isSigned);
+    static QString formatValue32(int valueHi, int valueLo, int endian, int precision);
 
     static QString libmodbus_strerror(int errnum);
 

@@ -61,7 +61,7 @@ private slots:
     void showTools();
     void changedModbusMode(int currIndex);
     void changedFunctionCode(int currIndex);
-    void changedBase(int currIndex);
+    void changedFrmt(int currIndex);
     void changedDecSign(bool value);
     void changedStartAddrBase(int currIndex);
     void changedScanRate(int value);

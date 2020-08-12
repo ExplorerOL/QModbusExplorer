@@ -257,7 +257,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
     //update data model
     if(ret == noOfItems)
     {
-        if (regModel->getBase() != EUtils::Float)
+        if (regModel->getFrmt() != EUtils::Float)
         {
             for(int i = 0; i < noOfItems; ++i)
             {
@@ -271,7 +271,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
             {
                 int dataHi = is16Bit ? dest16[i] : dest[i];
                 int dataLo = is16Bit ? dest16[i+1] : dest[i+1];
-                regModel->setValue32(i,dataHi,dataLo);
+                regModel->setValue32(i/2,dataHi,dataLo);
             }
         }
 

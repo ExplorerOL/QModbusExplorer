@@ -143,6 +143,7 @@ void ModbusCommSettings::setBaseAddr(QString baseAddr)
 {
     m_baseAddr = baseAddr;
 }
+
 QString  ModbusCommSettings::timeOut()
 {
     return m_timeOut;
@@ -151,6 +152,16 @@ QString  ModbusCommSettings::timeOut()
 void ModbusCommSettings::setTimeOut(QString timeOut)
 {
     m_timeOut = timeOut;
+}
+
+QString  ModbusCommSettings::endian()
+{
+    return m_endian;
+}
+
+void ModbusCommSettings::setEndian(QString endian)
+{
+    m_endian = endian;
 }
 
 int  ModbusCommSettings::loggingLevel()
@@ -218,14 +229,14 @@ void ModbusCommSettings::setNoOfRegs(int noOfRegs)
     m_noOfRegs = noOfRegs;
 }
 
-int ModbusCommSettings::base()
+int ModbusCommSettings::frmt()
 {
-    return m_base;
+    return m_frmt;
 }
 
-void ModbusCommSettings::setBase(int base)
+void ModbusCommSettings::setFrmt(int frmt)
 {
-    m_base = base;
+    m_frmt = frmt;
 }
 
 void ModbusCommSettings::loadSession(QString fName)
@@ -336,6 +347,11 @@ void ModbusCommSettings::load(QSettings *s)
     else
         m_loggingLevel = s->value("Var/LoggingLevel").toInt();
 
+    if (s->value("Var/Endian").isNull())
+        m_endian = "Little";
+    else
+        m_endian = s->value("Var/Endian").toString();
+
     if (s->value("Session/ModBusMode").isNull())
         m_modbusMode = 0; //RTU
     else
@@ -366,10 +382,10 @@ void ModbusCommSettings::load(QSettings *s)
     else
         m_noOfRegs = s->value("Session/NoOfRegs").toInt();
 
-    if (s->value("Session/Base").isNull())
-        m_base = 1; //Dec
+    if (s->value("Session/Format").isNull())
+        m_frmt = 1; //Dec
     else
-        m_base = s->value("Session/Base").toInt();
+        m_frmt = s->value("Session/Format").toInt();
 
 }
 
@@ -390,12 +406,13 @@ void ModbusCommSettings::save(QSettings *s)
     s->setValue("Var/BaseAddr",m_baseAddr);
     s->setValue("Var/TimeOut",m_timeOut);
     s->setValue("Var/LoggingLevel",m_loggingLevel);
+    s->setValue("Var/Endian",m_endian);
     s->setValue("Session/ModBusMode",m_modbusMode);
     s->setValue("Session/SlaveID",m_slaveID);
     s->setValue("Session/ScanRate",m_scanRate);
     s->setValue("Session/FunctionCode",m_functionCode);
     s->setValue("Session/StartAddr",m_startAddr);
     s->setValue("Session/NoOfRegs",m_noOfRegs);
-    s->setValue("Session/Base",m_base);
+    s->setValue("Session/Format",m_frmt);
 
 }

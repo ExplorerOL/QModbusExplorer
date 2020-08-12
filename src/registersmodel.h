@@ -18,8 +18,8 @@ public:
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
     void setValue(int idx, int value);
     void setValue32(int idx, int valueHi, int valueLo);
-    void setBase(int frmt);
-    int getBase();
+    void setFrmt(int frmt);
+    int getFrmt();
     void setStartAddrBase(int base);
     void setIs16Bit(bool is16Bit);
     void setIsSigned(bool isSigned);
@@ -31,7 +31,7 @@ public:
     RegistersDataDelegate* itemDelegate();
 
 private:
-    void changeBase(int frmt);
+    void changeFrmt(int frmt);
     int m_startAddress;
     int m_noOfItems;
     int m_offset;
@@ -39,7 +39,6 @@ private:
     int m_lastRow;
     bool m_is16Bit;
     bool m_isSigned;
-    int m_base;
     int m_startAddrBase;
     int m_frmt;
     RegistersDataDelegate *m_regDataDelegate;
