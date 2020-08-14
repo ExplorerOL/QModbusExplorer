@@ -48,6 +48,7 @@ private:
     QLabel *m_baseAddr;
     QLabel *m_statusPackets;
     QLabel *m_statusErrors;
+    QLabel *m_endian;
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
 

@@ -79,11 +79,14 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     m_statusPackets->setStyleSheet("QLabel {color:blue;}");
     m_statusErrors = new QLabel(tr("Errors : ") + "0");
     m_statusErrors->setStyleSheet("QLabel {color:red;}");
+    m_endian = new QLabel(tr("Endian : ") + m_modbusCommSettings->endian());
+    m_endian->setStyleSheet("QLabel {color:black;}");
     ui->statusBar->addWidget(m_statusInd);
     ui->statusBar->addWidget(m_statusText, 10);
     ui->statusBar->addWidget(m_baseAddr, 10);
     ui->statusBar->addWidget(m_statusPackets, 10);
     ui->statusBar->addWidget(m_statusErrors, 10);
+    ui->statusBar->addWidget(m_endian, 10);
     m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
 
     //Setup Toolbar
@@ -115,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->tblRegisters->verticalHeader()->hide();
     changedFrmt(m_modbusCommSettings->frmt());
     m_modbus->regModel->setStartAddrBase(10);
+    m_modbus->setReadOutputsBeforeWrite(m_modbusCommSettings->readOutputsBeforeWrite());
     clearItems();//init model ui
 
     //Update UI
@@ -353,7 +357,7 @@ void MainWindow::changedFrmt(int currIndex)
                 ui->lblPrecision->setVisible(false);
                 ui->sbPrecision->setVisible(false);
                 break;
-        case 3: //TODO : change base to float
+        case 3: //TODO : change format to float
                 ui->chkSigned->setVisible(false);
                 ui->chkSigned->setChecked(false);
                 m_modbus->regModel->setFrmt(EUtils::Float);
@@ -532,8 +536,11 @@ void MainWindow::updateStatusBar()
         m_statusInd->setPixmap(QPixmap(":/icons/bullet-red-16.png"));
     }
 
-    //basr Address
+    //base Address
     m_baseAddr->setText("Base Addr : " + m_modbusCommSettings->baseAddr());
+
+    //endianness
+    m_endian->setText(("Endian : ") + m_modbusCommSettings->endian());
 
 }
 
@@ -731,6 +738,7 @@ QString fName;
          //Update UI
          ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
          ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
+         ui->sbPrecision->setValue(m_modbusCommSettings->floatPrecision());
          ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
          ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
          ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
@@ -786,6 +794,8 @@ void MainWindow::changeEvent(QEvent* event)
 
 void MainWindow::changeLanguage()
 {
+    // Not Used
+
     extern QTranslator *Translator;
     QCoreApplication::removeTranslator(Translator);
     Translator->load(":/translations/" + QCoreApplication::applicationName() + sender()->objectName().right(6));

@@ -29,6 +29,7 @@ public:
      void setStartAddr(int addr);
      void setNumOfRegs(int num);
      void addItems();
+     void setReadOutputsBeforeWrite(bool readOutputsBeforeWrite);
 
      void setScanRate(int scanRate);
      void setTimeOut(int timeOut);
@@ -54,6 +55,7 @@ private:
      int m_errors;
      int m_timeOut;
      bool m_transactionIsPending;
+     bool m_readOutputsBeforeWrite;
      uint8_t *dest;
      uint16_t *dest16;
 

@@ -22,6 +22,7 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_transactionIsPending = false;
     m_packets = 0;
     m_errors = 0;
+    m_readOutputsBeforeWrite = true;
     connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
     connect(regModel,SIGNAL(refreshView()),this,SIGNAL(refreshView()));
     //setup memory for data
@@ -448,10 +449,10 @@ void ModbusAdapter::setNumOfRegs(int num)
 }
 
 void ModbusAdapter::addItems()
-{
+{//TODO : add ReadOutputsBeforeWrite flag
     regModel->addItems(m_startAddr, m_numOfRegs, EUtils::ModbusIsWriteFunction(m_functionCode));
     //If it is a write function -> read registers
-    if (!m_connected)
+    if (!m_connected || !m_readOutputsBeforeWrite)
         return;
     else if (EUtils::ModbusIsWriteCoilsFunction(m_functionCode)){
         modbusReadData(m_slave,EUtils::ReadCoils,m_startAddr,m_numOfRegs);
@@ -524,6 +525,13 @@ QString ModbusAdapter::stripIP(QString ip)
         return "";
 
 }
+
+void ModbusAdapter::setReadOutputsBeforeWrite(bool readOutputsBeforeWrite){
+
+    m_readOutputsBeforeWrite = readOutputsBeforeWrite;
+
+}
+
 
 extern "C" {
 

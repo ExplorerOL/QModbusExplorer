@@ -42,6 +42,8 @@ public:
     void saveSettings();
     //logging
     int loggingLevel();
+    //
+    bool readOutputsBeforeWrite();
     //session
     int modbusMode();
     void setModbusMode(int modbusMode);
@@ -57,6 +59,8 @@ public:
     void setNoOfRegs(int noOfRegs);
     int frmt();
     void setFrmt(int frmt);
+    int floatPrecision();
+    void setfloatPrecision(int precision);
     void loadSession(QString fName);
     void saveSession(QString fName);
 
@@ -82,6 +86,8 @@ private:
     void save(QSettings *s);
     //Log
     int m_loggingLevel;
+    //read outputs before write
+    bool m_readOutputsBeforeWrite;
     //Session vars
     int m_modbusMode;
     int m_slaveID;
@@ -90,6 +96,7 @@ private:
     int m_startAddr;
     int m_noOfRegs;
     int m_frmt;
+    int m_floatPrecision;
 
 signals:
 

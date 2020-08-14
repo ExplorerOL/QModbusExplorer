@@ -169,6 +169,11 @@ int  ModbusCommSettings::loggingLevel()
     return m_loggingLevel;
 }
 
+bool  ModbusCommSettings::readOutputsBeforeWrite()
+{
+    return m_readOutputsBeforeWrite;
+}
+
 int ModbusCommSettings::modbusMode()
 {
     return m_modbusMode;
@@ -237,6 +242,16 @@ int ModbusCommSettings::frmt()
 void ModbusCommSettings::setFrmt(int frmt)
 {
     m_frmt = frmt;
+}
+
+int ModbusCommSettings::floatPrecision()
+{
+    return m_floatPrecision;
+}
+
+void ModbusCommSettings::setfloatPrecision(int precision)
+{
+    m_floatPrecision = precision;
 }
 
 void ModbusCommSettings::loadSession(QString fName)
@@ -347,6 +362,11 @@ void ModbusCommSettings::load(QSettings *s)
     else
         m_loggingLevel = s->value("Var/LoggingLevel").toInt();
 
+    if (s->value("Var/ReadOutputsBeforeWrite").isNull())
+        m_readOutputsBeforeWrite = true;
+    else
+        m_readOutputsBeforeWrite = s->value("Var/ReadOutputsBeforeWrite").toBool();
+
     if (s->value("Var/Endian").isNull())
         m_endian = "Little";
     else
@@ -387,6 +407,11 @@ void ModbusCommSettings::load(QSettings *s)
     else
         m_frmt = s->value("Session/Format").toInt();
 
+    if (s->value("Session/FloatPrecision").isNull())
+        m_floatPrecision = 3;
+    else
+        m_floatPrecision = s->value("Session/FloatPrecision").toInt();
+
 }
 
 void ModbusCommSettings::save(QSettings *s)
@@ -406,6 +431,7 @@ void ModbusCommSettings::save(QSettings *s)
     s->setValue("Var/BaseAddr",m_baseAddr);
     s->setValue("Var/TimeOut",m_timeOut);
     s->setValue("Var/LoggingLevel",m_loggingLevel);
+    s->setValue("Var/ReadOutputsBeforeWrite",m_readOutputsBeforeWrite);
     s->setValue("Var/Endian",m_endian);
     s->setValue("Session/ModBusMode",m_modbusMode);
     s->setValue("Session/SlaveID",m_slaveID);
@@ -414,5 +440,6 @@ void ModbusCommSettings::save(QSettings *s)
     s->setValue("Session/StartAddr",m_startAddr);
     s->setValue("Session/NoOfRegs",m_noOfRegs);
     s->setValue("Session/Format",m_frmt);
+    s->setValue("Session/FloatPrecision",m_floatPrecision);
 
 }
