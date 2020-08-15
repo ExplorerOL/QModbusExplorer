@@ -125,6 +125,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     clearItems();//init model ui
 
     //Update UI
+    changedFunctionCode(m_modbusCommSettings->functionCode());
     updateStatusBar();
     refreshView();
 

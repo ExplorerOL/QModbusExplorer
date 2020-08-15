@@ -23,9 +23,6 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     int col;
     m_startAddress = startAddress;
     m_noOfItems = noOfItems;
-    m_offset = (startAddress % 10);
-    m_firstRow = startAddress / 10;
-    m_lastRow = (startAddress + noOfItems - 1) / 10;
 
     QLOG_TRACE() <<  "Registers Model Address = " << startAddress << " , noOfItems = " << noOfItems
                 << " , offset = " << m_offset << " , first row = " << m_firstRow << " , last row = " << m_lastRow;
@@ -33,17 +30,39 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     //Format Vertical - Horizontal Header
     clear();
     if (noOfItems > 1) {
-        model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]<<RegModelHeaderLabels[1]
-                                                    <<RegModelHeaderLabels[2]<<RegModelHeaderLabels[3]
-                                                    <<RegModelHeaderLabels[4]<<RegModelHeaderLabels[5]
-                                                    <<RegModelHeaderLabels[6]<<RegModelHeaderLabels[7]
-                                                    <<RegModelHeaderLabels[8]<<RegModelHeaderLabels[9]);
+        if (m_frmt == EUtils::Float){
+            m_offset = (startAddress % 20);
+            m_firstRow = startAddress / 20;
+            m_lastRow = (startAddress + noOfItems - 1) / 20;
+            model->setHorizontalHeaderLabels(QStringList()<<RegModelFloatHeaderLabels[0]<<RegModelFloatHeaderLabels[1]
+                                                        <<RegModelFloatHeaderLabels[2]<<RegModelFloatHeaderLabels[3]
+                                                        <<RegModelFloatHeaderLabels[4]<<RegModelFloatHeaderLabels[5]
+                                                        <<RegModelFloatHeaderLabels[6]<<RegModelFloatHeaderLabels[7]
+                                                        <<RegModelFloatHeaderLabels[8]<<RegModelFloatHeaderLabels[9]);
 
-        QStringList vertHeader;
-        for (int i = m_firstRow; i <= m_lastRow ; i++) {
-            vertHeader<<QString("%1").arg(i * 10, 2, 10, QLatin1Char('0'));
+
+            QStringList vertHeader;
+            for (int i = m_firstRow; i <= m_lastRow ; i++) {
+                vertHeader<<QString("%1").arg(i * 20, 2, 10, QLatin1Char('0'));
+            }
+            model->setVerticalHeaderLabels(vertHeader);
         }
-        model->setVerticalHeaderLabels(vertHeader);
+        else {
+            m_offset = (startAddress % 10);
+            m_firstRow = startAddress / 10;
+            m_lastRow = (startAddress + noOfItems - 1) / 10;
+            model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]<<RegModelHeaderLabels[1]
+                                                        <<RegModelHeaderLabels[2]<<RegModelHeaderLabels[3]
+                                                        <<RegModelHeaderLabels[4]<<RegModelHeaderLabels[5]
+                                                        <<RegModelHeaderLabels[6]<<RegModelHeaderLabels[7]
+                                                        <<RegModelHeaderLabels[8]<<RegModelHeaderLabels[9]);
+
+            QStringList vertHeader;
+            for (int i = m_firstRow; i <= m_lastRow ; i++) {
+                vertHeader<<QString("%1").arg(i * 10, 2, 10, QLatin1Char('0'));
+            }
+             model->setVerticalHeaderLabels(vertHeader);
+        }
     }
     else {
         model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]);

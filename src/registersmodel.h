@@ -6,6 +6,7 @@
 #include "registersdatadelegate.h"
 
 static const QString RegModelHeaderLabels[]={"00", "01", "02", "03", "04", "05", "06", "07", "08", "09"};
+static const QString RegModelFloatHeaderLabels[]={"00", "02", "04", "06", "08", "10", "12", "14", "16", "18"};
 static const int AddressColumn=0;
 static const int ValueColumn=1;
 
