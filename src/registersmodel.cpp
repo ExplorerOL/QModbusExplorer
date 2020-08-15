@@ -125,7 +125,7 @@ void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
     int col;
     QString convertedValue;
 
-    convertedValue = EUtils::formatValue32(valueHi, valueLo, EUtils::Big, -1);
+    convertedValue = EUtils::formatValue32(valueHi, valueLo, m_endian, m_floatPrecision);
 
     //set model data
     if (m_noOfItems == 1){
@@ -278,6 +278,22 @@ void RegistersModel::setIsSigned(bool isSigned)
     m_isSigned = isSigned;
     m_regDataDelegate->setIsSigned(isSigned);
     changeFrmt(m_frmt);
+
+}
+
+void RegistersModel::setEndian(int endian)
+{
+
+    QLOG_TRACE()<<  "Registers Model endianness = " << endian ;
+    m_endian = endian;
+
+}
+
+void RegistersModel::setFloatPrecision(int precision)
+{
+
+    QLOG_TRACE()<<  "Registers Model float precision = " << precision ;
+    m_floatPrecision = precision;
 
 }
 

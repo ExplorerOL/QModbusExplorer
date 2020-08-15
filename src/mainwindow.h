@@ -70,6 +70,7 @@ private slots:
     void changedStartAddress(int value);
     void changedNoOfRegs(int value);
     void changedSlaveID(int value);
+    void changedFloatPrecision(int precision);
     void addItems();
     void clearItems();
     void openLogFile();

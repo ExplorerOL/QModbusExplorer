@@ -36,8 +36,8 @@ public:
     void setBaseAddr(QString baseAddr);
     QString  timeOut();
     void setTimeOut(QString timeOut);
-    QString  endian();
-    void setEndian(QString endian);
+    int  endian();
+    void setEndian(int endian);
     void loadSettings();
     void saveSettings();
     //logging
@@ -81,7 +81,7 @@ private:
     QString m_maxNoOfLines;
     QString m_baseAddr;
     QString m_timeOut;
-    QString m_endian;
+    int m_endian;
     void load(QSettings *s);
     void save(QSettings *s);
     //Log

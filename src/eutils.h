@@ -23,20 +23,20 @@ public:
     {
             switch(fCode)
             {
-                    case MODBUS_FC_READ_COILS:
-                    case MODBUS_FC_WRITE_SINGLE_COIL:
-                    case MODBUS_FC_WRITE_MULTIPLE_COILS:
-                            return "Coil (binary)";
-                    case MODBUS_FC_READ_DISCRETE_INPUTS:
-                            return "Discrete Input (binary)";
-                    case MODBUS_FC_READ_HOLDING_REGISTERS:
-                    case MODBUS_FC_WRITE_SINGLE_REGISTER:
-                    case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
-                            return "Holding Register (16 bit)";
-                    case MODBUS_FC_READ_INPUT_REGISTERS:
-                            return "Input Register (16 bit)";
-                    default:
-                            break;
+            case MODBUS_FC_READ_COILS:
+            case MODBUS_FC_WRITE_SINGLE_COIL:
+            case MODBUS_FC_WRITE_MULTIPLE_COILS:
+                    return "Coil (binary)";
+            case MODBUS_FC_READ_DISCRETE_INPUTS:
+                    return "Discrete Input (binary)";
+            case MODBUS_FC_READ_HOLDING_REGISTERS:
+            case MODBUS_FC_WRITE_SINGLE_REGISTER:
+            case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
+                    return "Holding Register (16 bit)";
+            case MODBUS_FC_READ_INPUT_REGISTERS:
+                    return "Input Register (16 bit)";
+            default:
+                    break;
             }
             return "Unknown";
     }
@@ -45,20 +45,20 @@ public:
     {
             switch(fCode)
             {
-                    case MODBUS_FC_READ_COILS:
-                    case MODBUS_FC_READ_DISCRETE_INPUTS:
-                    case MODBUS_FC_READ_HOLDING_REGISTERS:
-                    case MODBUS_FC_READ_INPUT_REGISTERS:
-                        return false;
+            case MODBUS_FC_READ_COILS:
+            case MODBUS_FC_READ_DISCRETE_INPUTS:
+            case MODBUS_FC_READ_HOLDING_REGISTERS:
+            case MODBUS_FC_READ_INPUT_REGISTERS:
+                return false;
 
-                    case MODBUS_FC_WRITE_SINGLE_COIL:
-                    case MODBUS_FC_WRITE_MULTIPLE_COILS:
-                    case MODBUS_FC_WRITE_SINGLE_REGISTER:
-                    case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
-                         return true;
+            case MODBUS_FC_WRITE_SINGLE_COIL:
+            case MODBUS_FC_WRITE_MULTIPLE_COILS:
+            case MODBUS_FC_WRITE_SINGLE_REGISTER:
+            case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
+                 return true;
 
-                    default:
-                            break;
+            default:
+                    break;
             }
             return false;
     }
@@ -67,20 +67,20 @@ public:
     {
             switch(fCode)
             {
-                    case MODBUS_FC_READ_COILS:
-                    case MODBUS_FC_READ_DISCRETE_INPUTS:
-                    case MODBUS_FC_READ_HOLDING_REGISTERS:
-                    case MODBUS_FC_READ_INPUT_REGISTERS:
-                    case MODBUS_FC_WRITE_SINGLE_REGISTER:
-                    case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
-                        return false;
+            case MODBUS_FC_READ_COILS:
+            case MODBUS_FC_READ_DISCRETE_INPUTS:
+            case MODBUS_FC_READ_HOLDING_REGISTERS:
+            case MODBUS_FC_READ_INPUT_REGISTERS:
+            case MODBUS_FC_WRITE_SINGLE_REGISTER:
+            case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
+                return false;
 
-                    case MODBUS_FC_WRITE_SINGLE_COIL:
-                    case MODBUS_FC_WRITE_MULTIPLE_COILS:
-                         return true;
+            case MODBUS_FC_WRITE_SINGLE_COIL:
+            case MODBUS_FC_WRITE_MULTIPLE_COILS:
+                 return true;
 
-                    default:
-                            break;
+            default:
+                    break;
             }
             return false;
     }
@@ -89,20 +89,20 @@ public:
     {
             switch(fCode)
             {
-                    case MODBUS_FC_READ_COILS:
-                    case MODBUS_FC_READ_DISCRETE_INPUTS:
-                    case MODBUS_FC_READ_HOLDING_REGISTERS:
-                    case MODBUS_FC_READ_INPUT_REGISTERS:
-                    case MODBUS_FC_WRITE_SINGLE_COIL:
-                    case MODBUS_FC_WRITE_MULTIPLE_COILS:
-                        return false;
+            case MODBUS_FC_READ_COILS:
+            case MODBUS_FC_READ_DISCRETE_INPUTS:
+            case MODBUS_FC_READ_HOLDING_REGISTERS:
+            case MODBUS_FC_READ_INPUT_REGISTERS:
+            case MODBUS_FC_WRITE_SINGLE_COIL:
+            case MODBUS_FC_WRITE_MULTIPLE_COILS:
+                return false;
 
-                    case MODBUS_FC_WRITE_SINGLE_REGISTER:
-                    case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
-                         return true;
+            case MODBUS_FC_WRITE_SINGLE_REGISTER:
+            case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
+                 return true;
 
-                    default:
-                            break;
+            default:
+                    break;
             }
             return false;
     }
@@ -136,6 +136,19 @@ public:
     {
         //the first char is what we need
         return p.at(0);
+    }
+
+    static QString endianness(int endian)
+    {
+        switch (endian)
+        {
+        case 0:
+            return "Little";
+        case 1:
+            return "Big";
+        default:
+            return "N/A";
+        }
     }
 
     static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;

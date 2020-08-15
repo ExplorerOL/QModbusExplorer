@@ -23,6 +23,8 @@ public:
     void setStartAddrBase(int base);
     void setIs16Bit(bool is16Bit);
     void setIsSigned(bool isSigned);
+    void setEndian(int endian);
+    void setFloatPrecision(int precision);
     QString strValue(int idx);
     int value(int idx);
     QStandardItemModel *model;
@@ -41,6 +43,8 @@ private:
     bool m_isSigned;
     int m_startAddrBase;
     int m_frmt;
+    int m_endian;
+    int m_floatPrecision;
     RegistersDataDelegate *m_regDataDelegate;
 
 signals:

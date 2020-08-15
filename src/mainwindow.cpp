@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->sbNoOfRegs,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
+    connect(ui->sbPrecision,SIGNAL(valueChanged(int)),this,SLOT(changedFloatPrecision(int)));
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
     connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(modbusRequest()));
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(modbusScanCycle(bool)));
@@ -79,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     m_statusPackets->setStyleSheet("QLabel {color:blue;}");
     m_statusErrors = new QLabel(tr("Errors : ") + "0");
     m_statusErrors->setStyleSheet("QLabel {color:red;}");
-    m_endian = new QLabel(tr("Endian : ") + m_modbusCommSettings->endian());
+    m_endian = new QLabel(tr("Endian : ") + EUtils::endianness(m_modbusCommSettings->endian()));
     m_endian->setStyleSheet("QLabel {color:black;}");
     ui->statusBar->addWidget(m_statusInd);
     ui->statusBar->addWidget(m_statusText, 10);
@@ -118,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->tblRegisters->verticalHeader()->hide();
     changedFrmt(m_modbusCommSettings->frmt());
     m_modbus->regModel->setStartAddrBase(10);
+    m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
+    m_modbus->regModel->setFloatPrecision(m_modbusCommSettings->floatPrecision());
     m_modbus->setReadOutputsBeforeWrite(m_modbusCommSettings->readOutputsBeforeWrite());
     clearItems();//init model ui
 
@@ -182,6 +185,7 @@ void MainWindow::showSettings()
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
         ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
+        m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
         m_modbusCommSettings->saveSettings();
     }
     else
@@ -504,6 +508,15 @@ void MainWindow::changedNoOfRegs(int value)
 
 }
 
+void MainWindow::changedFloatPrecision(int precision)
+{
+
+    //Float precision changed
+    m_modbusCommSettings->setfloatPrecision(precision);
+    m_modbusCommSettings->saveSettings();
+    m_modbus->regModel->setFloatPrecision(precision);
+
+}
 void MainWindow::updateStatusBar()
 {
 
@@ -540,7 +553,7 @@ void MainWindow::updateStatusBar()
     m_baseAddr->setText("Base Addr : " + m_modbusCommSettings->baseAddr());
 
     //endianness
-    m_endian->setText(("Endian : ") + m_modbusCommSettings->endian());
+    m_endian->setText(("Endian : ") +  EUtils::endianness(m_modbusCommSettings->endian()));
 
 }
 

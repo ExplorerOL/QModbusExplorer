@@ -154,12 +154,12 @@ void ModbusCommSettings::setTimeOut(QString timeOut)
     m_timeOut = timeOut;
 }
 
-QString  ModbusCommSettings::endian()
+int  ModbusCommSettings::endian()
 {
     return m_endian;
 }
 
-void ModbusCommSettings::setEndian(QString endian)
+void ModbusCommSettings::setEndian(int endian)
 {
     m_endian = endian;
 }
@@ -368,9 +368,9 @@ void ModbusCommSettings::load(QSettings *s)
         m_readOutputsBeforeWrite = s->value("Var/ReadOutputsBeforeWrite").toBool();
 
     if (s->value("Var/Endian").isNull())
-        m_endian = "Little";
+        m_endian = 0;
     else
-        m_endian = s->value("Var/Endian").toString();
+        m_endian = s->value("Var/Endian").toInt();
 
     if (s->value("Session/ModBusMode").isNull())
         m_modbusMode = 0; //RTU
