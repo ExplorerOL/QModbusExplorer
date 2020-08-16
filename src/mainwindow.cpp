@@ -377,6 +377,9 @@ void MainWindow::changedFrmt(int currIndex)
                 break;
      }
 
+    //TODO : clear table on format change
+    addItems();
+
 }
 
 void MainWindow::changedDecSign(bool value)
