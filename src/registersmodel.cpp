@@ -28,7 +28,7 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     QLOG_TRACE() <<  "Registers Model Address = " << startAddress << " , noOfItems = " << noOfItems
                 << " , offset = " << m_offset << " , first row = " << m_firstRow << " , last row = " << m_lastRow;
 
-    //Format Vertical - Horizontal Header
+    //Format Vertical - Horizontal Headers
     clear();
     if (noOfItems > 1) {
         if (m_frmt == EUtils::Float){
@@ -45,7 +45,7 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
 
 
             QStringList vertHeader;
-            for (int i = m_firstRow; i <= m_lastRow ; i++) {
+            for (int i = m_firstRow; i <= m_lastRow; i++) {
                 vertHeader<<QString("%1").arg(startAddress + i * 20, 2, 10, QLatin1Char('0'));
             }
             model->setVerticalHeaderLabels(vertHeader);
@@ -63,7 +63,7 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
                                                         <<RegModelHeaderLabels[8]<<RegModelHeaderLabels[9]);
 
             QStringList vertHeader;
-            for (int i = m_firstRow; i <= m_lastRow ; i++) {
+            for (int i = m_firstRow; i <= m_lastRow; i++) {
                 vertHeader<<QString("%1").arg(startAddress + i * 10, 2, 10, QLatin1Char('0'));
             }
              model->setVerticalHeaderLabels(vertHeader);
@@ -81,36 +81,42 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     }
     else {
         if (m_frmt == EUtils::Float){
-            for (int i = 0; i < ((m_offset + noOfItems/2 - 1) / 10 + 1) * 10 ; i++) {
-                row = i / 20;
-                col = i % 20;
-                //Address
-                if (i >= m_offset + noOfItems || i < m_offset){//not used cells
-                    QStandardItem *valueItem = new QStandardItem("x");model->setItem(row, col, valueItem);
-                    valueItem->setEditable(false);
-                    valueItem->setForeground(QBrush(Qt::red));
-                    valueItem->setBackground(QBrush(Qt::lightGray));
-                }
-                else {
-                    QStandardItem *valueItem = new QStandardItem("-");model->setItem(row, col, valueItem);
-                    valueItem->setEditable(valueIsEditable);
+            m_firstRow = 0;
+            m_lastRow = (noOfItems - 1) / 20;
+            for (int i = m_firstRow; i <= m_lastRow; i++) {
+                row = i;
+                for (int j = 0; j < 10; j++) {
+                    col = j;
+                    if ((row * 10 + col) >= (noOfItems / 2)){//not used cells
+                        QStandardItem *valueItem = new QStandardItem("x");model->setItem(row, col, valueItem);
+                        valueItem->setEditable(false);
+                        valueItem->setForeground(QBrush(Qt::red));
+                        valueItem->setBackground(QBrush(Qt::lightGray));
+                    }
+                    else {
+                        QStandardItem *valueItem = new QStandardItem("-");model->setItem(row, col, valueItem);
+                        valueItem->setEditable(valueIsEditable);
+                    }
                 }
             }
        }
         else {
-            for (int i = 0; i < ((m_offset + noOfItems - 1) / 10 + 1) * 10 ; i++) {
-                row = i / 10;
-                col = i % 10;
-                //Address
-                if (i >= m_offset + noOfItems || i < m_offset){//not used cells
-                    QStandardItem *valueItem = new QStandardItem("x");model->setItem(row, col, valueItem);
-                    valueItem->setEditable(false);
-                    valueItem->setForeground(QBrush(Qt::red));
-                    valueItem->setBackground(QBrush(Qt::lightGray));
-                }
-                else {
-                    QStandardItem *valueItem = new QStandardItem("-");model->setItem(row, col, valueItem);
-                    valueItem->setEditable(valueIsEditable);
+            m_firstRow = 0;
+            m_lastRow = (noOfItems - 1) / 10;
+            for (int i = m_firstRow; i <= m_lastRow; i++) {
+                row = i;
+                for (int j = 0; j < 10; j++) {
+                    col = j;
+                    if ((row * 10 + col) >= (noOfItems)){//not used cells
+                        QStandardItem *valueItem = new QStandardItem("x");model->setItem(row, col, valueItem);
+                        valueItem->setEditable(false);
+                        valueItem->setForeground(QBrush(Qt::red));
+                        valueItem->setBackground(QBrush(Qt::lightGray));
+                    }
+                    else {
+                        QStandardItem *valueItem = new QStandardItem("-");model->setItem(row, col, valueItem);
+                        valueItem->setEditable(valueIsEditable);
+                    }
                 }
             }
         }
@@ -176,8 +182,8 @@ void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
         col = 0;
     }
     else {
-        row = (m_offset + idx) / 20;
-        col = (m_offset + idx) % 20;
+        row = (m_offset + idx) / 10;
+        col = (m_offset + idx) % 10;
     }
 
     QModelIndex index = model->index(row, col, QModelIndex());

@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
     ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
     ui->chkSigned->setVisible(false);
+    ui->tblRegisters->setStyleSheet("QHeaderView::section { background-color:lightGray }");
 
     //UI - dialogs
     m_dlgAbout = new About();
@@ -348,12 +349,14 @@ void MainWindow::changedFrmt(int currIndex)
                 m_modbus->regModel->setFrmt(EUtils::Bin);
                 ui->lblPrecision->setVisible(false);
                 ui->sbPrecision->setVisible(false);
+                ui->sbNoOfRegs->setMinimum(1);
                 break;
         case 1:
                 ui->chkSigned->setVisible(true);
                 m_modbus->regModel->setFrmt(EUtils::Dec);
                 ui->lblPrecision->setVisible(false);
                 ui->sbPrecision->setVisible(false);
+                ui->sbNoOfRegs->setMinimum(1);
                 break;
         case 2:
                 ui->chkSigned->setVisible(false);
@@ -361,6 +364,7 @@ void MainWindow::changedFrmt(int currIndex)
                 m_modbus->regModel->setFrmt(EUtils::Hex);
                 ui->lblPrecision->setVisible(false);
                 ui->sbPrecision->setVisible(false);
+                 ui->sbNoOfRegs->setMinimum(1);
                 break;
         case 3: //TODO : change format to float
                 ui->chkSigned->setVisible(false);
@@ -368,12 +372,14 @@ void MainWindow::changedFrmt(int currIndex)
                 m_modbus->regModel->setFrmt(EUtils::Float);
                 ui->lblPrecision->setVisible(true);
                 ui->sbPrecision->setVisible(true);
+                ui->sbNoOfRegs->setMinimum(2);
                 break;
         default:
                 m_modbus->regModel->setFrmt(EUtils::Dec);
                 ui->chkSigned->setVisible(true);
                 ui->lblPrecision->setVisible(false);
                 ui->sbPrecision->setVisible(false);
+                ui->sbNoOfRegs->setMinimum(1);
                 break;
      }
 
