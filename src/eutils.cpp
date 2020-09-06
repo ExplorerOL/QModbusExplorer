@@ -67,6 +67,16 @@ QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Lit
 
 }
 
+QString EUtils::formatValue32(float value, int precision = -1)
+{//TODO : add float convertion
+
+    QString convertedValue;
+
+    convertedValue = QString("%1").arg(value, 0, 'G', precision);
+
+    return convertedValue.toUpper();
+
+}
 
 QString EUtils::libmodbus_strerror(int errnum)
 {

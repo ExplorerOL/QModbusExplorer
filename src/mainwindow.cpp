@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionLoad_Session,SIGNAL(triggered(bool)),this,SLOT(loadSession()));
     connect(ui->actionSave_Session,SIGNAL(triggered(bool)),this,SLOT(saveSession()));
+    connect(m_dlgSettings, SIGNAL(changedEndianess(int)),this,SLOT(changedEndianess(int)));
 
     //UI - status
     m_statusInd = new QLabel;
@@ -441,6 +442,18 @@ void MainWindow::changedSlaveID(int value)
 
 }
 
+void MainWindow::changedEndianess(int endian)
+{
+
+    //Endianess
+
+    QLOG_TRACE()<<  "Endianess Changed. Value = " << endian;
+
+    //TODO : clear table on endianess change
+    addItems();
+
+}
+
 void MainWindow::openLogFile()
 {
 
@@ -609,6 +622,12 @@ void MainWindow::modbusRequest()
         QLOG_WARN()<<  "Request failed. No items in registers table ";
         return;
     }
+    else if (m_modbus->regModel->getFrmt() == EUtils::Float &&
+             ui->sbNoOfRegs->value() % 2 != 0) {//TODO : number of regs must be even
+        mainWin->showUpInfoBar(tr("The number of registers must be even."), InfoBar::Error);
+        QLOG_WARN()<<  "Request failed. The number of registers must be even ";
+        return;
+    }
     else {
         mainWin->hideInfoBar();
     }
@@ -634,8 +653,17 @@ void MainWindow::modbusScanCycle(bool value)
    int baseAddr;
 
    if (value && rowCount == 0) {
-       mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
+       //mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
        QLOG_WARN()<<  "Request failed. No items in registers table ";
+       QMessageBox::critical(this, "QModMaster", tr("Request failed\nAdd items to Registers Table."));
+       ui->actionScan->setChecked(false);
+       return;
+   }
+   else if (value && m_modbus->regModel->getFrmt() == EUtils::Float &&
+            ui->sbNoOfRegs->value() % 2 != 0) {//TODO : number of regs must be even
+       //mainWin->showUpInfoBar(tr("The number of registers must be even."), InfoBar::Error);
+       QLOG_WARN()<<  "Request failed. The number of registers must be even ";
+       QMessageBox::critical(this, "QModMaster", tr("The number of registers must be even."));
        ui->actionScan->setChecked(false);
        return;
    }

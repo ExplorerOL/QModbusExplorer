@@ -23,18 +23,14 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
     int col;
     m_startAddress = startAddress;
     m_noOfItems = noOfItems;
-    m_offset = 0;
 
     QLOG_TRACE() <<  "Registers Model Address = " << startAddress << " , noOfItems = " << noOfItems
-                << " , offset = " << m_offset << " , first row = " << m_firstRow << " , last row = " << m_lastRow;
+                << " , first row = " << m_firstRow << " , last row = " << m_lastRow;
 
     //Format Vertical - Horizontal Headers
     clear();
     if (noOfItems > 1) {
         if (m_frmt == EUtils::Float){
-            //m_offset = (startAddress % 20);
-            //m_firstRow = startAddress / 20;
-            //m_lastRow = (startAddress + noOfItems - 1) / 20;
             m_firstRow = 0;
             m_lastRow = (noOfItems - 1) / 20;
             model->setHorizontalHeaderLabels(QStringList()<<RegModelFloatHeaderLabels[0]<<RegModelFloatHeaderLabels[1]
@@ -51,9 +47,6 @@ void RegistersModel::addItems(int startAddress, int noOfItems, bool valueIsEdita
             model->setVerticalHeaderLabels(vertHeader);
         }
         else {
-            //m_offset = (startAddress % 10);
-            //m_firstRow = startAddress / 10;
-            //m_lastRow = (startAddress + noOfItems - 1) / 10;
             m_firstRow = 0;
             m_lastRow = (noOfItems - 1) / 10;
             model->setHorizontalHeaderLabels(QStringList()<<RegModelHeaderLabels[0]<<RegModelHeaderLabels[1]
@@ -134,12 +127,23 @@ void RegistersModel::setNoValidValues()
     int col;
     //if we have no valid values we set  as value = '-/-'
 
-    for (int i = m_offset; i < m_offset + m_noOfItems; i++){
-        row = i / 10;
-        col = i % 10;
-        QModelIndex index = model->index(row, col, QModelIndex());
-        model->setData(index,QBrush(Qt::red),Qt::ForegroundRole);
-        model->setData(index,"-/-",Qt::DisplayRole);
+    if (m_frmt == EUtils::Float){
+        for (int i = 0; i < (m_noOfItems / 2); i++){
+            row = i / 10;
+            col = i % 10;
+            QModelIndex index = model->index(row, col, QModelIndex());
+            model->setData(index,QBrush(Qt::red),Qt::ForegroundRole);
+            model->setData(index,"-/-",Qt::DisplayRole);
+        }
+    }
+    else {
+        for (int i = 0; i < m_noOfItems; i++){
+            row = i / 10;
+            col = i % 10;
+            QModelIndex index = model->index(row, col, QModelIndex());
+            model->setData(index,QBrush(Qt::red),Qt::ForegroundRole);
+            model->setData(index,"-/-",Qt::DisplayRole);
+        }
     }
 
 }
@@ -158,8 +162,8 @@ void RegistersModel::setValue(int idx, int value)
         col = 0;
     }
     else {
-        row = (m_offset + idx) / 10;
-        col = (m_offset + idx) % 10;
+        row = (idx) / 10;
+        col = (idx) % 10;
     }
 
     QModelIndex index = model->index(row, col, QModelIndex());
@@ -182,8 +186,8 @@ void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
         col = 0;
     }
     else {
-        row = (m_offset + idx) / 10;
-        col = (m_offset + idx) % 10;
+        row = (idx) / 10;
+        col = (idx) % 10;
     }
 
     QModelIndex index = model->index(row, col, QModelIndex());
@@ -219,8 +223,8 @@ QString RegistersModel::strValue(int idx)
         col = 0;
     }
     else {
-        row = (m_offset + idx) / 10;
-        col = (m_offset + idx) % 10;
+        row = (idx) / 10;
+        col = (idx) % 10;
     }
     QModelIndex index = model->index(row, col, QModelIndex());
     QVariant value = model->data(index,Qt::DisplayRole);
@@ -259,8 +263,8 @@ void RegistersModel::changeFrmt(int frmt)
             col = 0;
         }
         else {
-            row = (m_offset + idx) / 10;
-            col = (m_offset + idx) % 10;
+            row = (idx) / 10;
+            col = (idx) % 10;
         }
         QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,convertedVal,Qt::DisplayRole);
@@ -343,6 +347,7 @@ void RegistersModel::setFloatPrecision(int precision)
 
     QLOG_TRACE()<<  "Registers Model float precision = " << precision ;
     m_floatPrecision = precision;
+    m_regDataDelegate->setFloatPrecision(precision);
 
 }
 

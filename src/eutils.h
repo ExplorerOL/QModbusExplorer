@@ -164,6 +164,7 @@ public:
     static QString formatValue(int value,int frmt, bool is16Bit, bool isSigned);
 
     static QString formatValue32(int valueHi, int valueLo, int endian, int precision);
+    static QString formatValue32(float value,  int precision);
 
     static QString libmodbus_strerror(int errnum);
 

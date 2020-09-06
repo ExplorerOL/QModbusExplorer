@@ -11,6 +11,7 @@ class RegistersDataDelegate : public QStyledItemDelegate
     int m_frmt;
     bool m_is16Bit;
     bool m_isSigned;
+    int m_floatPrecision;
 
  public:
      RegistersDataDelegate(QWidget *parent = 0) : QStyledItemDelegate(parent) { }
@@ -31,6 +32,7 @@ class RegistersDataDelegate : public QStyledItemDelegate
      void setFrmt(int frmt);
      void setIs16Bit(bool is16Bit);
      void setIsSigned(bool isSigned);
+     void setFloatPrecision(int precision);
 
  };
 

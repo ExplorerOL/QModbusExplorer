@@ -43,7 +43,7 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     }
     else if (m_frmt == EUtils::Float) {//TODO : add float editor
             QLineEdit *editor = new QLineEdit(parent);
-            QRegExp rx("-{0,1}[0-9]{1,5}");
+            QRegExp rx("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$");
             QValidator *validator = new QRegExpValidator(rx);
             editor->setValidator(validator);
             return editor;
@@ -85,14 +85,20 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
 
     QString value;
     int intVal;
+    float floatVal;
     bool ok;
-
+    //TODO : add float line editor
     if (m_frmt == EUtils::Bin && !m_is16Bit) {//Bin
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         intVal = (spinBox->text()).toInt(&ok,m_frmt);
         value = EUtils::formatValue(intVal, m_frmt, m_is16Bit, m_isSigned);
     }
-    else { //Bin 16 Bit, Dec, Hex, Float?
+    else if (m_frmt == EUtils::Float){ //Float
+        QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
+        floatVal = (lineEdit->text()).toFloat(&ok);
+        value = EUtils::formatValue32(floatVal, m_floatPrecision);
+    }
+    else { //Bin 16 Bit, Dec, Hex
         QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
         intVal = (lineEdit->text()).toInt(&ok,m_frmt);
         if (intVal > 65535){
@@ -141,5 +147,12 @@ void RegistersDataDelegate::setIsSigned(bool isSigned)
 {
 
     m_isSigned = isSigned;
+
+}
+
+void RegistersDataDelegate::setFloatPrecision(int precision)
+{
+
+    m_floatPrecision = precision;
 
 }

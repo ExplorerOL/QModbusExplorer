@@ -23,6 +23,9 @@ private:
     Ui::Settings *ui;
     ModbusCommSettings *m_settings;
 
+signals:
+    void changedEndianess(int endian);
+
 private slots:
     void changesAccepted();
 

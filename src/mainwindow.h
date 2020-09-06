@@ -71,6 +71,7 @@ private slots:
     void changedNoOfRegs(int value);
     void changedSlaveID(int value);
     void changedFloatPrecision(int precision);
+    void changedEndianess(int endian);
     void addItems();
     void clearItems();
     void openLogFile();

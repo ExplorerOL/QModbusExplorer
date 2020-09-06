@@ -41,7 +41,9 @@ void Settings::changesAccepted()
         m_settings->setMaxNoOfLines(ui->sbMaxNoOfRawDataLines->cleanText());
         m_settings->setTimeOut(ui->sbResponseTimeout->cleanText());
         m_settings->setBaseAddr(ui->sbBaseAddr->cleanText());
+        if (m_settings->endian() != ui->cmbEndian->currentIndex())
+            emit changedEndianess(ui->cmbEndian->currentIndex());
         m_settings->setEndian(ui->cmbEndian->currentIndex());
-     }
+    }
 
 }

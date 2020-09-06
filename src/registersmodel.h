@@ -37,7 +37,6 @@ private:
     void changeFrmt(int frmt);
     int m_startAddress;
     int m_noOfItems;
-    int m_offset;
     int m_firstRow;
     int m_lastRow;
     bool m_is16Bit;
