@@ -25,9 +25,11 @@ public:
     void setIs16Bit(bool is16Bit);
     void setIsSigned(bool isSigned);
     void setEndian(int endian);
+    int getEndian();
     void setFloatPrecision(int precision);
     QString strValue(int idx);
     int value(int idx);
+    float floatValue(int idx);
     QStandardItemModel *model;
     void clear();
     void setNoValidValues();

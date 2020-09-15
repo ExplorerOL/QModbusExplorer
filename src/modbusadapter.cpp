@@ -313,6 +313,11 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
 
     int ret = -1; //return value from functions
 
+    union{
+        struct{qint16 high, low;} reg;
+        float value;
+    } modelData;
+
     modbus_set_slave(m_modbus, slave);
     //request data from modbus
     switch(functionCode)
@@ -326,7 +331,6 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     ret = modbus_write_register( m_modbus, startAddress,regModel->value(0));
                     noOfItems = 1;
                     break;
-
             case MODBUS_FC_WRITE_MULTIPLE_COILS:
             {
                     uint8_t * data = new uint8_t[noOfItems];
@@ -340,6 +344,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
             }
             case MODBUS_FC_WRITE_MULTIPLE_REGISTERS:
             {
+                 if (regModel->getFrmt() != EUtils::Float) {
                     uint16_t * data = new uint16_t[noOfItems];
                     for(int i = 0; i < noOfItems; ++i)
                     {
@@ -348,6 +353,25 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     ret = modbus_write_registers(m_modbus, startAddress, noOfItems, data);
                     delete[] data;
                     break;
+                 }
+                 else { //TODO : write float values
+                        uint16_t * data = new uint16_t[noOfItems];
+                        for(int i = 0; i < noOfItems - 1; i+=2)
+                        {
+                                modelData.value = regModel->floatValue(i/2);
+                                if (regModel->getEndian() == EUtils::Little){
+                                    data[i] = modelData.reg.low;
+                                    data[i+1] = modelData.reg.high;
+                                }
+                                else if (regModel->getEndian() == EUtils::Big){
+                                    data[i] = modelData.reg.high;
+                                    data[i+1] = modelData.reg.low;
+                                }
+                        }
+                        ret = modbus_write_registers(m_modbus, startAddress, noOfItems, data);
+                        delete[] data;
+                        break;
+                }
             }
 
             default:

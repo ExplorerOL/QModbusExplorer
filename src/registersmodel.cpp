@@ -212,6 +212,22 @@ int RegistersModel::value(int idx)
 
 }
 
+float RegistersModel::floatValue(int idx)
+{
+    QString stringVal;
+    float floatVal;
+    bool ok;
+
+    //Get Value
+    stringVal = strValue(idx);
+    floatVal = stringVal.toFloat(&ok);
+    if (ok)
+        return floatVal;
+    else
+        return -1;
+
+}
+
 QString RegistersModel::strValue(int idx)
 {
     int row;
@@ -339,6 +355,14 @@ void RegistersModel::setEndian(int endian)
 
     QLOG_TRACE()<<  "Registers Model endianness = " << endian ;
     m_endian = endian;
+
+}
+
+int RegistersModel::getEndian()
+{
+
+    QLOG_TRACE()<<  "Registers Model endianness = " << m_endian ;
+    return m_endian;
 
 }
 
