@@ -373,7 +373,7 @@ void MainWindow::changedFrmt(int currIndex)
                 m_modbus->regModel->setFrmt(EUtils::Float);
                 ui->lblPrecision->setVisible(true);
                 ui->sbPrecision->setVisible(true);
-                ui->sbNoOfRegs->setMinimum(2);
+                ui->sbNoOfRegs->setMinimum(1);
                 break;
         default:
                 m_modbus->regModel->setFrmt(EUtils::Dec);

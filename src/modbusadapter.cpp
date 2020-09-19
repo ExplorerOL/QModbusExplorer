@@ -331,6 +331,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     ret = modbus_write_register( m_modbus, startAddress,regModel->value(0));
                     noOfItems = 1;
                     break;
+
             case MODBUS_FC_WRITE_MULTIPLE_COILS:
             {
                     uint8_t * data = new uint8_t[noOfItems];
