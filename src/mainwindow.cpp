@@ -88,8 +88,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     ui->statusBar->addWidget(m_statusText, 10);
     ui->statusBar->addWidget(m_baseAddr, 10);
     ui->statusBar->addWidget(m_statusPackets, 10);
-    ui->statusBar->addWidget(m_statusErrors, 10);
     ui->statusBar->addWidget(m_endian, 10);
+    ui->statusBar->addWidget(m_statusErrors, 10);
     m_statusInd->setPixmap(QPixmap(":/img/ballorange-16.png"));
 
     //Setup Toolbar
