@@ -66,9 +66,9 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
     connect(ui->actionHeaders,SIGNAL(triggered(bool)),this,SLOT(showHeaders(bool)));
     connect(ui->actionModbus_Manual,SIGNAL(triggered()),this,SLOT(openModbusManual()));
-    connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
-    connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
-    connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
+    //connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
+    //connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
+    //connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionLoad_Session,SIGNAL(triggered(bool)),this,SLOT(loadSession()));
     connect(ui->actionSave_Session,SIGNAL(triggered(bool)),this,SLOT(saveSession()));
     connect(m_dlgSettings, SIGNAL(changedEndianess(int)),this,SLOT(changedEndianess(int)));
