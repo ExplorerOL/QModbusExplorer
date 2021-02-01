@@ -128,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
 
     //Update UI
     changedFunctionCode(m_modbusCommSettings->functionCode());
+    changedModbusMode(m_modbusCommSettings->modbusMode());
     updateStatusBar();
     refreshView();
 
