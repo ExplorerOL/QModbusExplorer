@@ -368,7 +368,7 @@ void MainWindow::changedFrmt(int currIndex)
                 ui->sbPrecision->setVisible(false);
                  ui->sbNoOfRegs->setMinimum(1);
                 break;
-        case 3: //TODO : change format to float
+        case 3:
                 ui->chkSigned->setVisible(false);
                 ui->chkSigned->setChecked(false);
                 m_modbus->regModel->setFrmt(EUtils::Float);
@@ -385,7 +385,7 @@ void MainWindow::changedFrmt(int currIndex)
                 break;
      }
 
-    //TODO : clear table on format change
+    //clear table on format change
     addItems();
 
 }
@@ -450,7 +450,7 @@ void MainWindow::changedEndianess(int endian)
 
     QLOG_TRACE()<<  "Endianess Changed. Value = " << endian;
 
-    //TODO : clear table on endianess change
+    //clear table on endianess change
     addItems();
 
 }
@@ -624,7 +624,7 @@ void MainWindow::modbusRequest()
         return;
     }
     else if (m_modbus->regModel->getFrmt() == EUtils::Float &&
-             ui->sbNoOfRegs->value() % 2 != 0) {//TODO : number of regs must be even
+             ui->sbNoOfRegs->value() % 2 != 0) {
         mainWin->showUpInfoBar(tr("The number of registers must be even."), InfoBar::Error);
         QLOG_WARN()<<  "Request failed. The number of registers must be even ";
         return;
@@ -661,7 +661,7 @@ void MainWindow::modbusScanCycle(bool value)
        return;
    }
    else if (value && m_modbus->regModel->getFrmt() == EUtils::Float &&
-            ui->sbNoOfRegs->value() % 2 != 0) {//TODO : number of regs must be even
+            ui->sbNoOfRegs->value() % 2 != 0) {
        //mainWin->showUpInfoBar(tr("The number of registers must be even."), InfoBar::Error);
        QLOG_WARN()<<  "Request failed. The number of registers must be even ";
        QMessageBox::critical(this, "QModMaster", tr("The number of registers must be even."));
@@ -677,7 +677,7 @@ void MainWindow::modbusScanCycle(bool value)
 
    m_modbus->setSlave(ui->sbSlaveID->value());
    m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
-   m_modbus->setStartAddr(ui->sbStartAddress->value() + baseAddr);
+   m_modbus->setStartAddr(ui->sbStartAddress->value() - baseAddr);
    m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
 
     //Start-Stop poll timer
