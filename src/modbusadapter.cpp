@@ -266,7 +266,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
                 regModel->setValue(i,data);
             }
         }
-        else//TODO : read float values
+        else//read float values
         {
             for(int i = 0; i < noOfItems - 1; i+=2)
             {
@@ -355,7 +355,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     delete[] data;
                     break;
                  }
-                 else { //TODO : write float values
+                 else { //rite float values
                         uint16_t * data = new uint16_t[noOfItems];
                         for(int i = 0; i < noOfItems - 1; i+=2)
                         {
@@ -474,7 +474,7 @@ void ModbusAdapter::setNumOfRegs(int num)
 }
 
 void ModbusAdapter::addItems()
-{//TODO : add ReadOutputsBeforeWrite flag
+{
     regModel->addItems(m_startAddr, m_numOfRegs, EUtils::ModbusIsWriteFunction(m_functionCode));
     //If it is a write function -> read registers
     if (!m_connected || !m_readOutputsBeforeWrite)

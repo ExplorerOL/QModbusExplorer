@@ -583,13 +583,15 @@ void MainWindow::updateStatusBar()
 
 void MainWindow::addItems()
 {
-
+    int baseAddr;
     //add items
 
     m_modbus->setSlave(ui->sbSlaveID->value());
     m_modbus->setFunctionCode(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()));
-    m_modbus->setStartAddr(ui->sbStartAddress->value());
     m_modbus->setNumOfRegs(ui->sbNoOfRegs->value());
+    //get base address
+    baseAddr = m_modbusCommSettings->baseAddr().toInt();
+    m_modbus->setStartAddr(ui->sbStartAddress->value() - baseAddr);
 
     QLOG_INFO()<<  "Add Items. Function Code = " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
 
