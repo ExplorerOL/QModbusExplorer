@@ -34,6 +34,7 @@ private slots:
     void clear();
     void exit();
     void save();
+    void SxS();
     void selectedRow(const QModelIndex & selected);
 
 };
