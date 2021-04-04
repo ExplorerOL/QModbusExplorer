@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QPlainTextEdit>
 #include "src/rawdatamodel.h"
 
 namespace Ui {
@@ -20,11 +21,11 @@ public:
 private:
     Ui::BusMonitor *ui;
     RawDataModel *m_rawDataModel;
-    void parseTxMsg(QString msg);
-    void parseTxPDU(QStringList pdu, QString slave);
-    void parseRxMsg(QString msg);
-    void parseRxPDU(QStringList pdu, QString slave);
-    void parseSysMsg(QString msg);
+    void parseTxMsg(QString msg, QPlainTextEdit* txtADU);
+    void parseTxPDU(QStringList pdu, QString slave, QPlainTextEdit* txtADU);
+    void parseRxMsg(QString msg, QPlainTextEdit* txtADU);
+    void parseRxPDU(QStringList pdu, QString slave, QPlainTextEdit* txtADU);
+    void parseSysMsg(QString msg, QPlainTextEdit* txtADU);
 
 protected:
     void closeEvent(QCloseEvent *event);
