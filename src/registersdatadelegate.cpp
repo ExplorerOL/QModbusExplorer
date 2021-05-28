@@ -41,7 +41,7 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
             editor->setValidator(validator);
             return editor;
     }
-    else if (m_frmt == EUtils::Float) {//TODO : add float editor
+    else if (m_frmt == EUtils::Float) {//Float
             QLineEdit *editor = new QLineEdit(parent);
             QRegExp rx("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$");
             QValidator *validator = new QRegExpValidator(rx);
@@ -87,7 +87,7 @@ void RegistersDataDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
     int intVal;
     float floatVal;
     bool ok;
-    //TODO : add float line editor
+
     if (m_frmt == EUtils::Bin && !m_is16Bit) {//Bin
         QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
         intVal = (spinBox->text()).toInt(&ok,m_frmt);

@@ -314,7 +314,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
     int ret = -1; //return value from functions
 
     union{
-        struct{qint16 high, low;} reg;
+        struct{qint16 low, high;} reg;
         float value;
     } modelData;
 
@@ -355,7 +355,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                     delete[] data;
                     break;
                  }
-                 else { //rite float values
+                 else { //write float values
                         uint16_t * data = new uint16_t[noOfItems];
                         for(int i = 0; i < noOfItems - 1; i+=2)
                         {

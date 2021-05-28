@@ -152,7 +152,7 @@ public:
     }
 
     static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;
-    //TODO : add float number format
+
     static enum {Bin = 2, Dec = 10, Float = 11, Hex = 16} NumberFormat;
     static enum {Little =0, Big = 1} Endianness;
 

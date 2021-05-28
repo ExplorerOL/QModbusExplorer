@@ -173,7 +173,7 @@ void RegistersModel::setValue(int idx, int value)
 }
 
 void RegistersModel::setValue32(int idx, int valueHi, int valueLo)
-{//TODO : update model with float values
+{//update model with float values
     int row;
     int col;
     QString convertedValue;

@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "eutils.h"
 
 EUtils::EUtils()
@@ -45,9 +46,9 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
 }
 
 QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Little, int precision = -1)
-{//TODO : add float convertion
+{
     union{
-        struct{qint16 high, low;} reg;
+        struct{qint16 low, high;} reg;
         float value;
     } data;
     QString convertedValue;
@@ -68,7 +69,7 @@ QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Lit
 }
 
 QString EUtils::formatValue32(float value, int precision = -1)
-{//TODO : add float convertion
+{
 
     QString convertedValue;
 
