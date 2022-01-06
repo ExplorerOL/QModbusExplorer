@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     changedFrmt(m_modbusCommSettings->frmt());
     m_modbus->regModel->setStartAddrBase(10);
     m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
+    m_modbus->setBaseAddr(m_modbusCommSettings->baseAddr().toInt());
     m_modbus->regModel->setFloatPrecision(m_modbusCommSettings->floatPrecision());
     m_modbus->setReadOutputsBeforeWrite(m_modbusCommSettings->readOutputsBeforeWrite());
     clearItems();//init model ui
@@ -189,6 +190,7 @@ void MainWindow::showSettings()
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
         ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
+        m_modbus->setBaseAddr(m_modbusCommSettings->baseAddr().toInt());
         m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
         m_modbusCommSettings->saveSettings();
     }
