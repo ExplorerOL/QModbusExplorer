@@ -284,7 +284,7 @@ void RegistersModel::changeFrmt(int frmt)
         }
         QModelIndex index = model->index(row, col, QModelIndex());
         model->setData(index,convertedVal,Qt::DisplayRole);
-        model->setData(index,QString("Address : %1").arg(m_startAddress + idx, 1, m_startAddrBase).toUpper(),Qt::ToolTipRole);
+        model->setData(index,QString("Address : %1").arg(m_startAddress + idx, m_startAddrBase).toUpper(),Qt::ToolTipRole);
     }
 
     emit(refreshView());

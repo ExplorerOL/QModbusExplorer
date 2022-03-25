@@ -28,6 +28,7 @@ public:
      void setFunctionCode(int functionCode);
      void setStartAddr(int addr);
      void setNumOfRegs(int num);
+     void setBaseAddr(int baseAddr);
      void addItems();
      void setReadOutputsBeforeWrite(bool readOutputsBeforeWrite);
 
@@ -48,6 +49,8 @@ private:
      int m_slave;
      int m_functionCode;
      int m_startAddr;
+     int m_baseAddr;
+
      int m_numOfRegs;
      int m_scanRate;
      QTimer *m_pollTimer;
