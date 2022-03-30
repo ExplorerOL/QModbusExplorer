@@ -603,6 +603,9 @@
    <property name="text">
     <string>Connect</string>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
   </action>
   <action name="actionScan">
    <property name="checkable">

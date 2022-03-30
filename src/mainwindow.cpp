@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //setup UI
     ui->setupUi(this);
     ui->sbNoOfRegs->setEnabled(true);
-    ui->actionRead_Write->setEnabled(false);
+    //ui->actionRead_Write->setEnabled(false);
     ui->actionScan->setEnabled(false);
     ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
     ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
@@ -59,8 +59,10 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
     connect(ui->sbPrecision,SIGNAL(valueChanged(int)),this,SLOT(changedFloatPrecision(int)));
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
+    //--- Read/write button
     connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(modbusRequest()));
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(modbusScanCycle(bool)));
+    //--- Connect button
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
     connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
@@ -615,8 +617,11 @@ void MainWindow::clearItems()
 
 void MainWindow::modbusRequest()
 {
+    //auto connection
+    changedConnect(true);
+    if (m_modbus->isConnected() != true) return;
 
-     //Request items from modbus adapter and add raw data to raw data model
+    //Request items from modbus adapter and add raw data to raw data model
     int rowCount = m_modbus->regModel->model->rowCount();
     int baseAddr;
 
@@ -648,6 +653,8 @@ void MainWindow::modbusRequest()
     //Modbus data
     m_modbus->modbusTransaction();
 
+    //auto disconnection
+    changedConnect(false);
 }
 
 void MainWindow::modbusScanCycle(bool value)
@@ -747,7 +754,7 @@ void MainWindow::modbusConnect(bool connect)
     ui->actionLoad_Session->setEnabled(!m_modbus->isConnected());
     ui->actionSave_Session->setEnabled(!m_modbus->isConnected());
     ui->actionConnect->setChecked(m_modbus->isConnected());
-    ui->actionRead_Write->setEnabled(m_modbus->isConnected());
+    //ui->actionRead_Write->setEnabled(m_modbus->isConnected());
     ui->actionScan->setEnabled(m_modbus->isConnected());
     ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
 
