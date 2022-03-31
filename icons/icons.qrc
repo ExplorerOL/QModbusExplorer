@@ -30,5 +30,7 @@
         <file>Header16.png</file>
         <file>tools-16.png</file>
         <file>play-16.png</file>
+        <file>poll_once_icon_32.png</file>
+        <file>poll_cyclic_32.png</file>
     </qresource>
 </RCC>
