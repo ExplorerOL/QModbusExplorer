@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //setup UI
     ui->setupUi(this);
     ui->sbNoOfRegs->setEnabled(true);
-    //ui->actionRead_Write->setEnabled(false);
-    ui->actionScan->setEnabled(false);
+    ui->actionRead_Write->setEnabled(true);
+    ui->actionScan->setEnabled(true);
     ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
     ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
     ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
     //--- Read/write button
     connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(modbusRequest()));
+    //--- Read/write in cycle button
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(modbusScanCycle(bool)));
     //--- Connect button
     connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
@@ -660,6 +661,7 @@ void MainWindow::modbusRequest()
 void MainWindow::modbusScanCycle(bool value)
 {
 
+
    //Request items from modbus adapter and add raw data to raw data model
    int rowCount = m_modbus->regModel->model->rowCount();
    int baseAddr;
@@ -699,12 +701,20 @@ void MainWindow::modbusScanCycle(bool value)
             QLOG_ERROR()<<  "Scan rate error. should be at least 2 * Timeout ";
         }
         else {
+            //auto connection
+            changedConnect(value);
+            if (m_modbus->isConnected() != true) return;
+
             m_modbus->setScanRate(ui->spInterval->value());
             m_modbus->startPollTimer();
         }
     }
-    else
+    else {
+
         m_modbus->stopPollTimer();
+        //auto disconnection
+        changedConnect(false);
+    }
 
     //Update UI
     ui->cmbFunctionCode->setEnabled(!value);
@@ -716,6 +726,8 @@ void MainWindow::modbusScanCycle(bool value)
         changedFunctionCode(ui->cmbFunctionCode->currentIndex());
     else
         ui->sbNoOfRegs->setEnabled(false);
+
+
 
 }
 
@@ -755,7 +767,7 @@ void MainWindow::modbusConnect(bool connect)
     ui->actionSave_Session->setEnabled(!m_modbus->isConnected());
     ui->actionConnect->setChecked(m_modbus->isConnected());
     //ui->actionRead_Write->setEnabled(m_modbus->isConnected());
-    ui->actionScan->setEnabled(m_modbus->isConnected());
+    //ui->actionScan->setEnabled(m_modbus->isConnected());
     ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
 
  }
