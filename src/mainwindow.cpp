@@ -695,6 +695,8 @@ void MainWindow::modbusScanCycle(bool value)
 
     //Start-Stop poll timer
     QLOG_TRACE()<<  "Scan time = " << value;
+
+    //If button ScanCyle is pressed
     if (value){
         if (ui->spInterval->value() < m_modbusCommSettings->timeOut().toInt() * 1000 * 2){
             mainWin->showUpInfoBar(tr("Scan rate  should be at least 2 * Timeout."), InfoBar::Error);
@@ -702,11 +704,12 @@ void MainWindow::modbusScanCycle(bool value)
         }
         else {
             //auto connection
-            changedConnect(value);
+            changedConnect(true);
             if (m_modbus->isConnected() != true) return;
 
             m_modbus->setScanRate(ui->spInterval->value());
             m_modbus->startPollTimer();
+            ui->actionRead_Write->setEnabled(false);
         }
     }
     else {
@@ -714,6 +717,7 @@ void MainWindow::modbusScanCycle(bool value)
         m_modbus->stopPollTimer();
         //auto disconnection
         changedConnect(false);
+        ui->actionRead_Write->setEnabled(true);
     }
 
     //Update UI
