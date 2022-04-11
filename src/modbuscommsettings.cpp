@@ -169,6 +169,11 @@ int  ModbusCommSettings::loggingLevel()
     return m_loggingLevel;
 }
 
+void ModbusCommSettings::setLoggingLevel(int newLoggingLevel)
+{
+    m_loggingLevel = newLoggingLevel;
+}
+
 bool  ModbusCommSettings::readOutputsBeforeWrite()
 {
     return m_readOutputsBeforeWrite;

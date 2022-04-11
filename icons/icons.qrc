@@ -30,5 +30,37 @@
         <file>Header16.png</file>
         <file>tools-16.png</file>
         <file>play-16.png</file>
+        <file>poll_once_icon_32.png</file>
+        <file>poll_cyclic_32.png</file>
+        <file>icons.qrc</file>
+        <file>lower_panel.png</file>
+        <file>open.png</file>
+        <file>open2.png</file>
+        <file>poll_once_icon.jpg</file>
+        <file>poll_once_icon.png</file>
+        <file>right_panel.png</file>
+        <file>settings.png</file>
+        <file>settings1.png</file>
+        <file>settings2.png</file>
+        <file>tools.png</file>
+        <file>turn_off.png</file>
+        <file>clear.png</file>
+        <file>cyclic_poll.png</file>
+        <file>cyclic_poll2.png</file>
+        <file>cyclic_poll3.png</file>
+        <file>help.png</file>
+        <file>info_rect.png</file>
+        <file>info_round.png</file>
+        <file>scan.png</file>
+        <file>single_poll.png</file>
+        <file>single_poll2.png</file>
+        <file>tv.png</file>
+        <file>counter.png</file>
+        <file>save.png</file>
+        <file>explorer.png</file>
+        <file>logs.png</file>
+        <file>table.png</file>
+        <file>second_info_window.png</file>
+        <file>clear2.png</file>
     </qresource>
 </RCC>

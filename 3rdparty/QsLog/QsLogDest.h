@@ -37,6 +37,9 @@ namespace QsLogging
 class Destination
 {
 public:
+    typedef void (*LogFunction)(const QString &message, Level level);
+
+public:
     virtual ~Destination(){}
     virtual void write(const QString& message, Level level) = 0;
     virtual bool isValid() = 0; // returns whether the destination was created correctly
@@ -50,6 +53,10 @@ class DestinationFactory
 public:
     static DestinationPtr MakeFileDestination(const QString& filePath, bool enableRotation = false, qint64 sizeInBytesToRotateAfter = 0, int oldLogsToKeep = 0);
     static DestinationPtr MakeDebugOutputDestination();
+    // takes a pointer to a function
+    static DestinationPtr MakeFunctorDestination(Destination::LogFunction f);
+    // takes a QObject + signal/slot
+    static DestinationPtr MakeFunctorDestination(QObject *receiver, const char *member);
 };
 
 } // end namespace

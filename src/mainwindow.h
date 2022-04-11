@@ -31,6 +31,7 @@ public:
     void showUpInfoBar(QString message, InfoBar::InfoType type);
     void hideInfoBar();
 
+
 private:
     Ui::MainWindow *ui;
     //UI - Dialogs
@@ -51,14 +52,18 @@ private:
     QLabel *m_endian;
     ModbusAdapter *m_modbus;
     void modbusConnect(bool connect);
-
     void changeEvent(QEvent* event);
+    void updateMainWindowUI();    //update UI widgets with actual values
+
+    QStringListModel logStringListModel;
+    QStringList logStringList;
 
 private slots:
     void showSettingsModbusRTU();
     void showSettingsModbusTCP();
     void showSettings();
     void showBusMonitor();
+    void showLowerInfoPanel();
     void showTools();
     void changedModbusMode(int currIndex);
     void changedFunctionCode(int currIndex);
@@ -72,6 +77,7 @@ private slots:
     void changedSlaveID(int value);
     void changedFloatPrecision(int precision);
     void changedEndianess(int endian);
+    void changeLogLevel(int logLevel);
     void addItems();
     void clearItems();
     void openLogFile();
@@ -83,6 +89,12 @@ private slots:
     void loadSession();
     void saveSession();
     void showHeaders(bool value);
+
+
+
+    public slots:
+        //void changedModbusMode(int currIndex);
+        void showLogData(const QString &message, int level);
 
 signals:
     void resetCounters();

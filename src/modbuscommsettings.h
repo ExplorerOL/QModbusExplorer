@@ -42,6 +42,7 @@ public:
     void saveSettings();
     //logging
     int loggingLevel();
+    void setLoggingLevel(int newLoggingLevel);
     //
     bool readOutputsBeforeWrite();
     //session

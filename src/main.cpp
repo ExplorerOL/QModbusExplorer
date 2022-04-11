@@ -21,6 +21,21 @@ QTranslator *Translator;
 //FatalLevel : 5
 //OffLevel : 6
 
+//void logFunction(const QString &message, QsLogging::Level level)
+//{
+//    QStringListModel* model;
+//    model = new QStringListModel();
+
+//    QStringList list;
+//    list << "Some Item";
+//    list << "Some Item2";
+
+
+//    model->setStringList(list);
+//    showLogData(MainWin, model);
+
+//}
+
 int main(int argc, char *argv[])
 {
 
@@ -40,23 +55,33 @@ int main(int argc, char *argv[])
     //init the logging mechanism
     QsLogging::Logger& logger = QsLogging::Logger::instance();
     logger.setLoggingLevel(QsLogging::OffLevel); // start with no logging
-    const QString sLogPath(QDir(app.applicationDirPath()).filePath("QModMaster.log"));
+    const QString sLogPath(QDir(app.applicationDirPath()).filePath("QModbusExplorer.log"));
     QsLogging::DestinationPtr fileDestination(QsLogging::DestinationFactory::MakeFileDestination(sLogPath,true,65535,7));
     QsLogging::DestinationPtr debugDestination(QsLogging::DestinationFactory::MakeDebugOutputDestination());
     logger.addDestination(debugDestination);
     logger.addDestination(fileDestination);
 
+
+
     //Modbus Adapter
     ModbusAdapter modbus_adapt(NULL);
     //Program settings
-    ModbusCommSettings settings("qModMaster.ini");
+    ModbusCommSettings settings("QModbusExplorer.ini");
 
     //show main window
     mainWin = new MainWindow(NULL, &modbus_adapt, &settings);
     //connect signals - slots
     QObject::connect(&modbus_adapt, SIGNAL(refreshView()), mainWin, SLOT(refreshView()));
     QObject::connect(mainWin, SIGNAL(resetCounters()), &modbus_adapt, SLOT(resetCounters()));
+
+     QsLogging::DestinationPtr objectDestination(QsLogging::DestinationFactory::MakeFunctorDestination(mainWin, SLOT(showLogData(QString,int))));
+     logger.addDestination(objectDestination);
+
+
+
+
     mainWin->show();
+
 
     return app.exec();
 

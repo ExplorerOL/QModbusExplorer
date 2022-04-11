@@ -31,6 +31,11 @@ BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
     ui->lblADU2->setVisible(false);
     ui->txtADU2->setVisible(false);
 
+    //connect(ui->lstRawData,SIGNAL(indexesMoved()),this,SLOT(scrollRawData()));
+    //ui->lstRawData->scrollToBottom();
+    connect(m_rawDataModel,SIGNAL(newRawDataReceived()),this,SLOT(updateBusRawData()));
+
+
 }
 
 BusMonitor::~BusMonitor()
@@ -129,6 +134,7 @@ int rowCount;
 int currRow;
 QModelIndex next;
 QModelIndex prev;
+
 
     rowCount = ui->lstRawData->model()->rowCount();
     currRow = selected.row();
@@ -350,4 +356,8 @@ void BusMonitor::parseSysMsg(QString msg, QPlainTextEdit* txtADU)
     QStringList row = msg.split(QRegExp("\\s+"));
     txtADU->appendPlainText("Timestamp : " + row[2]);
     txtADU->appendPlainText("Message" + msg.mid(msg.indexOf(" : ")));
+}
+
+void BusMonitor::updateBusRawData(){
+    ui->lstRawData->scrollToBottom();
 }

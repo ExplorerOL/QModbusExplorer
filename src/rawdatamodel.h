@@ -18,6 +18,7 @@ public:
     int maxNoOfLines() { return m_maxNoOfLines; }
 
 signals:
+    void newRawDataReceived();
 
 public slots:
 

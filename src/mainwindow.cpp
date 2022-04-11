@@ -20,35 +20,53 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //setup UI
     ui->setupUi(this);
     ui->sbNoOfRegs->setEnabled(true);
-    ui->actionRead_Write->setEnabled(false);
-    ui->actionScan->setEnabled(false);
+    ui->actionRead_Write->setEnabled(true);
+    ui->actionScan->setEnabled(true);
     ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
     ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
     ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
-    ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
+    //ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
     ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
     ui->spInterval->setValue(m_modbusCommSettings->scanRate());
     ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
     ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
     ui->chkSigned->setVisible(false);
     ui->tblRegisters->setStyleSheet("QHeaderView::section { background-color:lightGray }");
+    ui->cmbEndian->setCurrentIndex((m_modbusCommSettings->endian()));
+
+
+    ui->splitterVertical->setStyleSheet("QSplitterHandle:hover {}  QSplitter::handle:horizontal:hover {background-color:#A5A5A5;}");
+    ui->splitterHorizontal->setStyleSheet("QSplitterHandle:hover {}  QSplitter::handle:vertical:hover {background-color:#A5A5A5;}");
+    //ui->tabWidgetCentral->setStyleSheet( "border-radius: 10px;");
+    ui->tabWidgetCentral->setStyleSheet("QTabBar {font-size: 8pt;}" "QTabBar::tab:selected { font-weight: bold;}" "QTabBar::tab {width: 200px;}");
 
     //UI - dialogs
     m_dlgAbout = new About();
+    m_dlgAbout->setWindowIcon(QIcon(":/icons/explorer.png"));
     connect(ui->actionAbout,SIGNAL(triggered()),m_dlgAbout,SLOT(show()));
-    m_dlgModbusRTU = new SettingsModbusRTU(this,m_modbusCommSettings);
-    connect(ui->actionSerial_RTU,SIGNAL(triggered()),this,SLOT(showSettingsModbusRTU()));
-    m_dlgModbusTCP = new SettingsModbusTCP(this,m_modbusCommSettings);
-    connect(ui->actionTCP,SIGNAL(triggered()),this,SLOT(showSettingsModbusTCP()));
+//    m_dlgModbusRTU = new SettingsModbusRTU(this,m_modbusCommSettings);
+//    connect(ui->actionSerial_RTU,SIGNAL(triggered()),this,SLOT(showSettingsModbusRTU()));
+//    m_dlgModbusTCP = new SettingsModbusTCP(this,m_modbusCommSettings);
+//    connect(ui->actionTCP,SIGNAL(triggered()),this,SLOT(showSettingsModbusTCP()));
     m_dlgSettings = new Settings(this,m_modbusCommSettings);
     connect(ui->actionSettings,SIGNAL(triggered()),this,SLOT(showSettings()));
+
     m_busMonitor = new BusMonitor(this, m_modbus->rawModel);
-    connect(ui->actionBus_Monitor,SIGNAL(triggered()),this,SLOT(showBusMonitor()));
+    ui->tabWidgetBusMonitor->addTab(m_busMonitor, tr("Bus monitor"));
+    //ui->tabWidgetInfo->addTab(m_busMonitor, tr("Logs2"));
+    //QVBoxLayout* busMonLayout = new QVBoxLayout;
+    //ui->tabWidget_2->setLayout(busMonLayout);
+    //connect(ui->actionBus_Monitor,SIGNAL(triggered()),this,SLOT(showBusMonitor()));
+
+    connect(ui->actionShowRightTabWidget,SIGNAL(triggered()),this,SLOT(showBusMonitor()));
+   // ui->actionShowRightTabWidget->setEnabled(true);
+
+
     m_tools = new Tools(this, m_modbus, m_modbusCommSettings);
     connect(ui->actionTools,SIGNAL(triggered()),this,SLOT(showTools()));
 
     //UI - connections
-    connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
+    //connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
     connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
     connect(ui->cmbFrmt,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFrmt(int)));
     connect(ui->chkSigned,SIGNAL(toggled(bool)),this,SLOT(changedDecSign(bool)));
@@ -58,12 +76,24 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
     connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
     connect(ui->sbPrecision,SIGNAL(valueChanged(int)),this,SLOT(changedFloatPrecision(int)));
+    
+    connect(ui->cmbEndian, SIGNAL(currentIndexChanged(int)), this, SLOT(changedEndianess(int)));
+    
     connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
+    //--- Read/write button
     connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(modbusRequest()));
+    //--- Read/write in cycle button
     connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(modbusScanCycle(bool)));
-    connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
+    //--- Connect button
+   // connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
     connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
+
+
     connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
+    //Show lower info panel
+    connect(ui->actionShowLowerInfoPanel,SIGNAL(triggered()),this,SLOT(showLowerInfoPanel()));
+
+
     connect(ui->actionHeaders,SIGNAL(triggered(bool)),this,SLOT(showHeaders(bool)));
     connect(ui->actionModbus_Manual,SIGNAL(triggered()),this,SLOT(openModbusManual()));
     //connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
@@ -71,7 +101,8 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
     connect(ui->actionLoad_Session,SIGNAL(triggered(bool)),this,SLOT(loadSession()));
     connect(ui->actionSave_Session,SIGNAL(triggered(bool)),this,SLOT(saveSession()));
-    connect(m_dlgSettings, SIGNAL(changedEndianess(int)),this,SLOT(changedEndianess(int)));
+    //connect(m_dlgSettings, SIGNAL(changedEndianess(int)),this,SLOT(changedEndianess(int)));
+
 
     //UI - status
     m_statusInd = new QLabel;
@@ -95,21 +126,27 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     //Setup Toolbar
     ui->mainToolBar->addAction(ui->actionLoad_Session);
     ui->mainToolBar->addAction(ui->actionSave_Session);
-    ui->mainToolBar->addAction(ui->actionConnect);
+    //ui->mainToolBar->addAction(ui->actionConnect);
     ui->mainToolBar->addAction(ui->actionRead_Write);
     ui->mainToolBar->addAction(ui->actionScan);
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction(ui->actionClear);
     ui->mainToolBar->addAction(ui->actionReset_Counters);
     ui->mainToolBar->addSeparator();
-    ui->mainToolBar->addAction(ui->actionOpenLogFile);
-    ui->mainToolBar->addAction(ui->actionBus_Monitor);
+    //ui->mainToolBar->addAction(ui->actionBus_Monitor);
     ui->mainToolBar->addAction(ui->actionTools);
     ui->mainToolBar->addAction(ui->actionHeaders);
     ui->mainToolBar->addSeparator();
-    ui->mainToolBar->addAction(ui->actionSerial_RTU);
-    ui->mainToolBar->addAction(ui->actionTCP);
+//    ui->mainToolBar->addAction(ui->actionSerial_RTU);
+//    ui->mainToolBar->addAction(ui->actionTCP);
     ui->mainToolBar->addAction(ui->actionSettings);
+    ui->mainToolBar->addAction(ui->actionOpenLogFile);
     ui->mainToolBar->addSeparator();
+
+    ui->mainToolBar->addAction(ui->actionShowRightTabWidget);
+    ui->mainToolBar->addAction(ui->actionShowLowerInfoPanel);
+    ui->mainToolBar->addSeparator();
+
     ui->mainToolBar->addAction(ui->actionModbus_Manual);
     ui->mainToolBar->addAction(ui->actionAbout);
     ui->mainToolBar->addAction(ui->actionExit);
@@ -122,18 +159,19 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
     changedFrmt(m_modbusCommSettings->frmt());
     m_modbus->regModel->setStartAddrBase(10);
     m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
+    m_modbus->setBaseAddr(m_modbusCommSettings->baseAddr().toInt());
     m_modbus->regModel->setFloatPrecision(m_modbusCommSettings->floatPrecision());
     m_modbus->setReadOutputsBeforeWrite(m_modbusCommSettings->readOutputsBeforeWrite());
     clearItems();//init model ui
 
     //Update UI
-    changedFunctionCode(m_modbusCommSettings->functionCode());
-    changedModbusMode(m_modbusCommSettings->modbusMode());
-    updateStatusBar();
-    refreshView();
+    updateMainWindowUI();
+
+    //logStringListModel = new QStringListModel();
 
     //Logging level
     QsLogging::Logger::instance().setLoggingLevel((QsLogging::Level)m_modbusCommSettings->loggingLevel());
+    //QsLogging::Logger::instance().setLoggingLevel((QsLogging::Level)0);
     QLOG_INFO()<<  "Start Program" ;
 
 }
@@ -185,16 +223,21 @@ void MainWindow::showSettings()
     //Show General Settings Dialog
     m_dlgSettings->modbus_connected = m_modbus->isConnected();
     if (m_dlgSettings->exec()==QDialog::Accepted) {
-        QLOG_TRACE()<<  "Settings changes accepted ";
+        QLOG_INFO()<<  "Settings changes accepted ";
         m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
         m_modbus->setTimeOut(m_modbusCommSettings->timeOut().toInt());
         ui->sbStartAddress->setMinimum(m_modbusCommSettings->baseAddr().toInt());
-        m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
+        m_modbus->setBaseAddr(m_modbusCommSettings->baseAddr().toInt());
+        //m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
+        QsLogging::Logger::instance().setLoggingLevel((QsLogging::Level) m_modbusCommSettings->loggingLevel());
+        QLOG_DEBUG()<<  "Logging level changed to " << m_modbusCommSettings->loggingLevel();
+        //QLOG_TRACE()<<  "Logging level changed to " << m_modbusCommSettings->loggingLevel();
         m_modbusCommSettings->saveSettings();
     }
     else
-        QLOG_WARN()<<  "Settings changes rejected ";
+        QLOG_INFO()<<  "Settings changes rejected ";
 
+    updateMainWindowUI();
     updateStatusBar();
 
 }
@@ -202,12 +245,23 @@ void MainWindow::showSettings()
 void MainWindow::showBusMonitor()
 {
 
-    //Show Bus Monitor
+    //Show/hide right tab widget
+    if (!ui->tabWidgetBusMonitor->isVisible()) {
+        ui->tabWidgetBusMonitor->show();
+    }
+    else {
+         ui->tabWidgetBusMonitor->hide();
+    }
 
-    m_modbus->rawModel->setMaxNoOfLines(m_modbusCommSettings->maxNoOfLines().toInt());
-    m_busMonitor->move(this->x() + this->width() + 20, this->y());
-    m_busMonitor->show();
+}
 
+void MainWindow::showLowerInfoPanel(){
+    if (!ui->tabLowerInfoPanel->isVisible()) {
+        ui->tabLowerInfoPanel->show();
+    }
+    else {
+         ui->tabLowerInfoPanel->hide();
+    }
 }
 
 void MainWindow::showTools()
@@ -421,6 +475,30 @@ void MainWindow::changedConnect(bool value)
     if (value) { //Connected
         modbusConnect(true);
         QLOG_INFO()<<  "Connected ";
+//-------------------------------------------
+       // for (int i = 0; i < ui->verticalLayout_3->count(); ++i) {
+//           QWidget *w = ui->verticalLayout_3->itemAt(0)->widget();
+//           if(w != NULL)
+//               w->setVisible(false);
+        //}
+           //widget->addItems
+           //stringList.append(line.trimmed());
+        //ui->lstLogView->add
+//------------
+//        QStringListModel* model;
+//        model = new QStringListModel(this);
+
+//        QStringList list;
+//        list << "Some Item";
+//        list << "Some Item2";
+
+
+//        model->setStringList(list);
+
+//        ui->lstLogView->setModel(model);
+//----------------------------------------------
+//showLogData("Hello", 1);
+
     }
     else { //Disconnected
         modbusConnect(false);
@@ -429,6 +507,7 @@ void MainWindow::changedConnect(bool value)
 
     m_modbus->resetCounters();
     refreshView();
+
 
 }
 
@@ -453,6 +532,19 @@ void MainWindow::changedEndianess(int endian)
     //clear table on endianess change
     addItems();
 
+
+    m_modbusCommSettings->setEndian(endian);
+    m_modbusCommSettings->saveSettings();
+    m_modbus->regModel->setEndian(m_modbusCommSettings->endian());
+
+    updateStatusBar();
+}
+
+void MainWindow::changeLogLevel(int logLevel){
+    //m_modbusCommSettings->loggingLevel()
+    //m_modbusCommSettings->loggingLevel()
+    QsLogging::Logger::instance().setLoggingLevel((QsLogging::Level) logLevel);
+    QLOG_INFO()<<  "Logging level changet to " << logLevel;
 }
 
 void MainWindow::openLogFile()
@@ -462,7 +554,7 @@ void MainWindow::openLogFile()
     QString arg;
     QLOG_TRACE()<<  "Open log file";
 
-    arg = "file:///" + QCoreApplication::applicationDirPath() + "/QModMaster.log";
+    arg = "file:///" + QCoreApplication::applicationDirPath() + "/QModbusExplorer.log";
     QDesktopServices::openUrl(QUrl(arg));
 
 
@@ -548,7 +640,7 @@ void MainWindow::updateStatusBar()
 
     QString msg;
 
-    if(ui->cmbModbusMode->currentIndex() == 0) { //RTU
+    if(m_modbusCommSettings->modbusMode() == 0) { //RTU
         msg = "RTU : ";
         msg += m_modbusCommSettings->serialPortName() + " | ";
         msg += m_modbusCommSettings->baud() + ",";
@@ -593,7 +685,7 @@ void MainWindow::addItems()
     baseAddr = m_modbusCommSettings->baseAddr().toInt();
     m_modbus->setStartAddr(ui->sbStartAddress->value() - baseAddr);
 
-    QLOG_INFO()<<  "Add Items. Function Code = " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
+    QLOG_DEBUG()<<  "Add Items. Function Code = " << QString::number(EUtils::ModbusFunctionCode(ui->cmbFunctionCode->currentIndex()),16);
 
     m_modbus->addItems();
 
@@ -613,8 +705,11 @@ void MainWindow::clearItems()
 
 void MainWindow::modbusRequest()
 {
+    //auto connection
+    changedConnect(true);
+    if (m_modbus->isConnected() != true) return;
 
-     //Request items from modbus adapter and add raw data to raw data model
+    //Request items from modbus adapter and add raw data to raw data model
     int rowCount = m_modbus->regModel->model->rowCount();
     int baseAddr;
 
@@ -646,10 +741,13 @@ void MainWindow::modbusRequest()
     //Modbus data
     m_modbus->modbusTransaction();
 
+    //auto disconnection
+    changedConnect(false);
 }
 
 void MainWindow::modbusScanCycle(bool value)
 {
+
 
    //Request items from modbus adapter and add raw data to raw data model
    int rowCount = m_modbus->regModel->model->rowCount();
@@ -658,7 +756,7 @@ void MainWindow::modbusScanCycle(bool value)
    if (value && rowCount == 0) {
        //mainWin->showUpInfoBar(tr("Request failed\nAdd items to Registers Table."), InfoBar::Error);
        QLOG_WARN()<<  "Request failed. No items in registers table ";
-       QMessageBox::critical(this, "QModMaster", tr("Request failed\nAdd items to Registers Table."));
+       QMessageBox::critical(this, "QModbusExplorer", tr("Request failed\nAdd items to Registers Table."));
        ui->actionScan->setChecked(false);
        return;
    }
@@ -666,7 +764,7 @@ void MainWindow::modbusScanCycle(bool value)
             ui->sbNoOfRegs->value() % 2 != 0) {
        //mainWin->showUpInfoBar(tr("The number of registers must be even."), InfoBar::Error);
        QLOG_WARN()<<  "Request failed. The number of registers must be even ";
-       QMessageBox::critical(this, "QModMaster", tr("The number of registers must be even."));
+       QMessageBox::critical(this, "QModbusExplorer", tr("The number of registers must be even."));
        ui->actionScan->setChecked(false);
        return;
    }
@@ -684,18 +782,30 @@ void MainWindow::modbusScanCycle(bool value)
 
     //Start-Stop poll timer
     QLOG_TRACE()<<  "Scan time = " << value;
+
+    //If button ScanCyle is pressed
     if (value){
         if (ui->spInterval->value() < m_modbusCommSettings->timeOut().toInt() * 1000 * 2){
             mainWin->showUpInfoBar(tr("Scan rate  should be at least 2 * Timeout."), InfoBar::Error);
             QLOG_ERROR()<<  "Scan rate error. should be at least 2 * Timeout ";
         }
         else {
+            //auto connection
+            changedConnect(true);
+            if (m_modbus->isConnected() != true) return;
+
             m_modbus->setScanRate(ui->spInterval->value());
             m_modbus->startPollTimer();
+            ui->actionRead_Write->setEnabled(false);
         }
     }
-    else
+    else {
+
         m_modbus->stopPollTimer();
+        //auto disconnection
+        changedConnect(false);
+        ui->actionRead_Write->setEnabled(true);
+    }
 
     //Update UI
     ui->cmbFunctionCode->setEnabled(!value);
@@ -708,6 +818,8 @@ void MainWindow::modbusScanCycle(bool value)
     else
         ui->sbNoOfRegs->setEnabled(false);
 
+
+
 }
 
 void MainWindow::modbusConnect(bool connect)
@@ -717,7 +829,7 @@ void MainWindow::modbusConnect(bool connect)
     QLOG_TRACE()<<  "Modbus Connect. Value = " << connect;
 
     if (connect) { //RTU
-        if (ui->cmbModbusMode->currentIndex() == EUtils::RTU) {
+        if (m_modbusCommSettings->modbusMode() == EUtils::RTU) {
             m_modbus->setSlave(ui->sbSlaveID->value());
             m_modbus->modbusConnectRTU(m_modbusCommSettings->serialPortName(),
                                         m_modbusCommSettings->baud().toInt(),
@@ -744,10 +856,10 @@ void MainWindow::modbusConnect(bool connect)
     //Update UI
     ui->actionLoad_Session->setEnabled(!m_modbus->isConnected());
     ui->actionSave_Session->setEnabled(!m_modbus->isConnected());
-    ui->actionConnect->setChecked(m_modbus->isConnected());
-    ui->actionRead_Write->setEnabled(m_modbus->isConnected());
-    ui->actionScan->setEnabled(m_modbus->isConnected());
-    ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
+    //ui->actionConnect->setChecked(m_modbus->isConnected());
+    //ui->actionRead_Write->setEnabled(m_modbus->isConnected());
+    //ui->actionScan->setEnabled(m_modbus->isConnected());
+    //ui->cmbModbusMode->setEnabled(!m_modbus->isConnected());
 
  }
 
@@ -794,17 +906,17 @@ QString fName;
          ui->cmbFrmt->setCurrentIndex(m_modbusCommSettings->frmt());
          ui->sbPrecision->setValue(m_modbusCommSettings->floatPrecision());
          ui->cmbFunctionCode->setCurrentIndex(m_modbusCommSettings->functionCode());
-         ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
+         //ui->cmbModbusMode->setCurrentIndex(m_modbusCommSettings->modbusMode());
          ui->sbSlaveID->setValue(m_modbusCommSettings->slaveID());
          ui->spInterval->setValue(m_modbusCommSettings->scanRate());
          ui->sbStartAddress->setValue(m_modbusCommSettings->startAddr());
          ui->sbNoOfRegs->setValue(m_modbusCommSettings->noOfRegs());
          updateStatusBar();
          refreshView();
-         QMessageBox::information(this, "QModMaster", "Load session file : " + fName);
+         QMessageBox::information(this, "QModbusExplorer", "Load session file : " + fName);
      }
      else
-         QMessageBox::information(this, "QModMaster", "Cancel operation Or no file selected");
+         QMessageBox::information(this, "QModbusExplorer", "Cancel operation Or no file selected");
 
 }
 
@@ -821,10 +933,10 @@ QString fName;
      //check
      if (fName != ""){
          m_modbusCommSettings->saveSession(fName);
-         QMessageBox::information(this, "QModMaster", "Save session file : " + fName);
+         QMessageBox::information(this, "QModbusExplorer", "Save session file : " + fName);
      }
      else
-         QMessageBox::information(this, "QModMaster", "Cancel operation Or no file selected");
+         QMessageBox::information(this, "QModbusExplorer", "Cancel operation Or no file selected");
 
 }
 void MainWindow::showUpInfoBar(QString message, InfoBar::InfoType type)
@@ -855,4 +967,29 @@ void MainWindow::changeLanguage()
     Translator->load(":/translations/" + QCoreApplication::applicationName() + sender()->objectName().right(6));
     QCoreApplication::installTranslator(Translator);
 }
+
+void MainWindow::updateMainWindowUI() {
+    changedFunctionCode(m_modbusCommSettings->functionCode());
+    changedModbusMode(m_modbusCommSettings->modbusMode());
+    updateStatusBar();
+    refreshView();
+}
+
+void MainWindow::showLogData(const QString &message, int level) {
+
+
+   logStringList << message;
+
+   logStringListModel.setStringList(logStringList);
+   ui->lstLogView->setModel(&logStringListModel);
+   ui->lstLogView->scrollToBottom();
+//    list << "Some Item";
+//    list << "Some Item2";
+
+
+//
+    //ui->lstLogView->append(qPrintable(message));
+
+}
+
 

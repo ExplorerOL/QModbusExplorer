@@ -30,6 +30,7 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     memset(dest, 0, 2000 * sizeof(uint8_t));
     dest16 = (uint16_t *) malloc(125 * sizeof(uint16_t));
     memset(dest16, 0, 125 * sizeof(uint16_t));
+
 }
 
 ModbusAdapter::~ModbusAdapter()
@@ -468,6 +469,11 @@ void ModbusAdapter::setStartAddr(int addr)
     m_startAddr = addr;
 }
 
+void ModbusAdapter::setBaseAddr(int baseAddr)
+{
+    m_baseAddr = baseAddr;
+}
+
 void ModbusAdapter::setNumOfRegs(int num)
 {
     m_numOfRegs = num;
@@ -475,7 +481,8 @@ void ModbusAdapter::setNumOfRegs(int num)
 
 void ModbusAdapter::addItems()
 {
-    regModel->addItems(m_startAddr, m_numOfRegs, EUtils::ModbusIsWriteFunction(m_functionCode));
+    //TODO - fix base addr
+    regModel->addItems(m_startAddr + m_baseAddr, m_numOfRegs, EUtils::ModbusIsWriteFunction(m_functionCode));
     //If it is a write function -> read registers
     if (!m_connected || !m_readOutputsBeforeWrite)
         return;

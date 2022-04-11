@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>90</height>
+    <height>150</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -37,13 +37,13 @@
     <widget class="QLabel" name="lblVersion">
      <property name="font">
       <font>
-       <pointsize>18</pointsize>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
      <property name="text">
-      <string notr="true">QModMaster</string>
+      <string notr="true">QModbusExplorer</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -82,6 +82,22 @@
      </property>
      <property name="openExternalLinks">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Icons from https://icons8.ru/</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>

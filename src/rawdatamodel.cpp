@@ -21,6 +21,8 @@ void RawDataModel::addLine(QString line)
     m_rawData.append(line);
     model->setStringList(m_rawData);
 
+    emit(newRawDataReceived());
+
 }
 
 void RawDataModel::clear()
