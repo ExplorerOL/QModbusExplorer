@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/translations">
-        <file>qModMaster_zh_CN.qm</file>
-        <file>qModMaster_zh_TW.qm</file>
+        <file>QModbusExplorer_zh_CN.qm</file>
+        <file>QModbusExplorer_zh_TW.qm</file>
     </qresource>
 </RCC>

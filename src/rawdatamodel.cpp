@@ -12,7 +12,10 @@ RawDataModel::RawDataModel(QObject *parent) :
 void RawDataModel::addLine(QString line)
 {
 
-    if (!m_addLinesEnabled) return;
+    if ((!m_addLinesEnabled) || (line.length() == 0)) {
+         QLOG_TRACE() <<  "Lines were not added";
+        return;
+    }
 
     QLOG_TRACE() <<  "Raw Data Model Line = " << line << " , No of lines = " << m_rawData.length();
 
@@ -21,7 +24,9 @@ void RawDataModel::addLine(QString line)
     m_rawData.append(line);
     model->setStringList(m_rawData);
 
-    emit(newRawDataReceived());
+    if (m_rawData.length() !=0){
+        emit newRawDataReceived();
+    }
 
 }
 

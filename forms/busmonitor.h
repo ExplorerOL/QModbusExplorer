@@ -38,7 +38,6 @@ private slots:
     void SxS();
     void selectedRow(const QModelIndex & selected);
     void updateBusRawData();
-    //void scrollRawData();
 
 };
 

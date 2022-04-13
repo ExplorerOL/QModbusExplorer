@@ -353,7 +353,7 @@ void ModbusCommSettings::load(QSettings *s)
         m_maxNoOfLines = s->value("Var/MaxNoOfLines").toString();
 
     if (s->value("Var/BaseAddr").isNull())
-        m_baseAddr = "1";
+        m_baseAddr = "0";
     else
         m_baseAddr = s->value("Var/BaseAddr").toString();
 

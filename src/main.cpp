@@ -12,30 +12,6 @@
 
 QTranslator *Translator;
 
-//Logging Levels
-//TraceLevel : 0
-//DebugLevel : 1
-//InfoLevel : 2
-//WarnLevel : 3
-//ErrorLevel : 4
-//FatalLevel : 5
-//OffLevel : 6
-
-//void logFunction(const QString &message, QsLogging::Level level)
-//{
-//    QStringListModel* model;
-//    model = new QStringListModel();
-
-//    QStringList list;
-//    list << "Some Item";
-//    list << "Some Item2";
-
-
-//    model->setStringList(list);
-//    showLogData(MainWin, model);
-
-//}
-
 int main(int argc, char *argv[])
 {
 

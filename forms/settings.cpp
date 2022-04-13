@@ -19,8 +19,6 @@ Settings::Settings(QWidget *parent ,ModbusCommSettings *settings) :
 
     connect(ui->buttonBox,SIGNAL(accepted()),this,SLOT(changesAccepted()));
     connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(updateSettingsUI(int)));
-    //connect(ui->cmbLogLevel,  SIGNAL(currentIndexChanged(int)), this, SLOT(changeLogLevel(int)));
-
 }
 
 Settings::~Settings()
@@ -39,8 +37,6 @@ void Settings::showEvent(QShowEvent * event)
         ui->sbMaxNoOfRawDataLines->setValue(m_settings->maxNoOfLines().toInt());
         ui->sbResponseTimeout->setValue(m_settings->timeOut().toInt());
         ui->sbBaseAddr->setValue(m_settings->baseAddr().toInt());
-//        ui->cmbEndian->setCurrentIndex(m_settings->endian());
-
     }
 
     //Load Modbus RTU Settings
@@ -60,8 +56,6 @@ void Settings::showEvent(QShowEvent * event)
     }
 
 
-
-    //ui->gbRTUSettings -> hide();
 
     if (m_settings != NULL) {
 
@@ -106,9 +100,6 @@ void Settings::changesAccepted()
         m_settings->setTimeOut(ui->sbResponseTimeout->cleanText());
         m_settings->setBaseAddr(ui->sbBaseAddr->cleanText());
         m_settings->setLoggingLevel(ui->cmbLogLevel->currentIndex());
-//        if (m_settings->endian() != ui->cmbEndian->currentIndex())
-//            emit changedEndianess(ui->cmbEndian->currentIndex());
-//        m_settings->setEndian(ui->cmbEndian->currentIndex());
 
          //from settingsmodbusrtu.cpp
         m_settings->setSerialPort(QString::number(ui->sbPort->value()), ui->cmbDev->currentText());

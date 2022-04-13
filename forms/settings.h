@@ -34,9 +34,6 @@ private slots:
     void changesAccepted();
     void updateSettingsUI(int);
 
-    //from settingsmodbusrtu.h
-    //void changesAccepted();
-
 
 protected:
     void showEvent(QShowEvent * event);
