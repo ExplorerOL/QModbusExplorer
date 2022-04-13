@@ -1,4 +1,4 @@
-## QModbusExplorer - free and user friendly programm for exploring Modbus networks ##
+## QModbusExplorer - free and user friendly program for exploring Modbus networks ##
 
 ![GitHub](https://img.shields.io/github/license/ExplorerOL/QModbusExplorer)
 
