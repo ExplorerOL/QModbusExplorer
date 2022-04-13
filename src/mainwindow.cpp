@@ -749,6 +749,7 @@ void MainWindow::modbusScanCycle(bool value)
             m_modbus->startPollTimer();
             ui->actionRead_Write->setEnabled(false);
             ui->actionSettings->setEnabled(false);
+            ui->actionTools->setEnabled(false);
         }
     }
     else {
@@ -758,6 +759,7 @@ void MainWindow::modbusScanCycle(bool value)
         changedConnect(false);
         ui->actionRead_Write->setEnabled(true);
         ui->actionSettings->setEnabled(true);
+        ui->actionTools->setEnabled(true);
     }
 
     //Update UI
