@@ -143,9 +143,13 @@ public:
         switch (endian)
         {
         case 0:
-            return "Little";
-        case 1:
             return "Big";
+        case 1:
+            return "Big with byte swap";
+        case 2:
+            return "Little";
+        case 3:
+            return "Little with byte swap";
         default:
             return "N/A";
         }
@@ -154,7 +158,7 @@ public:
     static enum {RTU = 0, TCP = 1, None = 0} ModbusMode;
 
     static enum {Bin = 2, Dec = 10, Float = 11, Hex = 16} NumberFormat;
-    static enum {Little =0, Big = 1} Endianness;
+    static enum {Big = 0, BigWithByteSwap = 1, Little = 2, LittleWithByteSwap = 3} Endianness;
 
     static enum {ReadCoils = 0x1, ReadDisInputs = 0x2,
                 ReadHoldRegs = 0x3, ReadInputRegs = 0x4,

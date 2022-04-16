@@ -45,13 +45,13 @@ QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=fals
 
 }
 
-QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Little, int precision = -1)
+QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Big, int precision = -1)
 {
     union{
         struct{qint16 low, high;} reg;
         float value;
     } data;
-    QString convertedValue;
+    QString convertedValue = "Conversion error";
 
     if (endian == EUtils::Little){
         data.reg.high = valueLo;
@@ -60,6 +60,26 @@ QString EUtils::formatValue32(int valueHi, int valueLo, int endian = EUtils::Lit
     else if (endian == EUtils::Big){
         data.reg.high = valueHi;
         data.reg.low = valueLo;
+    }
+    else if (endian == EUtils::BigWithByteSwap){
+        qint8 byteHiHi, byteHiLo, byteLoHi, byteLoLo;
+        byteHiHi = valueHi & 0x00FF;
+        byteHiLo = (valueHi & 0xFF00) >> 8;
+        byteLoHi = valueLo & 0x00FF;
+        byteLoLo = (valueLo & 0xFF00) >> 8;
+
+        data.reg.high = (byteHiHi << 8) + byteHiLo;
+        data.reg.low = (byteLoHi << 8) + byteLoLo;
+    }
+    else if (endian == EUtils::LittleWithByteSwap){
+        quint8 byteHiHi, byteHiLo, byteLoHi, byteLoLo;
+        byteHiHi = valueLo & 0x00FF;
+        byteHiLo = (valueLo & 0xFF00) >> 8;
+        byteLoHi = valueHi & 0x00FF;
+        byteLoLo = (valueHi & 0xFF00) >> 8;
+
+        data.reg.high = (byteHiHi << 8) + byteHiLo;
+        data.reg.low = (byteLoHi << 8) + byteLoLo;
     }
 
     convertedValue = QString("%1").arg(data.value, 0, 'G', precision);
