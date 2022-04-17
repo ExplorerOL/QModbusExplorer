@@ -26,3 +26,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Several screenshots of the program interface you can find below:
+
+<img align="left" width="400" height="300" src="https://user-images.githubusercontent.com/36483527/163725634-0ba5905a-0ead-4ebb-beef-f6d9b4125fe4.png">
+<img align="left" width="200" height="300" src="https://user-images.githubusercontent.com/36483527/163725653-afbd31fb-3732-4b0c-b982-6430569580f4.png">
