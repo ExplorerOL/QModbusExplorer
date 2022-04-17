@@ -3,6 +3,8 @@
 
 EUtils::EUtils()
 {
+    //tests
+    assert(EUtils::swapBytesInWord(0x1234) == 0x3412);
 }
 
 QString EUtils::formatValue(int value,int frmt, bool is16Bit, bool isSigned=false)

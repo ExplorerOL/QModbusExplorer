@@ -15,9 +15,9 @@ static const QString ModbusModeStamp[]={"[RTU]>","[TCP]>",""};
 class EUtils
 {
 private:
-    EUtils();
 
 public:
+    EUtils();
 
     static QString ModbusDataTypeName(int fCode)
     {

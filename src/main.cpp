@@ -14,6 +14,7 @@ QTranslator *Translator;
 
 int main(int argc, char *argv[])
 {
+    EUtils utils;
 
     //qt dpi warnings
     qputenv("QT_DEVICE_PIXEL_RATIO", "0");
@@ -50,11 +51,8 @@ int main(int argc, char *argv[])
     QObject::connect(&modbus_adapt, SIGNAL(refreshView()), mainWin, SLOT(refreshView()));
     QObject::connect(mainWin, SIGNAL(resetCounters()), &modbus_adapt, SLOT(resetCounters()));
 
-     QsLogging::DestinationPtr objectDestination(QsLogging::DestinationFactory::MakeFunctorDestination(mainWin, SLOT(showLogData(QString,int))));
-     logger.addDestination(objectDestination);
-
-
-
+    QsLogging::DestinationPtr objectDestination(QsLogging::DestinationFactory::MakeFunctorDestination(mainWin, SLOT(showLogData(QString,int))));
+    logger.addDestination(objectDestination);
 
     mainWin->show();
 
