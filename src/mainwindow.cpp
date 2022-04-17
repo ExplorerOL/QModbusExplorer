@@ -463,7 +463,7 @@ void MainWindow::changedConnect(bool value)
         QLOG_INFO()<<  "Disconnected ";
     }
 
-    m_modbus->resetCounters();
+    //m_modbus->resetCounters();
     refreshView();
 
 
