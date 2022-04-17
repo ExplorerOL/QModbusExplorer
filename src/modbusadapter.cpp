@@ -370,26 +370,14 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
                                     data[i+1] = modelData.reg.low;
                                 }
                                 else if (regModel->getEndian() == EUtils::BigWithByteSwap){
-                                    qint8 byteHiHi, byteHiLo, byteLoHi, byteLoLo;
-                                    byteHiHi = modelData.reg.high & 0x00FF;
-                                    byteHiLo = (modelData.reg.high & 0xFF00) >> 8;
-                                    byteLoHi = modelData.reg.low & 0x00FF;
-                                    byteLoLo = (modelData.reg.low & 0xFF00) >> 8;
-
-                                    data[i] = (byteHiHi << 8) + byteHiLo;
-                                    data[i+1] = (byteLoHi << 8) + byteLoLo;
+                                    data[i] = EUtils::swapBytesInWord(modelData.reg.high);
+                                    data[i+1] = EUtils::swapBytesInWord(modelData.reg.low);
                                 }
                                 else if (regModel->getEndian() == EUtils::LittleWithByteSwap){
-                                    quint8 byteHiHi, byteHiLo, byteLoHi, byteLoLo;
-                                    byteHiHi = modelData.reg.low & 0x00FF;
-                                    byteHiLo = (modelData.reg.low & 0xFF00) >> 8;
-                                    byteLoHi = modelData.reg.high & 0x00FF;
-                                    byteLoLo = (modelData.reg.high & 0xFF00) >> 8;
+                                    data[i] = EUtils::swapBytesInWord(modelData.reg.low);
+                                    data[i+1] = EUtils::swapBytesInWord(modelData.reg.high);
 
-                                    data[i] = (byteHiHi << 8) + byteHiLo;
-                                    data[i+1] = (byteLoHi << 8) + byteLoLo;
                                 }
-
                         }
                         ret = modbus_write_registers(m_modbus, startAddress, noOfItems, data);
                         delete[] data;

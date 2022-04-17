@@ -169,6 +169,7 @@ public:
 
     static QString formatValue32(int valueHi, int valueLo, int endian, int precision);
     static QString formatValue32(float value,  int precision);
+    static quint16 swapBytesInWord(quint16 dataWord);
 
     static QString libmodbus_strerror(int errnum);
 

@@ -99,6 +99,16 @@ QString EUtils::formatValue32(float value, int precision = -1)
 
 }
 
+quint16 EUtils::swapBytesInWord(quint16 dataWord){
+    quint8 byteHi, byteLow;
+    quint16 swapDataWord;
+
+    byteHi = dataWord & 0x00FF;
+    byteLow = (dataWord & 0xFF00) >> 8;
+    swapDataWord = (byteHi << 8) + byteLow;
+    return swapDataWord;
+}
+
 QString EUtils::libmodbus_strerror(int errnum)
 {
     switch (errnum) {
