@@ -374,6 +374,9 @@ void MainWindow::changedFrmt(int currIndex)
     m_modbusCommSettings->setFrmt(currIndex);
     m_modbusCommSettings->saveSettings();
 
+    ui->lblEndian->setVisible(false);
+    ui->cmbEndian->setVisible(false);
+
     switch(currIndex)
     {
         case 0:
@@ -406,6 +409,8 @@ void MainWindow::changedFrmt(int currIndex)
                 ui->lblPrecision->setVisible(true);
                 ui->sbPrecision->setVisible(true);
                 ui->sbNoOfRegs->setMinimum(1);
+                ui->lblEndian->setVisible(true);
+                ui->cmbEndian->setVisible(true);
                 break;
         default:
                 m_modbus->regModel->setFrmt(EUtils::Dec);
